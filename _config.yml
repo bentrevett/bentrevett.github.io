@@ -1,2 +1,3 @@
 name: Ben Trevett
 markdown: kramdown
+permalink: /blog/:year/:month/:day/:title
