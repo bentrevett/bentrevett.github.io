@@ -12,6 +12,13 @@ nav ul li, footer ul li {
     display: inline;
     margin-right: 20px;
 }
+projects ul{
+    display: inline;
+    margin-right: 20px;
+    font-size: 1.5em;
+    line-height: 1.4em;
+    color: #333;
+}
 a {
     text-decoration: none;
     color: #999;
