@@ -2,6 +2,118 @@
 layout: default
 title: Ben Trevett | Projects
 ---
+	<script>//initialise canvas
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+//initialise snake variables
+var direction = "right";
+var snake_array = [];
+var dx,dy,tail,food_position,points;
+
+function draw_snake(){
+	direction = "right"
+    snake_array=[];
+    //makes snake body which is an array of length 5
+    for(var i = 4; i>=0; i--)
+	{
+    	//each element of array is an object with x and y values
+		snake_array.push({x: i, y:0});
+	}
+}
+function init(){
+    dx=5; //starts at 5 because that's the position of snake's head
+    dy=0;
+    points=0;
+    draw_snake(); //draw the initial snake
+    draw_food(); //draws the food
+    //run draw() every 75ms
+    if(typeof game_loop != "undefined") clearInterval(game_loop);
+		game_loop = setInterval(draw, 75);
+}
+init(); //stars the game, run init to restart game when collision with self
+
+//draw the game constantly
+function draw() {
+    //clears canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+		ctx.rect(0,0,canvas.width,canvas.height);
+		ctx.fillStyle="grey";
+		ctx.fill();
+		ctx.closePath();
+    
+    
+    //x and y co-ordinates of snake's head
+    dx=snake_array[0].x;
+    dy=snake_array[0].y;
+    
+    //changes snake's direction
+    if (direction == "left") dx--;
+    else if (direction == "right") dx++;
+    else if (direction == "up") dy--;
+    else if (direction == "down") dy++;
+    
+    //check for contact with walls or self, begin game again if so
+    if(dx==-1||dx==canvas.width/10||dy==-1||dy==canvas.height/10||collision(dx,dy,snake_array)){
+        init();
+    }
+    
+    //if head is same position as food, grow 1 bigger
+    //snake updated by constantly removing tail and adding to head
+    if(dx==food_position.x && dy==food_position.y){
+    	tail = {x: dx,y:dy};
+    	draw_food();
+        points++;
+    }
+    else{
+    	tail = snake_array.pop();
+    	tail.x=dx;
+    	tail.y=dy;
+    }
+    snake_array.unshift(tail);
+    
+    //draw food
+    ctx.beginPath();
+    ctx.rect(food_position.x*10,food_position.y*10,10,10);
+    ctx.fillStyle="red";
+    ctx.fill();
+    ctx.closePath();
+    
+    //draw snake's body
+    for(var i=0;i<snake_array.length;i++){
+    	ctx.beginPath();
+		ctx.rect(snake_array[i].x*10,snake_array[i].y*10,10,10);
+		ctx.fillStyle="blue";
+		ctx.fill();
+		ctx.closePath();
+    }
+    ctx.fillStyle="black";
+    ctx.fillText("Points: "+points,5,canvas.height-5);
+}
+
+//draws the food for the snake to eat in a random square
+function draw_food(){
+	food_position = {x: Math.floor(Math.random()*(canvas.width-10)/10),
+                     y: Math.floor(Math.random()*(canvas.height-10)/10)};
+}
+
+//checks for collision with self by checking if current x and y positions are positions of any element in the snake_array body
+function collision(x,y,array){
+	for(var i=0;i<array.length;i++){
+    	if(array[i].x==x&&array[i].y==y)
+            return true;
+    }
+    return false;
+}
+
+//listen for key presses
+document.addEventListener('keydown', function (e) {
+    if (e.keyCode == "37" && direction != "right") direction = "left";
+    if (e.keyCode == "38" && direction != "down") direction = "up";
+    if (e.keyCode == "39" && direction != "left") direction = "right";
+    if (e.keyCode == "40" && direction != "up") direction = "down";
+})</script>
 	<h1>Ben Trevett | Projects</h1>
 	<h2>Chip-8 Emulator - 2016</h2>
 	<p>I am currently building a <a href="https://en.wikipedia.org/wiki/CHIP-8">CHIP-8</a> emulator in Java.</p>
@@ -21,6 +133,7 @@ title: Ben Trevett | Projects
 	<p>Google Chrome extension used to take short notes, found <a href="https://github.com/bentrevett/keepnote">here</a>.</p>
 	<h2>Snake - 2015</h2>
 	<p>Game of Snake created in Javascript, found <a href=" https://jsfiddle.net/bentrevett/0arfuspL/">here</a>.</p>
+	<canvas id="canvas" width="300" height="300"></canvas>
 	<h2>FreeCodeCamp's Bonfire Solutions - 2015 </h2>
 	<p>Javascript solutions to the 'bonfire' challenges from freecodecamp.com, found <a href="https://github.com/bentrevett/freecodecamp-bonfire-solutions">here</a></p>
 	<h2>Codingbat Solutions - 2015</h2>
