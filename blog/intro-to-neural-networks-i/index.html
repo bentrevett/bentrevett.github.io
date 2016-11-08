@@ -6,15 +6,85 @@ use_mathjax: true
 
 	<h1>Intro to Neural Networks I</h1>
 	<h2>Background</h2>
-	<p>Here is some text in a paragraph
+	<p>Here is some text in a paragraph</p>
 	{% highlight python %}
 	def foo:
 	print("hello world!")
 	return 0{% endhighlight %}
-	</p>The code should have the endhighlight on the same line as the last line.</p>
+	<p>The code should have the endhighlight on the same line as the last line.</p>
 	<h2>Neural Networks</h2>
 	<p>Here is mathjax inline: $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$ There it is.</p>
 	<p>Here's another paragraph</p>
 	$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
 	<p>Here's a following paragraph</p>
+	<h2>CONTENT DUMP</h2>
+	<p>
+	Why we can't use normal programs
+Ie how to recognise digits, how to recognise faces
+Can't explicitly program this stuff
+Need to use neural networks
+
+Background on perceptrons
+This is how they work, summing inputs to beat a threshold to get an output
+Can have multi layer
+
+Now use sigmoid instead of perceptrons
+This is because want a small change in weight to cause a small change in the o/p when learning weights
+Can't do this because perceptrons are either on or off, 1 or 0, therfore small change might cause it to turn on/off, having a large effect
+Sigmoid graph, lot smoother, can do small changes
+
+Neural network architecture/names of layers and stuff
+Back to handwriting recognition
+MNIST
+To recogise digits use 784*100*10
+Why don't we use 4 bit output to do binary? Don't want to imply there's a relation between o/ps
+If we have 4 bit o/p the NN will be trying to link the shape of a digit to it's MSB, doesn't really work out
+
+The MNIST data set, training examples, testing examples
+Input is one hot vector
+Algorithm to find the 'error' (how good we are doing) use mean squared error 
+Smaller when less error (more matching)
+Less error = more digits correctly identified
+Want to find weights to minimise the cost function, this is done by grad descent
+
+Show gradient descent with two weights, the parabola, ball rolling down a hill analogy
+Moving a deltaC = dC/dV1*deltaV1+dC/dV2*deltaV2
+Need to choose deltaV1 and deltaV2 to make deltaC negative to move downwards
+deltaV = (deltaV1, deltaV2)^T
+Gradient of C = (dC/dV1, dCdV2)^T = namblaC
+Therefore deltaC = namblaC dot deltaV
+Choose deltaV = -eta*namblaC
+Therefore deltaC = -eta|namblaC|^2, therefore deltaC always decreases!
+Therefore, the update rule of v is v -> v' = v - eta*namblaC, keep doing to decrease C to minimum
+You are constantly calculating the gradient, namblaC and moving in the opposite direction
+Need to choose good eta or else too slow or overshoot
+
+Although that was for 2 variables, works for m variables
+deltaV = (deltaV1…deltaVm)^T
+namblaC = (dC/dV1…dC/dVm)^T
+deltaC = namblaC*deltaV
+deltaV = -eta*namblaC again
+
+How to apply to a neural network?
+Use gradient descent to find weights and biases
+NamblaC now has dC/dwk and dCdbl terms
+Update rule now:
+wk -> wk' = wk - eta*dC/dwk
+bl -> bl' = bl - eta*dC/dbl
+
+Notice how the cost function is 1/n sum_x C_x, that is average of C_x = (|y(x)-t|^2)/2 
+In practice need to compute gradient, namblaC, need namblaCx for each training input x and then average them, i.e. namblaC=1/n sum_x namblaC_x
+This causes the model to train very slow, especially when the number of training inputs is large
+
+Introducing stochastic gradient descent!
+Idea is to speed up learning by estimating namblaC by computing namblaC_x over a small sample of training inputs
+Picks m randomly selected training inputs, labelled X1…Xm, this is called a mini batch.
+Provided the mini-batch size is large enough, expect the average value of namblaCXj roughly equal the average over all namblaCx, i.e.
+
+
+
+Stochastic gradient descent made of two types:
+	• Online gradient descent where weights are updated after every input
+Batch gradient descent where inputs are fed in batches and the weights are changed after the whole batch, with the weights changing by the average change over the whole batch 
+</p>
 	
