@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Ben Trevett | Python Disassembler
+title: Ben Trevett | Intro to Parsing I
 ---
 	<h1>Python Disassembler</h1>
 	
@@ -14,7 +14,7 @@ title: Ben Trevett | Python Disassembler
 	In the case of the class, it will disassemble each method. For a module, it disassembles all functions in that module.
 </p>
 	{% highlight python %}
-	import dis
+    import dis
        
     def foo():
         x = 10
@@ -31,11 +31,11 @@ title: Ben Trevett | Python Disassembler
     This will print:
 </p>
     {% highlight python %}
-    4           0 LOAD_CONST               1 (10)
-                3 STORE_FAST               0 (x)
+    4           0 LOAD_CONST                1 (10)
+                3 STORE_FAST                0 (x)
 
-    5           6 LOAD_CONST               2 (40)
-                9 STORE_FAST               1 (y)
+    5           6 LOAD_CONST                2 (40)
+                9 STORE_FAST                1 (y)
 
     6           12 LOAD_FAST                0 (x)
                 15 LOAD_FAST                1 (y)
@@ -43,7 +43,7 @@ title: Ben Trevett | Python Disassembler
                 19 STORE_FAST               2 (z)
 
     7           22 LOAD_FAST                2 (z)
-		        25 RETURN_VALUE {% endhighlight %}
+                25 RETURN_VALUE {% endhighlight %}
 <p>
     You can also disassemble an enitre Python file via 'python -m dis file_name.py'.
     Each column of the disassembly output gives the following:</p>
@@ -116,10 +116,10 @@ title: Ben Trevett | Python Disassembler
     The output is:
     </p>
     {% highlight python %}
-    5           0 LOAD_GLOBAL              0 (len)
-                3 LOAD_CONST               1 (1)
-                6 LOAD_CONST               2 (2)
-                9 LOAD_CONST               3 (3)
+    5           0 LOAD_GLOBAL               0 (len)
+                3 LOAD_CONST                1 (1)
+                6 LOAD_CONST                2 (2)
+                9 LOAD_CONST                3 (3)
                 12 BUILD_LIST               3
                 15 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
                 18 STORE_FAST               0 (x)
@@ -142,4 +142,3 @@ title: Ben Trevett | Python Disassembler
     
     
     
-
