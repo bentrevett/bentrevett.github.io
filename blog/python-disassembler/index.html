@@ -43,7 +43,7 @@ title: Ben Trevett | Intro to Parsing I
                 19 STORE_FAST               2 (z)
 
     7           22 LOAD_FAST                2 (z)
-			25 RETURN_VALUE {% endhighlight %}
+		25 RETURN_VALUE {% endhighlight %}
 <p>
     You can also disassemble an enitre Python file via 'python -m dis file_name.py'.
     Each column of the disassembly output gives the following:</p>
@@ -71,8 +71,7 @@ title: Ben Trevett | Intro to Parsing I
     def foo():
         pass
     
-    print(foo.__code__)
-	    {% endhighlight %}
+    print(foo.__code__){% endhighlight %}
 <p>
 	This then prints out:</p>
     {% highlight python %}<code object foo at 0x109d419c0, file "example.py, line 1>{% endhighlight %}<p>
@@ -92,12 +91,10 @@ title: Ben Trevett | Intro to Parsing I
         x = 5
         def bar():
             pass
-        return len([x])
-    {% endhighlight %}<p>
+        return len([x]){% endhighlight %}<p>
     The code object of 'foo' will have the constants (co_consts) None and 5, the local variable names (co_varnames) 'bar' and 'x', and the available symbols (co_names) 'len'.</p>
     {% highlight python %}
     foo.__code__.co_consts == (None, 5)
     foo.__code__.co_varnames == ('bar', 'x')
-    foo.__code__.co_names == ('len',)
-    {% endhighlight %}
+    foo.__code__.co_names == ('len',){% endhighlight %}
     <h2>Understanding Disassembled Code</h2>
