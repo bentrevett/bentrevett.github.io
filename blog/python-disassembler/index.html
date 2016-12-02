@@ -268,7 +268,6 @@ title: Ben Trevett | Python Disassembler
              	44 RETURN_VALUE{% endhighlight %}
     <p>As we can see, using the range function has fewer instructions. 
     This is due to the range instruction being internally optimized for the underlying C code, the 'while' version requires repeated use of IN_PLACE_ADD, COMPARE_OP and POP_JUMP_IF_FALSE operations, which take more time.
-    <h2>Dynamic Lookup</h2>
     
     
     
