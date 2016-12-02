@@ -204,13 +204,12 @@ title: Ben Trevett | Python Disassembler
     </p>
     <h2>Loop Comparison</h2>
     <p>
-    In Python, we usually use 'range' create looping blocks. However, lets compare the efficiency to a 'while loop'.
+    In Python, we usually use 'for' to create looping blocks. However, lets compare the efficiency to a 'while' loop.
     That is, we are comparing</p>
     {% highlight python %}
     for i in range(x):
         pass{% endhighlight %}
-    <p>and</p>
-    {% highlight python %}
+    
     i = 0
     while i < x:
         i += 1{% endhighlight %}
@@ -220,56 +219,53 @@ title: Ben Trevett | Python Disassembler
     import timeit
     
     x = timeit.timeit('for i in range(x): pass', globals=dict(x=100))
-    print("range = {}".format(x))
+    print("for = {}".format(x))
     
     y = timeit.timeit('i = 0\nwhile i < x: i += 1', globals=dict(x=100))
     print("while = {}".format(y)){% endhighlight %}
     <p>This gives an output of:</p>
     {% highlight python %}
     range = 1.3247587516772623
-    while = 5.678850951312154
-    {% endhighlight %}
+    while = 5.678850951312154{% endhighlight %}
     <p>
     As you can see, the range function is much faster, but why? First, let's disassemble the code of the for loop.
     </p>
     {% highlight python %}
-      2           0 LOAD_CONST               1 (100)
-              3 STORE_FAST               0 (x)
+    2           0 LOAD_CONST               1 (100)
+              	3 STORE_FAST               0 (x)
 
-  3           6 SETUP_LOOP              20 (to 29)
-              9 LOAD_GLOBAL              0 (range)
-             12 LOAD_FAST                0 (x)
-             15 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
-             18 GET_ITER
-        >>   19 FOR_ITER                 6 (to 28)
-             22 STORE_FAST               1 (i)
-             25 JUMP_ABSOLUTE           19
-        >>   28 POP_BLOCK
-        >>   29 LOAD_CONST               0 (None)
-             32 RETURN_VALUE
-    {% endhighlight %}
+    3           6 SETUP_LOOP               20 (to 29)
+              	9 LOAD_GLOBAL              0 (range)
+             	12 LOAD_FAST               0 (x)
+             	15 CALL_FUNCTION           1 (1 positional, 0 keyword pair)
+             	18 GET_ITER
+           >>   19 FOR_ITER                6 (to 28)
+             	22 STORE_FAST              1 (i)
+             	25 JUMP_ABSOLUTE           19
+           >>   28 POP_BLOCK
+           >>   29 LOAD_CONST              0 (None)
+             	32 RETURN_VALUE{% endhighlight %}
     <p>Now for the while loop:</p>
     {% highlight python %}
-      2           0 LOAD_CONST               1 (100)
-              3 STORE_FAST               0 (x)
+    2           0 LOAD_CONST               1 (100)
+              	3 STORE_FAST               0 (x)
 
-  3           6 LOAD_CONST               2 (0)
-              9 STORE_FAST               1 (i)
+    3           6 LOAD_CONST               2 (0)
+              	9 STORE_FAST               1 (i)
 
-  4          12 SETUP_LOOP              26 (to 41)
-        >>   15 LOAD_FAST                1 (i)
-             18 LOAD_FAST                0 (x)
-             21 COMPARE_OP               0 (<)
-             24 POP_JUMP_IF_FALSE       40
-             27 LOAD_FAST                1 (i)
-             30 LOAD_CONST               3 (1)
-             33 INPLACE_ADD
-             34 STORE_FAST               1 (i)
-             37 JUMP_ABSOLUTE           15
-        >>   40 POP_BLOCK
-        >>   41 LOAD_CONST               0 (None)
-             44 RETURN_VALUE
-    {% endhighlight %}
+    4          	12 SETUP_LOOP              26 (to 41)
+           >>   15 LOAD_FAST                1 (i)
+             	18 LOAD_FAST                0 (x)
+             	21 COMPARE_OP               0 (<)
+             	24 POP_JUMP_IF_FALSE       40
+             	27 LOAD_FAST                1 (i)
+             	30 LOAD_CONST               3 (1)
+             	33 INPLACE_ADD
+             	34 STORE_FAST               1 (i)
+             	37 JUMP_ABSOLUTE           15
+           >>   40 POP_BLOCK
+           >>   41 LOAD_CONST               0 (None)
+             	44 RETURN_VALUE{% endhighlight %}
     <p>As we can see, using the range function has fewer instructions. 
     This is due to the range instruction being internally optimized for the underlying C code, the 'while' version requires repeated use of IN_PLACE_ADD, COMPARE_OP and POP_JUMP_IF_FALSE operations, which take more time.
     <h2>Dynamic Lookup</h2>
