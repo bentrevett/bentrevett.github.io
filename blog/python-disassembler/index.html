@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Ben Trevett | Intro to Parsing I
+title: Ben Trevett | Python Disassembler
 ---
 	<h1>Python Disassembler</h1>
 	
@@ -116,7 +116,7 @@ title: Ben Trevett | Intro to Parsing I
     The output is:
     </p>
     {% highlight python %}
-    5           0 LOAD_GLOBAL               0 (len)
+    6           0 LOAD_GLOBAL               0 (len)
                 3 LOAD_CONST                1 (1)
                 6 LOAD_CONST                2 (2)
                 9 LOAD_CONST                3 (3)
@@ -124,16 +124,157 @@ title: Ben Trevett | Intro to Parsing I
                 15 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
                 18 STORE_FAST               0 (x)
 
-    6           21 LOAD_FAST                0 (x)
+    7           21 LOAD_FAST                0 (x)
                 24 LOAD_GLOBAL              1 (y)
                 27 BINARY_ADD
                 28 STORE_FAST               1 (z)
 
-    7           31 LOAD_FAST                1 (z)
+    8           31 LOAD_FAST                1 (z)
                 34 RETURN_VALUE{% endhighlight %}
     <p>
-    The 'LOAD_GLOBAL' instruction is the 
+    The 'LOAD_GLOBAL' instruction on the first line is from the 6th line of the Python code. 
+    It loads the name at index 0. Recall this index is refering the co_names list associated with the disassembled code object.
+    The last column, len, is simply the human readable version to what the value at co_names[0] is.
     </p>
+    <p>
+    What does LOAD_GLOBAL do? It loads a global, in this case the global function (symbol) is len. Where does it load it to?
+    That is decided by how the cPython interpret is structured. It is entirely stack-based, which means any function or method symbols, constants or variable names are added to a stack.
+    Operations such as binary addition (via the BINARY_ADD bytecode instruction) will operate on this stack, popping two values and pushing the result back onto the stack.
+    Function call instructions (CALL_FUNCTION) will pop the function symbol and arguements from the stack, execute the function (which pushes a new frame onto the stack) and ultimately push the return value of the called function back onto the stack.
+    </p>
+    <p>
+    A few of the instructions understood by cPython are:</p>
+    <ul>
+    <li>'LOAD_FAST <index>': pushes the local ariable at the given index on to the stack</li>
+    <li>'STORE_GLOBAL <index>': pops the top of the stack into the variable with the name specificed at the given index</li>
+    <li>'BINARY_ADD': pops the top two values from the stack, adds them and pushes the result back on to the stack</li>
+    <li>'BUILD_LIST <size>': pops 'size' many elements off the stack and allocates a new list</li>
+    <li>'CALL FUNCTION <#arguments>': pops '#arguments' many arguments off the stack. The lower byte of this number specifies the number of positional arguments, the high byte the number of keyword arguments. Then pops the function symbol itself off the stack, makes the call and pushes the return value of the function back onto the stack.</li>
+    <li>'MAKE_FUNCTION <#arguments>': used to create a function object, consumes: all default arguments in positional order, the code object of the function and the qualified name of the function from the stack and then pushes the created function object onto the stack</li>
+    <li>'POP_TOP': pops (removes) the value at the top of the stack</li>
+    </ul>  
+    <h2>Examples</h2>
+    <p>
+    So, what's the point of all this? It can be used to investigating when the Python compiler performs optimizations and when it doesn't.
+    For example, take the following code:
+    </p>
+    {% highlight python %}
+    i = 1+2
+    f = 3.4 * 5.6
+    s = 'Hello, ' + 'World!'
+    
+    I = i * 3 * 4
+    F = f / 2 / 3
+    S = s + ' Bye!'{% endhighlight %}
+    <p>
+    Doing disassembly on this gives:
+    </p>
+    {% highlight python %}
+    1           0 LOAD_CONST                10 (3)
+                3 STORE_FAST                0 (i)
+
+    2           6 LOAD_CONST                11 (19.04)
+                9 STORE_FAST                1 (f)
+
+    3           12 LOAD_CONST               12 ('Hello, World!')
+                15 STORE_FAST               2 (s)
+
+    5           18 LOAD_FAST                0 (i)
+                21 LOAD_CONST               6 (3)
+                24 BINARY_MULTIPLY
+                25 LOAD_CONST               7 (4)
+                28 BINARY_MULTIPLY
+                29 STORE_FAST               3 (I)
+
+    6           32 LOAD_FAST                1 (f)
+                35 LOAD_CONST               1 (2)
+                38 BINARY_TRUE_DIVIDE
+                39 LOAD_CONST               6 (3)
+                42 BINARY_TRUE_DIVIDE
+                43 STORE_FAST               4 (F)
+
+    7           46 LOAD_FAST                2 (s)
+                49 LOAD_CONST               8 (' Bye!')
+                52 BINARY_ADD
+                53 STORE_FAST               5 (S)
+                56 LOAD_CONST               9 (None){% endhighlight %}
+    <p>
+    As you can see, the compiler will perform simple arithmetic operations and string concatenations at compile time.
+    However, as soon as a variable is involved, the compiler stops optimizing and loads the variable name and all constants individually, then performs the binary operations one at a time in the order of operation.
+    </p>
+    <h2>Loop Comparison</h2>
+    <p>
+    In Python, we usually use 'range' create looping blocks. However, lets compare the efficiency to a 'while loop'.
+    That is, we are comparing</p>
+    {% highlight python %}
+    for i in range(x):
+        pass{% endhighlight %}
+    <p>and</p>
+    {% highlight python %}
+    i = 0
+    while i < x:
+        i += 1{% endhighlight %}
+    <p>
+    To compare how long they take, we can use the 'timeit' module:</p>
+    {% highlight python %}
+    import timeit
+    
+    x = timeit.timeit('for i in range(x): pass', globals=dict(x=100))
+    print("range = {}".format(x))
+    
+    y = timeit.timeit('i = 0\nwhile i < x: i += 1', globals=dict(x=100))
+    print("while = {}".format(y)){% endhighlight %}
+    <p>This gives an output of:</p>
+    {% highlight python %}
+    range = 1.3247587516772623
+    while = 5.678850951312154
+    {% endhighlight %}
+    <p>
+    As you can see, the range function is much faster, but why? First, let's disassemble the code of the for loop.
+    </p>
+    {% highlight python %}
+      2           0 LOAD_CONST               1 (100)
+              3 STORE_FAST               0 (x)
+
+  3           6 SETUP_LOOP              20 (to 29)
+              9 LOAD_GLOBAL              0 (range)
+             12 LOAD_FAST                0 (x)
+             15 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+             18 GET_ITER
+        >>   19 FOR_ITER                 6 (to 28)
+             22 STORE_FAST               1 (i)
+             25 JUMP_ABSOLUTE           19
+        >>   28 POP_BLOCK
+        >>   29 LOAD_CONST               0 (None)
+             32 RETURN_VALUE
+    {% endhighlight %}
+    <p>Now for the while loop:</p>
+    {% highlight python %}
+      2           0 LOAD_CONST               1 (100)
+              3 STORE_FAST               0 (x)
+
+  3           6 LOAD_CONST               2 (0)
+              9 STORE_FAST               1 (i)
+
+  4          12 SETUP_LOOP              26 (to 41)
+        >>   15 LOAD_FAST                1 (i)
+             18 LOAD_FAST                0 (x)
+             21 COMPARE_OP               0 (<)
+             24 POP_JUMP_IF_FALSE       40
+             27 LOAD_FAST                1 (i)
+             30 LOAD_CONST               3 (1)
+             33 INPLACE_ADD
+             34 STORE_FAST               1 (i)
+             37 JUMP_ABSOLUTE           15
+        >>   40 POP_BLOCK
+        >>   41 LOAD_CONST               0 (None)
+             44 RETURN_VALUE
+    {% endhighlight %}
+    <p>As we can see, using the range function has fewer instructions. 
+    This is due to the range instruction being internally optimized for the underlying C code, the 'while' version requires repeated use of IN_PLACE_ADD, COMPARE_OP and POP_JUMP_IF_FALSE operations, which take more time.
+    <h2>Dynamic Lookup</h2>
+    
+    
     
     
     
