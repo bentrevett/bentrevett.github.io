@@ -46,7 +46,7 @@ title: Ben Trevett | Python Disassembler
                 25 RETURN_VALUE {% endhighlight %}
 <p>
     You can also disassemble an enitre Python file via 'python -m dis file_name.py'.
-    Each column of the disassembly output gives the following:</p>
+    Each column of the disassembly output gives the following:
     
         <li>The line in the Python file the disassembler is referring to</li>
         <li>The address of the bytecode instruction</li>
@@ -54,7 +54,6 @@ title: Ben Trevett | Python Disassembler
         <li>The index of arguement in the code block's name and constant table</li>
         <li>The human readable mapping from arguement index to the actual value name being referred to</li>
     	
-<p>
 	The 4th column is a little complex, but you just need to know that all 'code objects' in Python (that is a code block like a function) have their own internal name and constant tables.
 	These tables are just lists, where the constant table holds constants such a literal strings, numbers and special values such as 'None' that appear at least once in the code block. 
 	The name table holds a list of variable names. 
