@@ -39,3 +39,8 @@ footer {
     border-top: 1px solid #d5d5d5;
     font-size: .5em;
 }
+ul li {
+    font-size: 1.5em;
+    line-height: 1.4em;
+    color: #333;
+}
