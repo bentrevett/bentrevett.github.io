@@ -5,12 +5,12 @@ title: Ben Trevett | Python Disassembler
 	<h1>Python Disassembler</h1>
 	
 <p>The Python <code>dis</code> module disassembled Python code into the individual instructions executed by the cPython interpreter for each line.
-	Passing something to the 'dis.dis' function will return a human-readable representation of the disassembled bytecode. 
+	Passing something to the <code>dis.dis</code> function will return a human-readable representation of the disassembled bytecode. 
 	The is useful for analyzing and hand-tuning code for optimizations.</p>
 
 	<h2>Usage</h2>
 	
-<p>The 'dis.dis' function takes a function, method, class, module, code string, generator or byte sequence and prints out the disassembly of that code.
+<p>The <code>dis.dis</code> function takes a function, method, class, module, code string, generator or byte sequence and prints out the disassembly of that code.
 	In the case of the class, it will disassemble each method. For a module, it disassembles all functions in that module.
 </p>
 	{% highlight python %}
@@ -45,7 +45,7 @@ title: Ben Trevett | Python Disassembler
     7           22 LOAD_FAST                2 (z)
                 25 RETURN_VALUE {% endhighlight %}
 <p>
-    You can also disassemble an enitre Python file via 'python -m dis file_name.py'.
+	You can also disassemble an enitre Python file via <code>python -m dis file_name.py</code>.
 	Each column of the disassembly output gives the following:</p>
     <ol>
         <li>The line in the Python file the disassembler is referring to</li>
@@ -67,7 +67,7 @@ title: Ben Trevett | Python Disassembler
 
     <p>Code objects are the compiled representation of a piece of Python code. 
     This can then be understood by the cPython interpreter which uses the code objects to execute Python code line at a time.
-    You can use the '__code__' member of all functions and methods to generate the code object, for example:</p>
+	    You can use the <code>__code__</code> member of all functions and methods to generate the code object, for example:</p>
 
     {% highlight python %}
     def foo():
@@ -83,12 +83,12 @@ title: Ben Trevett | Python Disassembler
    Code objects provide all the information the Python interpreter needs to execute the code represented by the object.
 	    The code object has a few attributes, such as:</p>
    <ul>
-   <li>co_code: the actual bytecode byte string</li>
-   <li>co_consts: the constants available to the instructions, i.e. the constants table</li>
-   <li>co_names: the global symbols available to the instructions</li>
-   <li>co_nlocals: the number of local symbols (functions and variables></li>
-   <li>co_varnames: the list of local symbols (functions and variables</li>
-   <li>co_argcount: if the code object is a function, the number of arguments it takes</li>
+   <li><code>co_code</code>: the actual bytecode byte string</li>
+   <li><code>co_consts</code>: the constants available to the instructions, i.e. the constants table</li>
+   <li><code>co_names</code>: the global symbols available to the instructions</li>
+   <li><code>co_nlocals</code>: the number of local symbols (functions and variables></li>
+   <li><code>co_varnames</code>: the list of local symbols (functions and variables</li>
+   <li><code>co_argcount</code>: if the code object is a function, the number of arguments it takes</li>
    </ul><p>
 	    For example, for the following function:</p>
    {% highlight python %}
@@ -97,14 +97,14 @@ title: Ben Trevett | Python Disassembler
         def bar():
             pass
         return len([x]){% endhighlight %}<p>
-    The code object of 'foo' will have the constants (co_consts) None and 5, the local variable names (co_varnames) 'bar' and 'x', and the available symbols (co_names) 'len'.</p>
+    The code object of <code>foo</code> will have the constants (<code>co_consts</code>) <code>None</code> and 5, the local variable names (<code>co_varnames</code>) <code>bar</code> and <code>x</code>, and the available symbols (<code>co_names</code>) <code>len</code>.</p>
     {% highlight python %}
     foo.__code__.co_consts == (None, 5)
     foo.__code__.co_varnames == ('bar', 'x')
     foo.__code__.co_names == ('len',){% endhighlight %}
     <h2>Understanding Disassembled Code</h2>
     <p>
-    Now we understand code objects, we can look at the output of 'dis.dis' to understand it better. Let's take a look at the output of the disassembly of the following function:
+    Now we understand code objects, we can look at the output of <code>dis.dis</code> to understand it better. Let's take a look at the output of the disassembly of the following function:
     </p>
     {% highlight python %}
     import dis
@@ -137,26 +137,26 @@ title: Ben Trevett | Python Disassembler
     8           31 LOAD_FAST                1 (z)
                 34 RETURN_VALUE{% endhighlight %}
     <p>
-    The 'LOAD_GLOBAL' instruction on the first line is from the 6th line of the Python code. 
-    It loads the name at index 0. Recall this index is refering the co_names list associated with the disassembled code object.
-    The last column, len, is simply the human readable version to what the value at co_names[0] is.
+    The <code>LOAD_GLOBAL</code> instruction on the first line is from the 6th line of the Python code. 
+    It loads the name at index 0. Recall this index is refering the <code>co_names</code> list associated with the disassembled code object.
+    The last column, <code>len</code>, is simply the human readable version to what the value at <code>co_names[0]</code> is.
     </p>
     <p>
-    What does LOAD_GLOBAL do? It loads a global, in this case the global function (symbol) is len. Where does it load it to?
+    What does <code>LOAD_GLOBAL</code> do? It loads a global, in this case the global function (symbol) is <code>len</code>. Where does it load it to?
     That is decided by how the cPython interpret is structured. It is entirely stack-based, which means any function or method symbols, constants or variable names are added to a stack.
-    Operations such as binary addition (via the BINARY_ADD bytecode instruction) will operate on this stack, popping two values and pushing the result back onto the stack.
-    Function call instructions (CALL_FUNCTION) will pop the function symbol and arguements from the stack, execute the function (which pushes a new frame onto the stack) and ultimately push the return value of the called function back onto the stack.
+    Operations such as binary addition (via the <code>BINARY_ADD</code> bytecode instruction) will operate on this stack, popping two values and pushing the result back onto the stack.
+    Function call instructions (<code>CALL_FUNCTION</code>) will pop the function symbol and arguements from the stack, execute the function (which pushes a new frame onto the stack) and ultimately push the return value of the called function back onto the stack.
     </p>
     <p>
     A few of the instructions understood by cPython are:</p>
     <ul>
-    <li>'LOAD_FAST (index)': pushes the local ariable at the given index on to the stack</li>
-    <li>'STORE_GLOBAL (index)': pops the top of the stack into the variable with the name specificed at the given index</li>
-    <li>'BINARY_ADD': pops the top two values from the stack, adds them and pushes the result back on to the stack</li>
-    <li>'BUILD_LIST (size)': pops 'size' many elements off the stack and allocates a new list</li>
-    <li>'CALL FUNCTION (#arguments)': pops '#arguments' many arguments off the stack. The lower byte of this number specifies the number of positional arguments, the high byte the number of keyword arguments. Then pops the function symbol itself off the stack, makes the call and pushes the return value of the function back onto the stack.</li>
-    <li>'MAKE_FUNCTION (#arguments)': used to create a function object, consumes: all default arguments in positional order, the code object of the function and the qualified name of the function from the stack and then pushes the created function object onto the stack</li>
-    <li>'POP_TOP': pops (removes) the value at the top of the stack</li>
+    <li><code>LOAD_FAST (index)</code>: pushes the local ariable at the given index on to the stack</li>
+    <li><code>STORE_GLOBAL (index)</code>: pops the top of the stack into the variable with the name specificed at the given index</li>
+    <li><code>BINARY_ADD</code>: pops the top two values from the stack, adds them and pushes the result back on to the stack</li>
+    <li><code>BUILD_LIST (size)</code>: pops 'size' many elements off the stack and allocates a new list</li>
+    <li><code>CALL FUNCTION (#arguments)</code>: pops '#arguments' many arguments off the stack. The lower byte of this number specifies the number of positional arguments, the high byte the number of keyword arguments. Then pops the function symbol itself off the stack, makes the call and pushes the return value of the function back onto the stack.</li>
+	<li><code>MAKE_FUNCTION (#arguments)</code>: used to create a function object, consumes: all default arguments in positional order, the code object of the function and the qualified name of the function from the stack and then pushes the created function object onto the stack</li>
+    <li><code>POP_TOP</code>: pops the value at the top of the stack</li>
     </ul>  
     <h2>Examples</h2>
     <p>
@@ -209,7 +209,7 @@ title: Ben Trevett | Python Disassembler
     </p>
     <h2>Loop Comparison</h2>
     <p>
-    In Python, we usually use 'for' to create looping blocks. However, lets compare the efficiency to a 'while' loop.
+    In Python, we usually use <code>for</code> to create looping blocks. However, lets compare the efficiency to a <code>while</code> loop.
     That is, we are comparing</p>
     {% highlight python %}
     for i in range(x):
@@ -219,7 +219,7 @@ title: Ben Trevett | Python Disassembler
     while i < x:
         i += 1{% endhighlight %}
     <p>
-    To compare how long they take, we can use the 'timeit' module:</p>
+    To compare how long they take, we can use the <code>timeit</code> module:</p>
     {% highlight python %}
     import timeit
     
@@ -233,7 +233,7 @@ title: Ben Trevett | Python Disassembler
     for = 1.3247587516772623
     while = 5.678850951312154{% endhighlight %}
     <p>
-    As you can see, the range function is much faster, but why? First, let's disassemble the code of the for loop.
+    As you can see, the <code>for</code> function is much faster, but why? First, let's disassemble the code of the <code>for</code> loop.
     </p>
     {% highlight python %}
     2           0 LOAD_CONST               1 (100)
@@ -250,7 +250,7 @@ title: Ben Trevett | Python Disassembler
            >>   28 POP_BLOCK
            >>   29 LOAD_CONST              0 (None)
              	32 RETURN_VALUE{% endhighlight %}
-    <p>Now for the while loop:</p>
+    <p>Now for the <code>while</code> loop:</p>
     {% highlight python %}
     2           0 LOAD_CONST               1 (100)
               	3 STORE_FAST               0 (x)
@@ -271,8 +271,8 @@ title: Ben Trevett | Python Disassembler
            >>   40 POP_BLOCK
            >>   41 LOAD_CONST               0 (None)
              	44 RETURN_VALUE{% endhighlight %}
-    <p>As we can see, using the range function has fewer instructions. 
-    This is due to the range instruction being internally optimized for the underlying C code, the 'while' version requires repeated use of IN_PLACE_ADD, COMPARE_OP and POP_JUMP_IF_FALSE operations, which take more time.
+    <p>As we can see, using the <code>for</code> function has fewer instructions. 
+    This is due to the range instruction being internally optimized for the underlying C code, the <code>while</code> version requires repeated use of <code>IN_PLACE_ADD</code>, <code>COMPARE_OP</code> and <code>POP_JUMP_IF_FALSE</code> operations, which take more time.
 	    </p>
     
     
