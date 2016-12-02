@@ -44,3 +44,8 @@ div li {
     line-height: 1.4em;
     color: #333;
 }
+
+code { 
+    font-family: Consolas, monospace; 
+    font-size: inherit; 
+}
