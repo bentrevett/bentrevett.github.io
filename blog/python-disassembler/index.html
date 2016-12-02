@@ -1,0 +1,105 @@
+---
+layout: default
+title: Ben Trevett | Intro to Parsing I
+---
+
+	<h1>Intro to Parsing I</h1>
+	<h2>Background</h2>
+	<p>Here is some text in a paragraph
+	{% highlight python %}
+	def foo:
+	print("hello world!")
+	return 0{% endhighlight %}
+	The code should have the endhighlight on the same line as the last line.</p>
+	<h1>Python Disassembler</h1>
+	<p>The Python 'dis' module disassembled Python code into the individual instructions executed by the cPython interpreter for each line.
+	Passing something to the 'dis.dis' function will return a human-readable representation of the disassembled bytecode. 
+	The is useful for analyzing and hand-tuning code for optimizations.</p>
+	<h2>Usage</h2>
+	<p>The 'dis.dis' function takes a function, method, class, module, code string, generator or byte sequence and prints out the disassembly of that code.
+	In the case of the class, it will disassemble each method. For a module, it disassembles all functions in that module.
+	{% highlight python %}
+	import dis
+       
+    def foo():
+        x = 10
+        y = 40
+        z = x + y 
+        return z
+
+    def main():
+        dis.dis(foo)
+    
+    if __name__ == '__main__':
+        main(){% endhighlight %}
+    This will print:
+    {% highlight python %}
+    4           0 LOAD_CONST               1 (10)
+                3 STORE_FAST               0 (x)
+
+    5           6 LOAD_CONST               2 (40)
+                9 STORE_FAST               1 (y)
+
+    6           12 LOAD_FAST                0 (x)
+                15 LOAD_FAST                1 (y)
+                18 BINARY_ADD
+                19 STORE_FAST               2 (z)
+
+    7           22 LOAD_FAST                2 (z)
+                25 RETURN_VALUE {% endhighlight %}
+    You can also disassemble an enitre Python file via 'python -m dis file_name.py'.
+    Each column of the disassembly output gives the following:
+    <ol>
+        <li>The line in the Python file the disassembler is referring to</li>
+        <li>The address of the bytecode instruction</li>
+        <li>The name of the bytecode instruction</li>
+        <li>The index of arguement in the code block's name and constant table</li>
+        <li>The human readable mapping from arguement index to the actual value name being referred to</li>
+    </ol>	
+	The 4th column is a little complex, but you just need to know that all 'code objects' in Python (that is a code block like a function) have their own internal name and constant tables.
+	These tables are just lists, where the constant table holds constants such a literal strings, numbers and special values such as 'None' that appear at least once in the code block. 
+	The name table holds a list of variable names. 
+	These variables names are keys into a dictionary that maps symbols to actual values. 
+	The reason why instruction arguments are indices into tables and not that values into tables is that aarguments can then be uniform length (always two bytes). 
+	Storing variable length strings in the bytecode directly makes advancing the program counter a lot more complicated. 
+    </p>
+    <h2>Code Objects</h2>
+    <p>Code objects are the compiled representation of a piece of Python code. 
+    This can then be understood by the cPython interpreter which uses the code objects to execute Python code line at a time.
+    You can use the '__code__' member of all functions and methods to generate the code object, for example:
+    {% highlight python %}
+    def foo():
+        pass
+    
+    print(foo.__code__)
+    {% endhighlight %}
+    This then prints out:
+    {% highlight python %}<code object foo at 0x109d419c0, file "example.py, line 1>{% endhighlight %}
+   Code objects provide all the information the Python interpreter needs to execute the code represented by the object.
+   The code object has a few attributes, such as:
+   <ul>
+   <li>co_code: the actual bytecode byte string</li>
+   <li>co_consts: the constants available to the instructions, i.e. the constants table</li>
+   <li>co_names: the global symbols available to the instructions</li>
+   <li>co_nlocals: the number of local symbols (functions and variables></li>
+   <li>co_varnames: the list of local symbols (functions and variables</li>
+   <li>co_argcount: if the code object is a function, the number of arguments it takes</li>
+   </ul>
+   For example, for the following function:
+   {% highlight python %}
+    def foo():
+        x = 5
+        def bar():
+            pass
+        return len([x])
+    {% endhighlight %}
+    The code object of 'foo' will have the constants (co_consts) None and 5.
+    The local variable names (co_varnames) 'bar' and 'x'.
+    The available symbols (co_names) 'len'.
+    {% highlight python %}
+    foo.__code__.co_consts == (None, 5)
+    foo.__code__.co_varnames == ('bar', 'x')
+    foo.__code__.co_names == ('len',)
+    {% endhighlight %}
+    </p>
+    <h2>Understanding Disassembled Code</h2>
