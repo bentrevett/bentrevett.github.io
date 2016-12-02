@@ -74,7 +74,7 @@ title: Ben Trevett | Python Disassembler
     print(foo.__code__){% endhighlight %}
 <p>
 	This then prints out:</p>
-    {% highlight python %}<code object foo at 0x109d419c0, file "example.py, line 1>{% endhighlight %}<p>
+    {% highlight python %}<code object foo at 0x109d419c0, file "example.py", line 1>{% endhighlight %}<p>
    Code objects provide all the information the Python interpreter needs to execute the code represented by the object.
 	    The code object has a few attributes, such as:</p>
    <ul>
@@ -225,7 +225,7 @@ title: Ben Trevett | Python Disassembler
     print("while = {}".format(y)){% endhighlight %}
     <p>This gives an output of:</p>
     {% highlight python %}
-    range = 1.3247587516772623
+    for = 1.3247587516772623
     while = 5.678850951312154{% endhighlight %}
     <p>
     As you can see, the range function is much faster, but why? First, let's disassemble the code of the for loop.
