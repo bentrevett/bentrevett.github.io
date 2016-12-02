@@ -145,12 +145,12 @@ title: Ben Trevett | Python Disassembler
     <p>
     A few of the instructions understood by cPython are:</p>
     <ul>
-    <li>'LOAD_FAST <index>': pushes the local ariable at the given index on to the stack</li>
-    <li>'STORE_GLOBAL <index>': pops the top of the stack into the variable with the name specificed at the given index</li>
+    <li>'LOAD_FAST (index)': pushes the local ariable at the given index on to the stack</li>
+    <li>'STORE_GLOBAL (index)': pops the top of the stack into the variable with the name specificed at the given index</li>
     <li>'BINARY_ADD': pops the top two values from the stack, adds them and pushes the result back on to the stack</li>
-    <li>'BUILD_LIST <size>': pops 'size' many elements off the stack and allocates a new list</li>
-    <li>'CALL FUNCTION <#arguments>': pops '#arguments' many arguments off the stack. The lower byte of this number specifies the number of positional arguments, the high byte the number of keyword arguments. Then pops the function symbol itself off the stack, makes the call and pushes the return value of the function back onto the stack.</li>
-    <li>'MAKE_FUNCTION <#arguments>': used to create a function object, consumes: all default arguments in positional order, the code object of the function and the qualified name of the function from the stack and then pushes the created function object onto the stack</li>
+    <li>'BUILD_LIST (size)': pops 'size' many elements off the stack and allocates a new list</li>
+    <li>'CALL FUNCTION (#arguments)': pops '#arguments' many arguments off the stack. The lower byte of this number specifies the number of positional arguments, the high byte the number of keyword arguments. Then pops the function symbol itself off the stack, makes the call and pushes the return value of the function back onto the stack.</li>
+    <li>'MAKE_FUNCTION (#arguments)': used to create a function object, consumes: all default arguments in positional order, the code object of the function and the qualified name of the function from the stack and then pushes the created function object onto the stack</li>
     <li>'POP_TOP': pops (removes) the value at the top of the stack</li>
     </ul>  
     <h2>Examples</h2>
@@ -221,7 +221,7 @@ title: Ben Trevett | Python Disassembler
     x = timeit.timeit('for i in range(x): pass', globals=dict(x=100))
     print("for = {}".format(x))
     
-    y = timeit.timeit('i = 0\nwhile i < x: i += 1', globals=dict(x=100))
+    y = timeit.timeit("i = 0\nwhile i < x: i += 1", globals=dict(x=100))
     print("while = {}".format(y)){% endhighlight %}
     <p>This gives an output of:</p>
     {% highlight python %}
