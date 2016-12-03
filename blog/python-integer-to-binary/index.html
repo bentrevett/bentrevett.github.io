@@ -5,7 +5,7 @@ title: Ben Trevett | Integer to Binary in Python
 
 	<h1>Integer to Binary in Python</h1>
 	<p>While looking online I found a neat way to convert integers to a binary representation in Python without using the built in <code>bin()</code> function.
-  This will turn any integer into an array consisting of the binary digits with the LSB on the leftmost side.</p>
+  This will turn any integer into an array consisting of the binary digits with the LSB on the leftmost side. Here's the code:</p>
 	{% highlight python %}
   def binary_encode(i, num_digits):
   return [i >> d & 1 for d in range(num_digits)]{% endhighlight %}
