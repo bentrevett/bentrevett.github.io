@@ -8,7 +8,7 @@ title: Ben Trevett | Integer to Binary in Python
   This will turn any integer into an array consisting of the binary digits with the LSB on the leftmost side. Here's the code:</p>
 	{% highlight python %}
   def binary_encode(i, num_digits):
-  return [i >> d & 1 for d in range(num_digits)]{% endhighlight %}
+  	return [i >> d & 1 for d in range(num_digits)]{% endhighlight %}
 	<h2>How it Works</h2>
   <p>Let's consider an example where you want to encode the decimal number 50 into 10 binary digits as 0000110010 (LSB on the right this time, as convention).
     This involves checking if the LSB is 1, done by AND'ing the number with 1, and producing a 1 if it is and a 0 if it is not. Repeat this for the number of binary bits required.
