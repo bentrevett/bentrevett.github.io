@@ -13,7 +13,7 @@ title: Ben Trevett | Integer to Binary in Python
   <p>Let's consider an example where you want to encode the decimal number 50 into 10 binary digits as 0000110010 (LSB on the right this time, as convention).
     This involves checking if the LSB is 1, done by AND'ing the number with 1, and producing a 1 if it is and a 0 if it is not. Repeat this for the number of binary bits required.
     I've probably expained that terribly, so lets show it step-by-step:</p>
-  <ol>
+  <ul>
     <li><code>50 >> 0 = 50 == 0000110010</code>, AND with 1 to get 0.</li>
     <li><code>50 >> 1 = 25 == 0000011001</code>, AND with 1 to get 1</li>
     <li><code>50 >> 2 = 12 == 0000001100</code>, AND with 1 to get 0</li>
@@ -21,5 +21,5 @@ title: Ben Trevett | Integer to Binary in Python
     <li><code>50 >> 4 = 3&nbsp  == 0000000011</code>, AND with 1 to get 1</li>
     <li><code>50 >> 5 = 1&nbsp  == 0000000001</code>, AND with 1 to get 1</li>
     <li><code>50 >> 6 = 0&nbsp == 0000000000</code>, AND with 1 to get 0</li>
-  </ol>
+  </ul>
   <p>Therefore, <code>binary_encode(50,10) == [0,1,0,0,1,1,0,0,0,0]</code>.</p>
