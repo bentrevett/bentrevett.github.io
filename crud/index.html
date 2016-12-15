@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Countries CRUD</title>
+  <title>CRUD</title>
   <style>
     input[type='submit'], button, [aria-label]{
       cursor: pointer;
@@ -15,7 +15,7 @@
 <body>
 
 <form action="javascript:void(0);" method="POST" onsubmit="app.Add()"> 
-  <input type="text" id="add-name" placeholder="New country">
+  <input type="text" id="add-name" placeholder="New item">
   <input type="submit" value="Add">
 </form>
 
@@ -32,20 +32,20 @@
   <tr>
     <th>Name</th>
   </tr>
-    <tbody id="countries">
+    <tbody id="items">
     </tbody>
 </table>
 
 <script>
 var app = new function() {
-  this.el = document.getElementById('countries');
-  this.countries = ['France', 'Germany', 'England', 'Spain', 'Belgium', 'Italy', 'Portugal', 'Irland', 'Luxembourg'];
+  this.el = document.getElementById('items');
+  this.items = ['France', 'Germany', 'England', 'Spain', 'Belgium', 'Italy', 'Portugal', 'Irland', 'Luxembourg'];
   this.Count = function(data) {
     var el   = document.getElementById('counter');
-    var name = 'country';
+    var name = 'item';
     if (data) {
       if (data > 1) {
-        name = 'countries';
+        name = 'items';
       }
       el.innerHTML = data + ' ' + name ;
     } else {
@@ -55,25 +55,25 @@ var app = new function() {
   
   this.FetchAll = function() {
     var data = '';
-    if (this.countries.length > 0) {
-      for (i = 0; i < this.countries.length; i++) {
+    if (this.items.length > 0) {
+      for (i = 0; i < this.items.length; i++) {
         data += '<tr>';
-        data += '<td>' + this.countries[i] + '</td>';
+        data += '<td>' + this.items[i] + '</td>';
         data += '<td><button onclick="app.Edit(' + i + ')">Edit</button></td>';
         data += '<td><button onclick="app.Delete(' + i + ')">Delete</button></td>';
         data += '</tr>';
       }
     }
-    this.Count(this.countries.length);
+    this.Count(this.items.length);
     return this.el.innerHTML = data;
   };
   this.Add = function () {
     el = document.getElementById('add-name');
     // Get the value
-    var country = el.value;
+    var item = el.value;
     if (country) {
       // Add the new value
-      this.countries.push(country.trim());
+      this.items.push(country.trim());
       // Reset input value
       el.value = '';
       // Dislay the new list
@@ -83,16 +83,16 @@ var app = new function() {
   this.Edit = function (item) {
     var el = document.getElementById('edit-name');
     // Display value in the field
-    el.value = this.countries[item];
+    el.value = this.items[item];
     // Display fields
     document.getElementById('spoiler').style.display = 'block';
     self = this;
     document.getElementById('saveEdit').onsubmit = function() {
       // Get value
-      var country = el.value;
+      var item = el.value;
       if (country) {
         // Edit value
-        self.countries.splice(item, 1, country.trim());
+        self.items.splice(item, 1, country.trim());
         // Display the new list
         self.FetchAll();
         // Hide fields
