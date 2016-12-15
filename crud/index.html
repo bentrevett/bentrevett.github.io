@@ -71,9 +71,9 @@ var app = new function() {
     el = document.getElementById('add-name');
     // Get the value
     var item = el.value;
-    if (country) {
+    if (item) {
       // Add the new value
-      this.items.push(country.trim());
+      this.items.push(item.trim());
       // Reset input value
       el.value = '';
       // Dislay the new list
@@ -90,9 +90,9 @@ var app = new function() {
     document.getElementById('saveEdit').onsubmit = function() {
       // Get value
       var item = el.value;
-      if (country) {
+      if (item) {
         // Edit value
-        self.items.splice(item, 1, country.trim());
+        self.items.splice(item, 1, item.trim());
         // Display the new list
         self.FetchAll();
         // Hide fields
@@ -102,7 +102,7 @@ var app = new function() {
   };
   this.Delete = function (item) {
     // Delete the current row
-    this.countries.splice(item, 1);
+    this.items.splice(item, 1);
     // Display the new list
     this.FetchAll();
   };
