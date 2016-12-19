@@ -76,9 +76,6 @@ function morse_to_text(code) {
 
 function translate(string) {
   text_output.innerHTML = string.split(' ').map(morse_to_text).join(' ');
-  if(text_output.innerHTML === 'B O O'){
-      window.location = "bentrevett.com/spookytext";
-  }
 }
 
 window.onkeydown = function(e) {
@@ -86,6 +83,9 @@ window.onkeydown = function(e) {
     pressed = e.timeStamp;
     duration_unpressed = (e.timeStamp - unpressed) / 1000;
     if (duration_unpressed > 0.2) {
+        if(text_output.innerHTML === 'B O O'){
+            window.location = "bentrevett.com/spookytext";
+        }
       morse_output.innerHTML += ' ';
       translate(morse_output.innerHTML);
     }
