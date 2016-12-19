@@ -2,117 +2,123 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Countries CRUD</title>
-  <style>
-    input[type='submit'], button, [aria-label]{
-      cursor: pointer;
-    }
-    #spoiler{
-      display: none;
-    }
-  </style>
+
 </head>
 <body>
-
-<form action="javascript:void(0);" method="POST" onsubmit="app.Add()"> 
-  <input type="text" id="add-name" placeholder="New country">
-  <input type="submit" value="Add">
-</form>
-
-<div id="spoiler" role="aria-hidden">
-  <form action="javascript:void(0);" method="POST" id="saveEdit">
-    <input type="text" id="edit-name">
-    <input type="submit" value="Edit" /> <a onclick="CloseInput()" aria-label="Close">&#10006;</a>
-  </form>
-</div>
-
-<p id="counter"></p>
-
-<table>
-  <tr>
-    <th>Name</th>
-  </tr>
-    <tbody id="countries">
-    </tbody>
-</table>
-
+<canvas id="canvas" width="300" height="300"></canvas>
 <script>
-var app = new function() {
-  this.el = document.getElementById('countries');
-  this.countries = ['France', 'Germany', 'England', 'Spain', 'Belgium', 'Italy', 'Portugal', 'Irland', 'Luxembourg'];
-  this.Count = function(data) {
-    var el   = document.getElementById('counter');
-    var name = 'country';
-    if (data) {
-      if (data > 1) {
-        name = 'countries';
-      }
-      el.innerHTML = data + ' ' + name ;
-    } else {
-      el.innerHTML = 'No ' + name;
-    }
-  };
-  
-  this.FetchAll = function() {
-    var data = '';
-    if (this.countries.length > 0) {
-      for (i = 0; i < this.countries.length; i++) {
-        data += '<tr>';
-        data += '<td>' + this.countries[i] + '</td>';
-        data += '<td><button onclick="app.Edit(' + i + ')">Edit</button></td>';
-        data += '<td><button onclick="app.Delete(' + i + ')">Delete</button></td>';
-        data += '</tr>';
-      }
-    }
-    this.Count(this.countries.length);
-    return this.el.innerHTML = data;
-  };
-  this.Add = function () {
-    el = document.getElementById('add-name');
-    // Get the value
-    var country = el.value;
-    if (country) {
-      // Add the new value
-      this.countries.push(country.trim());
-      // Reset input value
-      el.value = '';
-      // Dislay the new list
-      this.FetchAll();
-    }
-  };
-  this.Edit = function (item) {
-    var el = document.getElementById('edit-name');
-    // Display value in the field
-    el.value = this.countries[item];
-    // Display fields
-    document.getElementById('spoiler').style.display = 'block';
-    self = this;
-    document.getElementById('saveEdit').onsubmit = function() {
-      // Get value
-      var country = el.value;
-      if (country) {
-        // Edit value
-        self.countries.splice(item, 1, country.trim());
-        // Display the new list
-        self.FetchAll();
-        // Hide fields
-        CloseInput();
-      }
-    }
-  };
-  this.Delete = function (item) {
-    // Delete the current row
-    this.countries.splice(item, 1);
-    // Display the new list
-    this.FetchAll();
-  };
-  
+//initialise canvas
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+//initialise snake variables
+var direction = "right";
+var snake_array = [];
+var dx,dy,tail,food_position,points;
+
+function draw_snake(){
+	direction = "right"
+    snake_array=[];
+    //makes snake body which is an array of length 5
+    for(var i = 4; i>=0; i--)
+	{
+    	//each element of array is an object with x and y values
+		snake_array.push({x: i, y:0});
+	}
 }
-app.FetchAll();
-function CloseInput() {
-  document.getElementById('spoiler').style.display = 'none';
+function init(){
+    dx=5; //starts at 5 because that's the position of snake's head
+    dy=0;
+    points=0;
+    draw_snake(); //draw the initial snake
+    draw_food(); //draws the food
+    //run draw() every 75ms
+    if(typeof game_loop != "undefined") clearInterval(game_loop);
+		game_loop = setInterval(draw, 75);
 }
+init(); //stars the game, run init to restart game when collision with self
+
+//draw the game constantly
+function draw() {
+    //clears canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+		ctx.rect(0,0,canvas.width,canvas.height);
+		ctx.fillStyle="grey";
+		ctx.fill();
+		ctx.closePath();
+    
+    
+    //x and y co-ordinates of snake's head
+    dx=snake_array[0].x;
+    dy=snake_array[0].y;
+    
+    //changes snake's direction
+    if (direction == "left") dx--;
+    else if (direction == "right") dx++;
+    else if (direction == "up") dy--;
+    else if (direction == "down") dy++;
+    
+    //check for contact with walls or self, begin game again if so
+    if(dx==-1||dx==canvas.width/10||dy==-1||dy==canvas.height/10||collision(dx,dy,snake_array)){
+        init();
+    }
+    
+    //if head is same position as food, grow 1 bigger
+    //snake updated by constantly removing tail and adding to head
+    if(dx==food_position.x && dy==food_position.y){
+    	tail = {x: dx,y:dy};
+    	draw_food();
+        points++;
+    }
+    else{
+    	tail = snake_array.pop();
+    	tail.x=dx;
+    	tail.y=dy;
+    }
+    snake_array.unshift(tail);
+    
+    //draw food
+    ctx.beginPath();
+    ctx.rect(food_position.x*10,food_position.y*10,10,10);
+    ctx.fillStyle="red";
+    ctx.fill();
+    ctx.closePath();
+    
+    //draw snake's body
+    for(var i=0;i<snake_array.length;i++){
+    	ctx.beginPath();
+		ctx.rect(snake_array[i].x*10,snake_array[i].y*10,10,10);
+		ctx.fillStyle="blue";
+		ctx.fill();
+		ctx.closePath();
+    }
+    ctx.fillStyle="black";
+    ctx.fillText("Points: "+points,5,canvas.height-5);
+}
+
+//draws the food for the snake to eat in a random square
+function draw_food(){
+	food_position = {x: Math.floor(Math.random()*(canvas.width-10)/10),
+                     y: Math.floor(Math.random()*(canvas.height-10)/10)};
+}
+
+//checks for collision with self by checking if current x and y positions are positions of any element in the snake_array body
+function collision(x,y,array){
+	for(var i=0;i<array.length;i++){
+    	if(array[i].x==x&&array[i].y==y)
+            return true;
+    }
+    return false;
+}
+
+//listen for key presses
+document.addEventListener('keydown', function (e) {
+    if (e.keyCode == "37" && direction != "right") direction = "left";
+    if (e.keyCode == "38" && direction != "down") direction = "up";
+    if (e.keyCode == "39" && direction != "left") direction = "right";
+    if (e.keyCode == "40" && direction != "up") direction = "down";
+})
 </script>
 </body>
 </html>
