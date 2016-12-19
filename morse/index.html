@@ -87,6 +87,10 @@ window.onkeydown = function(e) {
       translate(morse_output.innerHTML);
     }
   }
+  else if (e.which === 8){
+    morse_output.innerHTML = '';
+    text_output.innerHTML = '';
+  }
 };
 
 window.onkeyup = function(e) {
