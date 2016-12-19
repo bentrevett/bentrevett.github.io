@@ -37,7 +37,7 @@ function draw(){
     var text = characters[Math.floor(Math.random()*characters.length)];
     cxt.fillText(text,i*font_size,drops[i]*font_size);
     
-    if(drops[i]*font_size>c.height && Math.random() >0.975)
+    if(&& Math.random() >0.975)
       drops[i]=0;
     
     //increment y coordinate
@@ -45,7 +45,7 @@ function draw(){
 }
   
 }
-setInterval(draw,50);
+setInterval(draw,10);
         </script>
 
     </body>
