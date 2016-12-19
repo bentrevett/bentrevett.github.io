@@ -11,65 +11,50 @@
 
     <body>
         //initialize canvas in html
-        <canvas id="canvas"></canvas>
+        <canvas id="c"></canvas>
     
         <script>
-            //initialize canvas in js
-            var canvas = document.getElementById("canvas");
-            var ctx = canvas.getContext("2d");
-            
-            var font_size = 10
-            
-            //number of columns
-            var columns = canvas.width/font_size;
-            
-            //an array of drops, one per column
-            var drops = []
-	    
-	        for(var x = 0; x < columns; x++)
-		        drops[x] = 1; 
+           var c = document.getElementById('c');
+var cxt = c.getContext("2d");
 
-            
-            //fit canvas to full screen
-            canvas.height = window.innerHeight;
-            canvas.width = window.innerWidth;
-            
-            //characters to generate
-            var chinese = "田由甲申甴电甶男甸甹町画甼甽甾甿畀畁畂畃畄畅畆畇畈畉畊畋界畍畎畏畐畑";
-            
-            //split the characters into an array
-            chinese = chinese.split("");
-            
-            function draw(){
-                //set canvas to have a black background
-                ctx.fillStyle="black"
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                //getting the green font
-                ctx.fillStyle = "green";
-                ctx.font = font_size+"px arial"
-                
-                //looping over drops
-                for(var i = 0; i < drops.length; i++){
-                    
-                    //getting a random char
-                    var text = chinese[Math.floor(Math.random()*chinese.length)];
-                    
-                    //x = i*font_size, y = value of drops[i]*font_size
-                    ctx.fillText(text,i*font_size,drops[i]*font_size);
-                    
-                    //sending the drop back to the top randomly after it has crossed the screen
-		            //adding a randomness to the reset to make the drops scattered on the Y axis
-		            if(drops[i]*font_size > c.height && Math.random() > 0.975){
-			            drops[i] = 0;
-                    }
-                    
-                    //incrementing Y coordinate
-		            drops[i]++;
-                }
-            }
-            
-            setInterval(draw,50);
+c.width = window.innerWidth;
+c.height = window.innerHeight;
+
+
+
+var chinese = "田由甲申甴电甶男甸甹町画甼甽甾甿畀畁畂畃畄畅畆畇畈畉畊畋界畍畎畏畐畑";
+chinese = chinese.split("");
+
+var font_size =10;
+var columns = c.width/font_size; 
+
+var drops = [];
+
+for(var x=0;x<columns;x++){
+  drops[x]=1;
+}
+
+function draw(){
+  cxt.fillStyle="rgba(0,0,0,0.05)";
+  cxt.fillRect(0,0,c.width,c.height);
+  
+  cxt.fillStyle = "#0F0";
+  cxt.font = font_size+'px arial';
+  
+  
+  for(var i=0;i<drops.length;i++){
+    var text = chinese[Math.floor(Math.random()*chinese.length)];
+    cxt.fillText(text,i*font_size,drops[i]*font_size);
+    
+    if(drops[i]*font_size>c.height && Math.random() >0.975)
+      drops[i]=0;
+    
+    //increment y coordinate
+    drops[i]++;
+}
+  
+}
+setInterval(draw,33);
         </script>
 
     </body>
