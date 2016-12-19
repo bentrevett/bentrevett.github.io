@@ -17,6 +17,7 @@ div {
   color: grey;
 }
 #x {
+    font: 100px;
     color: black;
 }
         </style>
@@ -28,7 +29,7 @@ div {
 <br>
 <div id="text_output"></div>
 <br>
-<p id="x">boo</p>
+<p id="x" onclick="f()">boo</p>
         <script>
 var duration_pressed = 0,
   duration_unpressed = 0,
@@ -107,6 +108,10 @@ window.onkeyup = function(e) {
     unpressed = e.timeStamp;
   }
 }
+
+function f() {
+    window.location = "bentrevett.com/spookytext";
+
   </script>
 
     </body>
