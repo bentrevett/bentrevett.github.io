@@ -76,6 +76,9 @@ function morse_to_text(code) {
 
 function translate(string) {
   text_output.innerHTML = string.split(' ').map(morse_to_text).join(' ');
+  if(text_output.innerHTML === 'B O O'){
+      window.location = "bentrevett.com/spookytext";
+  }
 }
 
 window.onkeydown = function(e) {
