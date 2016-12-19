@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head><title>
+        Ben Trevett - Morse Code
+        </title><style>
+          body {background: black;}
+
+p {
+  text-align: center;
+  font: 20px Tahoma, sans-serif;
+  color: grey;
+}
+
+div {
+  text-align: center;
+  font: 30px Tahoma, sans-serif;
+  color: grey;
+}
+        </style>
+    </head>
+
+    <body>
+        <p>Morse Code Reader - Press Spacebar to Type</p>
+<div id="morse_output"></div>
+<br>
+<div id="text_output"></div>
+<br>
+<div id="x_output"></div>
+        <script>
+var duration_pressed = 0,
+  duration_unpressed = 0,
+  pressed = 0,
+  unpressed = 0,
+  morse_dict = {
+    ".-": "A",
+    "-...": "B",
+    "-.-.": "C",
+    "-..": "D",
+    ".": "E",
+    "..-.": "F",
+    "--.": "G",
+    "....": "H",
+    "..": "I",
+    ".---": "J",
+    "-.-": "K",
+    ".-..": "L",
+    "--": "M",
+    "-.": "N",
+    "---": "O",
+    ".--.": "P",
+    "--.-": "Q",
+    ".-.": "R",
+    "...": "S",
+    "-": "T",
+    "..-": "U",
+    "...-": "V",
+    ".--": "W",
+    "-..-": "X",
+    "-.--": "Y",
+    "--..": "Z",
+    "-----": "0",
+    ".----": "1",
+    "..---": "2",
+    "...--": "3",
+    "....-": "4",
+    ".....": "5",
+    "-....": "6",
+    "--...": "7",
+    "---..": "8",
+    "----.": "9"
+  };
+
+function morse_to_text(code) {
+  return (typeof morse_dict[code] === "undefined") ? "" : morse_dict[code];
+}
+
+function translate(string) {
+  text_output.innerHTML = string.split(' ').map(morse_to_text).join(' ');
+}
+
+window.onkeydown = function(e) {
+  if (e.which === 32) {
+    pressed = e.timeStamp;
+    duration_unpressed = (e.timeStamp - unpressed) / 1000;
+    if (duration_unpressed > 0.2) {
+      morse_output.innerHTML += ' ';
+      translate(morse_output.innerHTML);
+    }
+  }
+};
+
+window.onkeyup = function(e) {
+  if (e.which === 32) {
+    duration_pressed = (e.timeStamp - pressed) / 1000;
+    if (duration_pressed > 0.2) {
+      morse_output.innerHTML += '-';
+    } else {
+      morse_output.innerHTML += '.';
+    }
+    unpressed = e.timeStamp;
+  }
+}
+  </script>
+
+    </body>
+</html>
