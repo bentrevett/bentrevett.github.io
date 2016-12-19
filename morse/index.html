@@ -16,10 +16,6 @@ div {
   font: 30px Tahoma, sans-serif;
   color: grey;
 }
-#x {
-    font: 200px Tahoma, sans-serif;
-    color: black;
-}
         </style>
     </head>
 
@@ -28,8 +24,6 @@ div {
 <div id="morse_output"></div>
 <br>
 <div id="text_output"></div>
-<br>
-<p id="x" onclick="f()">CLICK ME</p>
         <script>
 var duration_pressed = 0,
   duration_unpressed = 0,
@@ -107,10 +101,6 @@ window.onkeyup = function(e) {
     }
     unpressed = e.timeStamp;
   }
-}
-
-function f() {
-    window.location = "http://bentrevett.com/spookytext";
 }
   </script>
 
