@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <title>(╯°□°)╯︵ ┻━┻</title>
+    <style>
+      ::selection {
+        background: transparent;
+      }
+
+      body {
+        background-color: #f7f7f7;
+        color: #222;
+        font-family: 'Open Sans', 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+
+      input {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 96px;
+        border: none;
+        outline: none;
+        background: transparent;
+      }
+
+      span, div {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #777;
+        transition: color 0.25s;
+      }
+
+      span.click { top: 20px; font-size: .8rem; display: block; }
+      span.tap { top: 20px; font-size: 1.5rem; display: none; }
+      .copied span { color: #ccc; }
+
+      div { top: 45px; color: transparent; }
+      .copied div { color: #777; }
+
+      @media (max-device-width: 800px) {
+        span.click { display: none; }
+        span.tap { display: block; }
+        div { top: 60px; font-size: 2rem; }
+        input {font-size: 4rem; }
+      }
+
+
+    </style>
+  </head>
+  <body>
+
+    <span class="click">click anywhere or cmd+c</span>
+    <span class="tap">tap anywhere to copy</span>
+    <div>copied!</div>
+
+    <input value="(╯°□°)╯︵ ┻━┻" readonly />
+
+    <script>
+      var flip = document.getElementsByTagName('input')[0];
+
+      flip.focus();
+      flip.select();
+
+      var timeout;
+      function showCopied() {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        document.body.className = 'copied';
+        timeout = setTimeout(function(){
+          document.body.className = '';
+        }, 3000);
+      }
+
+      document.addEventListener('copy', function(e) {
+        if (e.target === flip) {
+          showCopied();
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        try {
+          document.execCommand('copy');
+          showCopied();
+        } catch(e) { }
+
+        flip.focus();
+        flip.select();
+      });
+    </script>
+
+  </body>
+</html>
