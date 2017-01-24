@@ -20,11 +20,11 @@ var leftScore;
 var rightScore;
 var value;
 var gameOver;
-var time;
+var time ;
 var countdown;
 
 function init() {
-  points = 0;
+	points = 0;
   leftScore = 0;
   rightScore = 0;
   value = 2;
@@ -35,6 +35,12 @@ function init() {
   game_loop = setInterval(draw, 100);
 }
 init();
+
+function check_score(){
+	if (leftScore - rightScore > 8 || rightScore - leftScore > 8) {
+    gameOver = true;
+	}
+}
 
 function draw() {
   //clears canvas
@@ -70,10 +76,7 @@ function draw() {
   ctx.font = "50px Courier";
   ctx.fillText("GAME OVER", canvas.width/2-130,canvas.height/2-50);
 	}
-  if ((leftScore > rightScore + 8 || rightScore > leftScore > 8) && gameOver == false) {
-    gameOver = true;
-  }
-
+  
   if (time > 0 && gameOver == false) {
     countdown += 1;
     if (countdown > 9) {
@@ -85,18 +88,19 @@ function draw() {
   if (time == 0 && gameOver == false){
     gameOver = true;
   }
-
 }
 
 //listen for key presses
 document.addEventListener('keydown', function(e) {
   if (e.keyCode == "37" && gameOver == false) {
     leftScore += value;
+    check_score();
     points += Math.abs(leftScore - rightScore);
     value = Math.floor(Math.random() * 8) + 1;
   }
   if (e.keyCode == "39" && gameOver == false) {
     rightScore += value;
+    check_score();
     points += Math.abs(rightScore - leftScore);
     value = Math.floor(Math.random() * 8) + 1;
   }
