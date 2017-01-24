@@ -2,27 +2,35 @@
 <html>
 <head><title>
 Ben Trevett - Difference
-	</title>
+</title>
 </head>
 <body>
 Press the left or right arrow key to add the red number to the left or right green number.<br>
 Your score increases by the difference of the two numbers.<br>
-However, if the difference is greater than <b>8</b>, then it's game over.<br><br>
+However, if the difference is greater than <b>8</b>, then it's game over.<br>
+Press <b>r</b> to reset.<br><br>
+
 <canvas id="canvas" width="300" height="300"></canvas>
+
 <script>
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var points = 0;
-var leftScore = 0;
-var rightScore = 0;
-var value = 2;
-var gameOver = false;
-var time = 30;
-var countdown = 0;
-
+var points;
+var leftScore;
+var rightScore;
+var value;
+var gameOver;
+var time;
+var countdown;
 
 function init() {
-
+  points = 0;
+  leftScore = 0;
+  rightScore = 0;
+  value = 2;
+  gameOver = false;
+  time = 30;
+  countdown = 0;
   if (typeof game_loop != "undefined") clearInterval(game_loop);
   game_loop = setInterval(draw, 100);
 }
@@ -91,6 +99,9 @@ document.addEventListener('keydown', function(e) {
     rightScore += value;
     points += Math.abs(rightScore - leftScore);
     value = Math.floor(Math.random() * 8) + 1;
+  }
+  if (e.keyCode == "82"){
+  	init();
   }
 })
 </script>
