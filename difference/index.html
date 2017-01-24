@@ -37,7 +37,7 @@ function init() {
 init();
 
 function check_score(){
-	if (leftScore - rightScore > 8 || rightScore - leftScore > 8) {
+	if ((leftScore - rightScore) > 8 || (rightScore - leftScore) > 8) {
     gameOver = true;
 	}
 }
