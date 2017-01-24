@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head><title>
+Ben Trevett - Difference
+	</title>
+</head>
+<body>
+Press the left or right arrow key to add the red number to the left or right green number.<br>
+Your score increases by the difference of the two numbers.<br>
+However, if the difference is greater than <b>8</b>, then it's game over.<br>
+<canvas id="canvas" width="300" height="300"></canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var points = 0;
+var leftScore = 0;
+var rightScore = 0;
+var value = 2;
+var gameOver = false;
+var time = 30;
+var countdown = 0;
+
+
+function init() {
+
+  if (typeof game_loop != "undefined") clearInterval(game_loop);
+  game_loop = setInterval(draw, 100);
+}
+init();
+
+function draw() {
+  //clears canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath();
+  ctx.rect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "black";
+  ctx.fill();
+  ctx.closePath();
+
+  ctx.fillStyle = "white";
+  ctx.font = "20px Courier";
+  ctx.fillText("Points: " + points, 5, 20);
+
+  ctx.fillStyle = "white";
+  ctx.font = "20px Courier";
+  ctx.fillText("Time: " + time, 200, 20);
+
+  ctx.fillStyle = "green";
+  ctx.font = "50px Courier";
+  ctx.fillText(leftScore, 40, canvas.height / 2+50);
+
+  ctx.fillStyle = "green";
+  ctx.font = "50px Courier";
+  ctx.fillText(rightScore, canvas.width - 100, canvas.height / 2+50);
+
+  ctx.fillStyle = "red";
+  ctx.font = "50px Courier";
+  ctx.fillText(value, canvas.width / 2 - 15, canvas.height - 25);
+	
+  if(gameOver == true){
+	ctx.fillStyle = "red";
+  ctx.font = "50px Courier";
+  ctx.fillText("GAME OVER", canvas.width/2-130,canvas.height/2-50);
+	}
+  if ((leftScore > rightScore + 8 || rightScore > leftScore > 8) && gameOver == false) {
+    gameOver = true;
+  }
+
+  if (time > 0 && gameOver == false) {
+    countdown += 1;
+    if (countdown > 9) {
+      time -= 1;
+      countdown = 0;
+    }
+  }
+  
+  if (time == 0 && gameOver == false){
+    gameOver = true;
+  }
+
+}
+
+//listen for key presses
+document.addEventListener('keydown', function(e) {
+  if (e.keyCode == "37" && gameOver == false) {
+    leftScore += value;
+    points += Math.abs(leftScore - rightScore);
+    value = Math.floor(Math.random() * 8) + 1;
+  }
+  if (e.keyCode == "39" && gameOver == false) {
+    rightScore += value;
+    points += Math.abs(rightScore - leftScore);
+    value = Math.floor(Math.random() * 8) + 1;
+  }
+})
+</script>
+</body>
+</html>
