@@ -6,6 +6,8 @@ time since marcus' last cry
 </head>
 <body>
 
+<p id="p1">Hello World!</p>
+
   
 <script> 
   // Set the unit values in milliseconds.  
@@ -43,7 +45,7 @@ time since marcus' last cry
   var seconds = Math.floor(interval / 1000 );  
 
   // Display the result.  
-  document.write(days + " days, " + hours + " hours, " + minutes + " minutes, " + seconds + " seconds.");  
+  document.getElementById("p1").innerHTML = days + " days, " + hours + " hours, " + minutes + " minutes, " + seconds + " seconds.";
 
   
 </script>
