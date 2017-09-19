@@ -6,25 +6,24 @@ time since marcus' last cry
 </head>
 <body>
 
+  <p id="p1"></p>
+
+  
 <script>
   
   setInterval(function(){
     
-    document.body.innerHTML = '';
-
        // Set the unit values in milliseconds.  
 var msecPerMinute = 1000 * 60;  
 var msecPerHour = msecPerMinute * 60;  
 var msecPerDay = msecPerHour * 24;  
 
 // Set a date and get the milliseconds  
-var date = new Date('9/19/2017 15:00:00');  
+var date = new Date();  
 var dateMsec = date.getTime();  
 
 // Set the date to January 1, at midnight, of the specified year.  
-date.setMonth(0);  
-date.setDate(1);  
-date.setHours(0, 0, 0, 0);  
+var date = new Date('9/19/2017 15:00:00')
 
 // Get the difference in milliseconds.  
 var interval = dateMsec - date.getTime();  
@@ -44,8 +43,11 @@ interval = interval - (minutes * msecPerMinute );
 var seconds = Math.floor(interval / 1000 );  
 
 // Display the result.  
-document.write(days + " days, " + hours + " hours, " + minutes + " minutes, " + seconds + " seconds.");  
+var date_string = String(days + " days, " + hours + " hours, " + minutes + " minutes, " + seconds + " seconds.");  
 
+    document.getElementById("p1").innerHTML = date_string;
+
+    
 //Output: 164 days, 23 hours, 0 minutes, 0 seconds.  
 }, 1000);
     
