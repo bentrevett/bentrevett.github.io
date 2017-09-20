@@ -11897,7 +11897,7 @@ div#notebook {
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         
-    <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">chosen_arm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_arm</span><span class="p">()</span>
         <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reward</span><span class="p">(</span><span class="n">chosen_arm</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chosen_arm</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
@@ -11922,11 +11922,13 @@ div#notebook {
 <li><code>values</code>: the average reward we have received for each arm</li>
 </ul>
 <p>And the following functions:</p>
-<p><code>initialize</code> explicity creates the <code>pulls</code> and <code>values</code> lists and fills them with <code>0</code>'s.</p>
-<p><code>select_arm</code> returns the index of arm with the highest value with probability $1-\epsilon$ and the index of a random arm with probability $\epsilon$.</p>
-<p><code>update</code> takes in which arm has been pulled and what the reward was, then updates the <code>pulls</code> and <code>values</code> for that arm.</p>
-<p><code>get_reward</code> does the actual pulling of the arm and (potentially) getting the reward.</p>
-<p><code>pull</code> pulls the arms <code>n</code> times following the algorithm</p>
+<ul>
+<li><code>initialize</code> explicity creates the <code>pulls</code> and <code>values</code> lists and fills them with <code>0</code>'s.</li>
+<li><code>select_arm</code> returns the index of arm with the highest value with probability $1-\epsilon$ and the index of a random arm with probability $\epsilon$.</li>
+<li><code>update</code> takes in which arm has been pulled and what the reward was, then updates the <code>pulls</code> and <code>values</code> for that arm.</li>
+<li><code>get_reward</code> does the actual pulling of the arm and (potentially) getting the reward.</li>
+<li><code>pull</code> pulls the arms <code>n</code> times following the algorithm</li>
+</ul>
 <p>We can initialise the bandit in the two extremes: always explore and always exploit. The example below shows three arms: the first returns a reward of 100 with a probability of 0.1 (i.e. 10%), the second returns a reward of 50 with a probability of 0.2 (i.e. 20%) and the third returns a reward of 5 with a probability of 1 (i.e. 100%).</p>
 
 </div>
