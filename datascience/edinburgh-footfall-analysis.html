@@ -11779,7 +11779,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Edinburgh-Footfall-Analysis">Edinburgh Footfall Analysis<a class="anchor-link" href="#Edinburgh-Footfall-Analysis">&#182;</a></h1><h2 id="Part-1---Fetching-Data">Part 1 - Fetching Data<a class="anchor-link" href="#Part-1---Fetching-Data">&#182;</a></h2><p>First thing we want to do is get the data.</p>
+<h1 id="Edinburgh-Footfall-Analysis">Edinburgh Footfall Analysis<a class="anchor-link" href="#Edinburgh-Footfall-Analysis">&#182;</a></h1><p>Here's a short notebook that serves as a small guide on how to do some basic data analysis with Python (using <code>pandas</code>, <code>matplotlib</code>, <code>scikit-learn</code> and a bit of <code>numpy</code>) on a real dataset I came across online.</p>
+<h2 id="Part-1---Fetching-Data">Part 1 - Fetching Data<a class="anchor-link" href="#Part-1---Fetching-Data">&#182;</a></h2><p>First thing we want to do is get the data.</p>
 <p>We can either manually download it from: <a href="http://www.edinburghopendata.info/dataset/monthly-footfall-data">http://www.edinburghopendata.info/dataset/monthly-footfall-data</a>, or (once we know the direct links to the data) we can have Python automatically download it so when someone goes to recreate this analysis they don't have to go searching.</p>
 
 </div>
@@ -12007,7 +12008,7 @@ div#notebook {
 <li>the data for "Grassmarket: Grassmarket Hotel" and "High Street: Bella Italia" don't appear until May 2013 </li>
 <li>the data for "High Street: Bella Italia" stops appearing after May 2014 (potentially was only collected for that one year)</li>
 </ul>
-<p>To make things a bit easier to analyse, we'll only cover March 2012 to December 2014, ignoring data for the last three locations.</p>
+<p>To make things a bit easier to analyse, we'll ignore data for the last three locations.</p>
 
 </div>
 </div>
@@ -12499,7 +12500,7 @@ dtype: object</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>'Date' is an 'object' &amp; we want it to be a 'datetime'. To sort this out, we'll just convert it using <code>to_datetime</code>.</p>
+<p>When we used <code>thousands=','</code> when reading the .csv files <code>pandas</code> automatically infered the types for most of the columns, however it left 'Date' as an 'object' &amp; we want it to be a 'datetime'. To sort this out, we'll just convert it using <code>to_datetime</code>.</p>
 
 </div>
 </div>
@@ -12509,7 +12510,7 @@ dtype: object</pre>
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">)</span> <span class="c1">#need to state how the dates are formatted</span>
 
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -12669,8 +12670,9 @@ dtype: object</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Part-3---Visualizing-Data">Part 3 - Visualizing Data<a class="anchor-link" href="#Part-3---Visualizing-Data">&#182;</a></h2><p>Now we can finally plot the data. We'll plot it as a line and as a scatterplot.</p>
-<p>Note: by default <code>pandas</code> doesn't let you scatterplot using <code>datetime</code> axis, but if you change the style of a line plot you basically get a scatterplot.</p>
+<h2 id="Part-3---Visualizing-Data">Part 3 - Visualizing Data<a class="anchor-link" href="#Part-3---Visualizing-Data">&#182;</a></h2><p>Now we can finally plot the data using <code>matplotlib</code>. We'll plot it as a line and as a scatterplot.</p>
+<p><code>%matplotlin inline</code> allows for plotting matplotlib graphs without the <code>.show()</code> method.</p>
+<p>Note: by default <code>pandas</code> doesn't let you scatterplot using <code>datetime</code> axis, but if you change the <code>style</code> of a line plot you basically get a scatterplot.</p>
 
 </div>
 </div>
@@ -12680,12 +12682,12 @@ dtype: object</pre>
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span> <span class="c1">#this is how you plot mutiple axes on the same figure</span>
 
-<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">#ax=ax[0] states this plot should be on axis 0, the top</span>
 
 <span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 </pre></div>
@@ -24046,7 +24048,7 @@ AAAAAEJCQgkAAAAAAAAhIaEEAAAAAACAkJBQAgAAAAAAQEj+HwhbALdsfgzyAAAAAElFTkSuQmCC
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#add a new axis that is the sum of the other axes</span>
 
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -32863,7 +32865,7 @@ kyRJkiRJkrLGYpMkSZIkSZKy5v8D07JeIKmIEU8AAAAASUVORK5CYII=
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
 
-<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">#this time we have to explicitly state the y-axis, it defaults to using all columns</span>
 
 <span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 </pre></div>
@@ -36088,7 +36090,7 @@ JgAAAAA6I9kEAAAAQGckmwAAAADozP8HChognnC8/uoAAAAASUVORK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can probably guess what the dates of the two outliers with sub-25000 footfall are.</p>
+<p>You can probably guess what the dates of the three outliers with sub-25000 footfall are.</p>
 <p>But just to be sure:</p>
 
 </div>
@@ -36099,7 +36101,7 @@ JgAAAAA6I9kEAAAAQGckmwAAAADozP8HChognnC8/uoAAAAASUVORK5CYII=
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;Total&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;Total&#39;</span><span class="p">)</span> <span class="c1">#return the 5 rows with the smallest value in the &#39;Total&#39; column</span>
 </pre></div>
 
 </div>
@@ -36232,7 +36234,7 @@ JgAAAAA6I9kEAAAAQGckmwAAAADozP8HChognnC8/uoAAAAASUVORK5CYII=
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;Total&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;Total&#39;</span><span class="p">)</span> <span class="c1">#return the 5 rows with the largest value in the &#39;Total&#39; column</span>
 </pre></div>
 
 </div>
@@ -36377,10 +36379,9 @@ JgAAAAA6I9kEAAAAQGckmwAAAADozP8HChognnC8/uoAAAAASUVORK5CYII=
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="c1">#we set the index (the 0th column) to be the date converted into the &#39;dayofweek&#39;</span>
 <span class="c1">#dayofweek: 0 = monday, 1 = tuesday, etc.</span>
-
 <span class="c1">#aggfunc creates a column with each function applied</span>
-<span class="c1">#len is the number of data points</span>
 
 <span class="n">pivot_days</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofweek</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">])</span>
 
@@ -36799,7 +36800,8 @@ wxhjjN8saRhjjPGbJQ1jjDF++/8ThUB/rr1AkgAAAABJRU5ErkJggg==
 <div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#month: 1 = january, etc.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#the index is now the month of the year</span>
+<span class="c1">#month: 1 = january, etc.</span>
 
 <span class="n">pivot_months</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">])</span>
 
@@ -37243,7 +37245,9 @@ GGM6xQLEGGNMp1iAGGOM6RQLEGOMMZ1iAWKMMaZT/j/H7123u9phOwAAAABJRU5ErkJggg==
 <div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pivot_daypermonth</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofweek</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#we can supply multiple indices by using a list</span>
+
+<span class="n">pivot_daypermonth</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofweek</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">])</span>
 
 <span class="n">pivot_daypermonth</span>
 </pre></div>
@@ -40186,7 +40190,7 @@ AAAAJYnEFgAAAAAAAEoSiS0AAAAAAACUJBJbAAAAAAAAKEn/HwLsDceri5GpAAAAAElFTkSuQmCC
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This pretty much confirms what we've already found out (Saturdays are most busy, Sunday the least busy, August is very busy, etc.), but it's nice to see it graphically.</p>
-<p>Finally, let's get the average per day of the year. We have to use <code>fillna(0)</code> to handle the <code>NaNs</code> left in by not being able to calculate the <code>std</code> for the extra leap year day as it only has one entry in our data.</p>
+<p>Finally, let's get the average per day of the year. We have to use <code>fillna(0)</code> to handle the <code>NaN</code> left in by not being able to calculate the <code>std</code> for the extra leap year day as it only has one entry in our data (the very last row).</p>
 
 </div>
 </div>
@@ -43213,7 +43217,7 @@ t2ywWlnTAAAAAElFTkSuQmCC
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="k">import</span> <span class="n">PCA</span>
 
-<span class="n">X2</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">svd_solver</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">X2</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="c1">#PCA into 2 dimensions, fit_transform both fits the model and applies the dimensionality reduction</span>
 
 <span class="n">X2</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
@@ -43498,9 +43502,9 @@ HiIikpiCh4iIJKbgISIiif1/5GZaHX/2nI4AAAAASUVORK5CYII=
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.mixture</span> <span class="k">import</span> <span class="n">GaussianMixture</span>
 
-<span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#state the number of clusters</span>
+<span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="c1">#fit to our data</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="c1">#get a list with the label for each data point in X</span>
 </pre></div>
 
 </div>
@@ -43513,7 +43517,7 @@ HiIikpiCh4iIJKbgISIiif1/5GZaHX/2nI4AAAAASUVORK5CYII=
 <div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">labels</span><span class="p">);</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">();</span>
 </pre></div>
 
@@ -43923,7 +43927,7 @@ FcIDvnPOVYj/A+CfE6wXVd7/AAAAAElFTkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">pivot</span><span class="p">[</span><span class="n">labels</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span>
@@ -44820,7 +44824,7 @@ Sz9c5eDi4uLi0g9XObi4uLi49MNVDi4uLi4u/fj/zB2ub2iy4YoAAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">pivot</span><span class="p">[</span><span class="n">labels</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span>
@@ -45599,9 +45603,18 @@ FksM/w891YY//E0hwgAAAABJRU5ErkJggg==
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's put them on comparable axes using <code>sharex = True</code> so things are a little easier to see.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span> <span class="c1">#sharex = True means we want both subplots to share the same x-axis</span>
@@ -47515,58 +47528,6 @@ igcAAAAASUVORK5CYII=
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
     </div>
   </div>
