@@ -70,13 +70,13 @@ use_mathjax: true
 <p>If you search for WD using a constant LR and not the LR Range Test, the optimal value of WD you will find will be different. This is because the larger LRs allow you to use less regularization, and thus a lower WD.</p>
 <h2 id="ia=summary">7. Summary</h2>
 <ol>
-<li><p>To find the optimal learning rate (LR) perform the LR Range Test. The maximum LR depends on the architecture and dataset. Suggested to try cylical learning rates (CLR), especially the 1cycle LR policy, with a maximum LR found by the LR Range Test and a minimum LR of 1/10 of the maximum LR. Step-size should not be too fast, but no actual numbers are given, however you will notice instability if the step-size is too low.</p>
+<li>To find the optimal learning rate (LR) perform the LR Range Test. The maximum LR depends on the architecture and dataset. Suggested to try cylical learning rates (CLR), especially the 1cycle LR policy, with a maximum LR found by the LR Range Test and a minimum LR of 1/10 of the maximum LR. Step-size should not be too fast, but no actual numbers are given, however you will notice instability if the step-size is too low.
 </li>
-<li><p>The optimal batch size is as large as your GPU can handle. Smaller batch sizes add regularization, it is recommended to use larger batch sizes and add the regularization via larger LRs, which also has the added benefit of reducing training time.</p>
+<li>The optimal batch size is as large as your GPU can handle. Smaller batch sizes add regularization, it is recommended to use larger batch sizes and add the regularization via larger LRs, which also has the added benefit of reducing training time.
 </li>
-<li><p>Fixed momentum values of 0.99, 0.97, 0.95 and 0.9 are good starting points. If you are using CLR, you want to use a decreasing cyclical momentum (CM), i.e goes from a maximum to a minimum and back. The minimum should be around 0.8 or 0.85, but apparently performance is independent of this minimum value. The reduced momentum at the point when the LR is at maximum helps stabilization.</p>
+<li>Fixed momentum values of 0.99, 0.97, 0.95 and 0.9 are good starting points. If you are using CLR, you want to use a decreasing cyclical momentum (CM), i.e goes from a maximum to a minimum and back. The minimum should be around 0.8 or 0.85, but apparently performance is independent of this minimum value. The reduced momentum at the point when the LR is at maximum helps stabilization.
 </li>
-<li><p>The optimal weight decay (WD) value is found via a grid search, however usually does not require more than 1 significant figure of accuracy, i.e. 3e-4 and 5e-4 should be almost identical in performance. A more complex dataset and architecture need smaller values of WD (1e-4 to 1e-6). Shallower architectures require more regularization so should have higher values of WD (1e-2 to 1e-4).</p>
+<li>The optimal weight decay (WD) value is found via a grid search, however usually does not require more than 1 significant figure of accuracy, i.e. 3e-4 and 5e-4 should be almost identical in performance. A more complex dataset and architecture need smaller values of WD (1e-4 to 1e-6). Shallower architectures require more regularization so should have higher values of WD (1e-2 to 1e-4).
 </li>
 </ol>
 </body>
