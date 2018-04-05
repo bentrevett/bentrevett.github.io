@@ -4,7 +4,7 @@ title: Ben Trevett | Paper Notes - A Disciplined Approach to Neural Network Hype
 use_mathjax: true
 ---
 <body>
-<h1 id="ia=a-disciplined-approach-to-neural-network-hyper-parameters-part-1">A disciplined Approach to Neural Network Hyper-Parameters: Part 1</h1>
+<h1 id="ia=a-disciplined-approach-to-neural-network-hyper-parameters-part-1">A Disciplined Approach to Neural Network Hyper-Parameters: Part 1</h1>
 <h2 id="ia=introduction">1. Introduction</h2>
 <p>Choosing hyper-parameters is difficult, often requiring years of &quot;intuitive&quot; experience, with no clear rules of thumb available. The typical way is to use grid search or random search over all sensible hyper-parameter values. However, this is computationally expensive and time consuming.</p>
 <p>This article covers finding optimal hyper-parameters with respect: learning rate, batch size, momentum and weight decay. It will give you practical advice that both saves time as well as improves performance of your deep learning models. It is built on the underfitting vs overfitting trade-off, and involves a lot of looking at your validation/test loss to guide you in your search for optimal hyper-parameters. It also shows how learning rate, momentum and weight decay are &quot;tightly coupled&quot; and optimal values of each must be discovered simultaneously together, not independently one at a time.</p>
