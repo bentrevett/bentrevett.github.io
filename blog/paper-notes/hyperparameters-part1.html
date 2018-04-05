@@ -1,0 +1,83 @@
+---
+layout: default
+title: Ben Trevett | Paper Notes - A Disciplined Approach to Neural Network Hyper-paramters Part 1
+use_mathjax: true
+---
+<body>
+<h1 id="ia=a-disciplined-approach-to-neural-network-hyper-parameters-part-1">A disciplined Approach to Neural Network Hyper-Parameters: Part 1</h1>
+<h2 id="ia=introduction">1. Introduction</h2>
+<p>Choosing hyper-parameters is difficult, often requiring years of &quot;intuitive&quot; experience, with no clear rules of thumb available. The typical way is to use grid search or random search over all sensible hyper-parameter values. However, this is computationally expensive and time consuming.</p>
+<p>This article covers finding optimal hyper-parameters with respect: learning rate, batch size, momentum and weight decay. It will give you practical advice that both saves time as well as improves performance of your deep learning models. It is built on the underfitting vs overfitting trade-off, and involves a lot of looking at your validation/test loss to guide you in your search for optimal hyper-parameters. It also shows how learning rate, momentum and weight decay are &quot;tightly coupled&quot; and optimal values of each must be discovered simultaneously together, not independently one at a time.</p>
+<h2 id="ia=examining-the-validationtest-loss-underfitting-and-overfitting">2. Examining the Validation/Test Loss, Underfitting and Overfitting</h2>
+<p>By closely examining the validation/test loss (which we'll just call test loss from here on) for &quot;clues&quot;, we can gain enough information to tune our hyper-parameters. This saves time and computational effort of performing a full random search or grid search.</p>
+<p>The black box shown in figure 1a shows that the model is overfitting. This is because the training loss is decreasing while the test loss begins to increase. This is only visible in the test loss, and is unable to be seen in the test accuracy, train loss/accuracy or generalization error (train loss - test loss, shown in figure 1b). From this, we now know our model is able to overfit, and that early on in training a learning rate between 0.01 to 0.05 will cause overfitting.</p>
+<p>Figure 2 shows the canonical image representation of the underfitting vs overfitting dilemma. Model complexity can be thought of as the number of parameters your model has. The training loss should monotonically decrease as you increase the model complexity. The test loss should also decrease as the number of parameters increase, this is underfitting. However, after a certain point the sheer number of parameters allows the model to completely memorize the training data. The training loss will still decrease, whereas the test loss will begin to increase (due to the model memorizing the training data which are unique from the test data), this is overfitting. The &quot;optimal&quot; is the point between underfitting and overfitting, where test loss is at its lowest point.</p>
+<p>In figure 3a, the red line is underfitting as it is monotonically decreasing. It never plateaus or begins to increase. The blue line is more a step in the right direction as the curve is closer to a plateau. Also notice how the blue line decreases more rapidly at the beginning, which is a good sign that this hyper-parameter configuration will achieve better overall results, which it does. The cause of the underfitting here in the learning rate (LR) being too small.</p>
+<p>In figure 3b, the blue line is underfitting as it is monotonically decreasing. Here, instead of increasing the learning rate, we increase the model complexity by switching to a different architecture. The red line shows less underfitting by having a test loss that more rapidly decreases, as well as showing signs of plateauing.</p>
+<p>To clarify and re-iterate: two ways of reducing underfitting are increasing the learning rate or increasing the model complexity.</p>
+<p>How can we find a good LR value? By using the &quot;LR range test&quot;, which we will detail later.</p>
+<p>Overfitting is more complicated to handle than underfitting, but the test loss still gives clues.</p>
+<p>Figure 4a shows the loss for different LR values with different values of weight decay  (a method of regularization, also known as L2 regularization). The blue line underfits with an LR less than 0.002, and then begins to overfit. This indicates LR = 0.002 is a good value for that value of weight decay (WD). However, the red line shows a value of higher WD that is both more stable over a large range of LRs, as well as achieving a lower test loss. Thus, it is a better value of WD. The sharp increase for both the yellow and red lines is not overfitting is caused by instabilities due to the high learning rates, not because of overfitting. Overfitting has a much smoother increase in test loss.</p>
+<p>In figure 4b, the blue line is another example of underfitting, the curve continues to decrease without plateauing. Initially, it looks like the red curve is a good parameter setting, with an optimal point reached after 0.7 iterations, but Smith says it should not overfit with such a small value of WD and is therefore a non-optimal value.</p>
+<p>Setting hyper-parameters is basically a careful balancing act between underfitting and overfitting.</p>
+<h2 id="ia=cyclical-learning-rates">3. Cyclical Learning Rates</h2>
+<p>If the learning rate (LR) is too small, your model will overfit. Remember, increasing the LR is similar to increasing regularization. However, if the LR is too large, the model will diverge (the test loss will rapidly increase). There are two techniques (also by Smith) which help us find better LRs. Cyclical Learning Rates (CLR) and the Learning Rate Range Test (LR Range Test).</p>
+<p>For CLR, we specify a minimum LR, a maximum LR and a step-size. The step-size is the number of iterations (or epochs) per &quot;step&quot;, and each &quot;cycle&quot; consists of two &quot;steps&quot; - the first in which the LR linearly increases from the minimum LR to the maximum LR, the second where the LR decreases from the maximum LR to the minimum LR.</p>
+<p>For the LR Range Test, is used to find the values for the minimum LR and maximum LR for CLR. It involves training your model, starting with a very small LR, and linearly increasing it while keeping track of the accuracy after each epoch. The LR at which your model begins to diverge (i.e. accuracy begins to drop) is the maximum LR for CLR. The minimum LR can either be:</p>
+<ul>
+<li>1/3 to 1/4 of the maximum LR</li>
+<li>1/10 to 1/20 of the maximum LR if you are only using one cycle</li>
+<li>running the test multiple times and picking the highest initial LR that allows convergence without overfitting (such as figure 1a)</li>
+</ul>
+<p>Also note that your step-size also effects the values of your minimum LR and maximum LR. The larger your step-size, the further away your minimum LR and maximum LR can be. If you have a small step-size with a large gap between your minimum LR and maximum LR, your model will diverge.</p>
+<p>There is also a phenomenon called &quot;super convergence&quot;. This is when the test loss and test accuracy remain almost constant during the LR Range Test, even with high values of LR. This indicates that the model can be trained very quickly in a single CLR cycle with a high maximum LR. The large LR values provide both regularization to prevent overfitting, as well as reduced training times.</p>
+<p>For super convergence, they use a modified version of CLR which they call &quot;1cycle&quot;. This is where you use CLR with a single cycle, and after the cycle has finished you reduce the LR by orders of magnitude less than the initial LR. This allows the accuracy to plateau before training ends.</p>
+<p>Super convergence is a universal concept, which means it can be applied to any problem. They show it solves MNIST, CIFAR10, CIFAR100 and Imagenet using shallow networks, resnets, wide resnets, densenets, and inception-resnet.</p>
+<p>For optimal performance you must balance all forms of regularization (LR, batch sizes, weight decay, dropout, etc.) for each dataset and architecture. Because regularization must be balanced, it is necessary to reduce other forms of regularization when increasing the LR in order to use the regularization from high LRs as well as the other benefit - reduced training time.</p>
+<h2 id="ia=batch-sizes">4. Batch Sizes</h2>
+<p>Historically, smaller batch sizes have been recommended for their regularization effects. This work recommends large batch sizes for the 1cycle learning rate schedule.</p>
+<p>It's difficult to directly compare batch sizes, as lower batch sizes increase wall clock time of training (as less computation can be parallelized, which means less epochs in the same amount of time), and our goal is to both obtain the highest performance whilst also minimizing the required time. As increasing the batch size reduces the amount of regularization, we can increase regularization by increasing the learning rate, thus reducing training time by both using larger batch sizes and having a larger LR.</p>
+<p>There is also some diminishing returns for increasing the batch size as their results show a batch size of 512 and 1024 have almost the same results, see figure 6a.</p>
+<p>There is also a relation between test accuracy and test loss for different batch sizes. From figure 6a, the accuracy increases more rapdily and achieves a higher value with higher batch sizes, however the best test loss is found with smaller batch sizes.</p>
+<h2 id="ia=cyclical-momentum">5. Cyclical Momentum</h2>
+<p>Momentum and LR are closely related. Like the LR, it is ideal to set the momentum as large as possible during training. Momentum is designed to accelerate the training of a model, but its effect on updating the parameters is the same as the LR.</p>
+<p>The optimal training procedure has an increasing CLR, where the small initial LR allows convergence to begin, with a decreasing cyclical momentum (CM), where the decreasing momentum allows the LR to increase during the &quot;middle&quot; of training.</p>
+<p>Figure 7c shows that for both constant momentum and increasing CM give sub-optimal results. Although the increasing CM stabilizes learning for higher LR, it does not achieve a minimum test loss as low as the constant momentum schedule.</p>
+<p>Decreasing CM has three advantages:</p>
+<ul>
+<li>lower minimum test loss</li>
+<li>faster initial convergence</li>
+<li>greater convergence stability (not sure I agree with this one)</li>
+</ul>
+<p>Figure 7d shows a decreasing CM beating a constant momentum, but one uses a constant LR term and the other uses CLR, so I'm not sure how these are a fair comparison.</p>
+<p>Using a decreasing CM with an increasing CLR provides results for the best value of constant momentum, but stabilizes the training, allowing for higher LRs.</p>
+<p>Too large a value of momentum will cause instability and cause divergence, however a large value of momentum can help escape saddle points. This would imply that the mometum needs to be decreasing at the end of training, however Smith says he found a small improvement by using CM.</p>
+<p>If you are using a constant LR, use constant momentum.</p>
+<p>What values of momentum to use? For either constant momentum or CM, good starting values are around 0.9 to 0.99. For CM, Smith commonly uses minimum values of around 0.85.</p>
+<p>As you want the CM to reach its minimal value whilst the CLR reaches its maximum value, the step-size of each should be equal.</p>
+<h2 id="ia=weight-decay">6. Weight Decay</h2>
+<p>Weight decay (WD) is a form of regularization, and like all forms of regularization it must be balanced with other regularization to obtain good performance.</p>
+<p>Smith tried cyclical weight decay, but found it provided no benefits. Therefore, unlike LR and momentum, WD should remain constant during training.</p>
+<p>The best way to find best values of WD is to make CLR and CM runs with different values of WD. This allows you to find the best values of LR, momentum and WD simultaneously.</p>
+<p>Reasonable values of WD are 1e-3, 1e-4 and 1e-5. Smaller datasets and smaller architectures (in terms of number of parameters?) require larger values of WD, whilst larger datasets and more complex architectures require smaller values of WD. This implies that more complex data provides its own implicit regularization, and thus explicity regularization can be reduced.</p>
+<p>Once you've done a first run and found a good value of WD, say 1e-4. Run again with values of WD at 3e-5, 1e-4 and 3e-4. This is because you should pick a bisection between the exponent, rather than the value, i.e. the value between 1e-4 and 1e-3 has a exponent bisection of 1e-3.5 = 3.16e-4. After finding the best value of those three, do another bisection and repeat.</p>
+<p>Again, the amount of regularization must be balanced for each dataset and architecture. As LR increases the amount of WD can decrease.</p>
+<p>From figure 9a, the yellow line shows a value of WD that is too high as the loss is much higher than the other values. The blue line shows a value of WD that is too low, notice the overfitting as the loss increases between ~3000 and ~7500 iterations. Also from figure 9b, you can see how the test accuracy does not provide a clear view of which value of WD is best.</p>
+<blockquote>
+<p>Note: figure 10 and the paragraph below it don't seem to be very clear. Figure 10a's caption mentions comparing WD by test accuracy, yet test loss is on the axis. Also, it claims to use CLR, but also claims to be doing the LR Range Test. Smith has not explained how to do the LR Range Test using CLR. I will carry on assuming that it uses the standard LR Range Test.</p>
+</blockquote>
+<p>Can you determine the LR, CM and WD values all simulataneously? Figure 10 shows using the LR Range Test along with decreasing momentum for three different values of WD. This shows that the best value of WD is 1.8e-3 (the purple line) as it achieves the lowest test loss and has the most stable range, allowing us to use a maximum LR for the CLR of about 8e-3.</p>
+<p>If you search for WD using a constant LR and not the LR Range Test, the optimal value of WD you will find will be different. This is because the larger LRs allow you to use less regularization, and thus a lower WD.</p>
+<h2 id="ia=summary">7. Summary</h2>
+<ol>
+<li><p>To find the optimal learning rate (LR) perform the LR Range Test. The maximum LR depends on the architecture and dataset. Suggested to try cylical learning rates (CLR), especially the 1cycle LR policy, with a maximum LR found by the LR Range Test and a minimum LR of 1/10 of the maximum LR. Step-size should not be too fast, but no actual numbers are given, however you will notice instability if the step-size is too low.</p>
+</li>
+<li><p>The optimal batch size is as large as your GPU can handle. Smaller batch sizes add regularization, it is recommended to use larger batch sizes and add the regularization via larger LRs, which also has the added benefit of reducing training time.</p>
+</li>
+<li><p>Fixed momentum values of 0.99, 0.97, 0.95 and 0.9 are good starting points. If you are using CLR, you want to use a decreasing cyclical momentum (CM), i.e goes from a maximum to a minimum and back. The minimum should be around 0.8 or 0.85, but apparently performance is independent of this minimum value. The reduced momentum at the point when the LR is at maximum helps stabilization.</p>
+</li>
+<li><p>The optimal weight decay (WD) value is found via a grid search, however usually does not require more than 1 significant figure of accuracy, i.e. 3e-4 and 5e-4 should be almost identical in performance. A more complex dataset and architecture need smaller values of WD (1e-4 to 1e-6). Shallower architectures require more regularization so should have higher values of WD (1e-2 to 1e-4).</p>
+</li>
+</ol>
+</body>
+</html>
