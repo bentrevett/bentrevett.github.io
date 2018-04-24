@@ -1,0 +1,252 @@
+<style>
+
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .subcontainer {
+      width: 500px;
+      height: 550px;
+      position: relative;
+    }
+
+    .canvas {
+      width: 500px;
+      height: 500px;
+      position: absolute;
+    }
+
+    .output {
+      width: 500px;
+      height: 50px;
+      position: absolute;
+      bottom: 0;
+    }
+
+    #canvas-coordsystem {
+      z-index: 0;
+      background-color: #F0F0F0;
+      border: 1px solid;
+    }
+
+    #canvas-line {
+      z-index: 1;
+    }
+    
+</style>
+    
+<div class='container'>
+      <div class='subcontainer'>
+        <canvas class="canvas" id="canvas-coordsystem" width="500px" height="500px"></canvas>
+        <canvas class="canvas" id="canvas-line" width="500px" height="500px"></canvas>
+        <div class="output" id="output"></div>
+    </div>
+</div>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script>
+
+  //Drawing of the X and Y axes
+
+  const canvasCoord = document.getElementById('canvas-coordsystem');
+  const ctxCoord = canvasCoord.getContext("2d");
+  ctxCoord.strokeStyle = "#11111";
+  
+  // X Axis
+  ctxCoord.beginPath();
+  ctxCoord.moveTo(0, 250);
+  ctxCoord.lineTo(500, 250);
+  ctxCoord.stroke();
+  
+  // Y Axis
+  ctxCoord.beginPath();
+  ctxCoord.moveTo(250, 0);
+  ctxCoord.lineTo(250, 500);
+  ctxCoord.stroke();
+
+  //For drawing f(x)
+  const canvasLine = document.getElementById('canvas-line');
+  const ctxLine = canvasLine.getContext("2d");
+
+  const output = document.getElementById('output');
+  
+  const updateTime = 25; // time between re-drawing of function
+  
+  const XY = {x:[], y:[]}; // user point inputs
+
+  // model parameters
+  var w1;
+  var b;
+
+  resetParameters();
+
+  // learning rates for weights (alpha) and bias (beta)
+  var alpha = 0.00001;
+  var beta = 0.1;
+
+  canvasLine.addEventListener('click', function(event) {
+  // adds a point to the coordinate canvas where user has clicked
+    
+    const {offsetX,offsetY} = event;
+
+    ctxCoord.fillStyle = "#4B77BE";
+    ctxCoord.beginPath();
+    ctxCoord.arc(offsetX, offsetY, 3, 0, 2*Math.PI);
+    ctxCoord.fill();
+
+    // save point coordinates in cartesian system
+    coords = screenToCartesian(offsetX, offsetY);
+
+    XY.x.push(coords[0]);
+    XY.y.push(coords[1]);
+
+    resetParameters();
+
+    clearSolution();
+
+    gradientDescent();
+  });
+
+  function resetParameters() {
+    w1 = Math.random();
+    b = Math.random();
+  }
+
+  function screenToCartesian(x, y) {
+    // convert cartesian screen coordinates to cartesian coordinates
+    x = x  >= 250 ? (x-250) : -(250-x);
+    y = y  >= 250 ? -(y-250) : (250-y);
+    return [x, y]
+  }
+
+  function clearSolution() {
+    output.innerHTML = "";
+  }
+
+  async function gradientDescent() {
+
+    var previousLoss = 0;
+    const convergenceEpsilon = 0.01;
+
+    while (true) {
+      predictions = forward(XY.x);
+
+      loss = meanSquaredError(predictions);
+      
+      gradients = backward(predictions)
+      
+      // update m and b
+      w1 = w1 - alpha * gradients.w1;
+      b = b - beta * gradients.b;
+
+      drawFunction();
+
+      await sleep(updateTime);
+
+      if (loss > previousLoss) {
+        halfLearningRate();
+
+      } else if (Math.abs(loss - previousLoss) < convergenceEpsilon) {
+        break;
+      }
+      
+      previousLoss = loss;
+    }
+    
+    printSolution();
+  }
+
+  function forward(x) {
+    // model prediction; x can be number or list
+    if (typeof x == 'number') {
+      return w1 * x + b;
+    } else if (typeof x == 'object') {
+      var predictions = [];
+      for (var i=0; i<x.length; i++) {
+        predictions.push(forward(x[i]));
+      }
+      return predictions;
+    } else {
+      console.log(x);
+      throw "Expected number or object, got " + (typeof x);
+    }
+  }
+
+  function meanSquaredError(predictions) {
+    // calculate the mean squared error of current solution: (y - y') ** 2
+    // predictions : list of model predictions
+    var loss = 0;
+    const N = XY.x.length;
+    for (var i=0; i<N; i++) {
+      loss += (XY.y[i] - predictions[i]) ** 2;
+    }
+    loss = loss / N;
+    return loss;
+  }
+  
+function backward(predictions) {
+    // calcualte the gradients of m and b
+    // predictions : list of model predictions
+    var dw1 = 0;
+    var db = 0;
+    const N = XY.x.length;
+    for (var i=0; i<N; i++) {
+        dw1 += -2 * XY.x[i] * (XY.y[i] - predictions[i]);
+        db  += -2           * (XY.y[i] - predictions[i]);
+    }
+    dw1 = dw1 / N;
+    db = db / N;
+    return {w1: dw1, b: db};
+  }
+
+  function drawFunction() {
+    // draws model function
+    ctxLine.strokeStyle = "#C91F37";
+    ctxLine.beginPath();
+    for (var x=-250; x<=250; x++) {
+      const coords = cartesianToScreen(x, forward(x));
+      ctxLine.lineTo(coords[0], coords[1]);
+    }
+    ctxLine.lineJoin = 'round';
+    ctxLine.clearRect(0, 0, canvasLine.width, canvasLine.height);
+    ctxLine.stroke();
+  }
+
+  function cartesianToScreen(x, y) {
+    // convert cartesian coordinates to screen coordinates
+    x = x > 0 ? x+250 : x+250;
+    y = y > 0 ? 250-y : 250-y;
+    return [x, y];
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function halfLearningRate() {
+    return [alpha/2, beta/2];
+  }
+
+  function printSolution() {
+    // outputs solution formula in mathjax
+    output.innerHTML = "$f(x) = " + w1.toFixed(3).toString() + " * x + " + b.toFixed(3).toString() + "$";
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+  } 
+
+</script>
