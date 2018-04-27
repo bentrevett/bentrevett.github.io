@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <!-- Load TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.9.0"> </script>
+
+    <!-- Place your code in the script tag below. You can also use an external .js file -->
+    <script>
+      async function myFirstTfjs() {
+      // Create a simple model.
+      const model = tf.sequential();
+      console.log('Adding layers');
+      model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+      console.log('Compiling model');
+      const optimizer = tf.train.sgd(0.0001);
+      // Prepare the model for training: Specify the loss and the optimizer.
+      model.compile({
+        loss: 'meanSquaredError',
+        optimizer: optimizer,
+      });
+      console.log('Generating data');
+      //0 to 99
+      var x_array = Array.from({length: 100}, () => Math.floor(Math.random() * 100));
+      var y_array = x_array.map(i => (i * 2) - 1)
+      const xs = tf.tensor2d(x_array, [100,1]);
+      const ys = tf.tensor2d(y_array, [100,1]);
+      console.log('Fitting model')
+      // Train the model using the data.
+      await model.fit(xs, ys, {epochs: 5});
+      console.log('Making prediction')
+      // Use the model to do inference on a data point the model hasn't seen.
+      model.predict(tf.tensor2d([100], [1, 1])).print()
+    }
+    myFirstTfjs();
+    </script>
+  </head>
+
+  <body>
+  </body>
+</html>
