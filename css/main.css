@@ -5,17 +5,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
-nav ul, footer ul {
-    font-family:'Open Sans', 'Helvetica Neu','Helvetica', 'Arial', 'Sans-Serif';
-    padding: 0px;
-    list-style: none;
-    font-weight: bold;
-}
-nav ul li, footer ul li {
-    color: #0000FF;
-    display: inline;
-    margin-right: 20px;
-}
+
 a {
     text-decoration: none;
     color: #0000FF;
@@ -37,9 +27,7 @@ p {
     line-height: 1.4em;
     color: #333;
 }
-footer {
-    border-top: 1px solid #d5d5d5;
-}
+
 div li {
     font-size: 1.5em;
     line-height: 1.4em;
@@ -55,6 +43,22 @@ body{
 
 h1,h2,h3{
     line-height:1.2em;
+}
+
+footer {
+    border-top: 1px solid #d5d5d5;
+}
+
+nav ul, footer ul {
+    padding: 0px;
+    list-style: none;
+    font-weight: bold;
+}
+
+nav ul li, footer ul li {
+    color: #0000FF;
+    display: inline;
+    margin-right: 20px;
 }
 
 code { 
