@@ -3,3 +3,4 @@ markdown: kramdown
 permalink: /blog/:year/:month/:day/:title
 encoding: UTF-8
 highlighter: rouge
+google_analytics: UA—124821553-1
