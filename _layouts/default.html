@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 	<html>
 		<head>
+            {% if site.google_analytics and jekyll.environment == 'production' %}
+                {% include analytics.html %}
+            {% endif %}
 			<title>{{ page.title }}</title>
 			<!-- link to main stylesheet -->
 			<link rel="stylesheet" type="text/css" href="/css/main.css">
@@ -9,9 +12,7 @@
 			{% if page.use_mathjax %}
 				{% include mathjax.html %}
 			{% endif %}
-            {% if site.google_analytics and jekyll.environment == 'production' %}
-                {% include analytics.html %}
-            {% endif %}
+            
 		</head>
 		<body>
 			<nav>
