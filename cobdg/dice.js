@@ -10,7 +10,8 @@ rollDice = function() {
     var c1Roll = Math.floor(Math.random() * 6) + 1;
     var c2Roll = Math.floor(Math.random() * 6) + 1;
     var tRoll = Math.floor(Math.random() * 6) + 1;
-    
+
+    //time dice only has 2 hourglasses on 2/6 faces
     if (tRoll > 2) {
         tRoll = 1;
     } 
@@ -25,6 +26,10 @@ rollDice = function() {
     tDice.src = "t" + tRoll.toString() + ".png";
 }
 
+//need this to work on iphones
 let touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
 
-document.addEventListener(touchEvent, rollDice); 
+document.addEventListener(touchEvent, rollDice);
+
+//rolls dice on page load
+window.onload = rollDice;
