@@ -25,4 +25,6 @@ rollDice = function() {
     tDice.src = "t" + tRoll.toString() + ".png";
 }
 
-document.addEventListener('click', rollDice); 
+let touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
+
+document.addEventListener(touchEvent, rollDice); 
