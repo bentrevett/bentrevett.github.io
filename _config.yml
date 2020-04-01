@@ -1,11 +1,13 @@
 title: Idiot's Domain
 
+author:
+  name: >
+  email: bbt1 [at] hw [dot] ac [dot] uk
+
 description: >
   This is my blog. There are many like it, but this one is mine.
 
-email: bbt1 [at] hw [dot] ac [dot] uk
-
-show_excerpts: false # set to true to show excerpts on the homepage
+show_excerpts: false
 
 minima:
   date_format: "%b %-d, %Y"
