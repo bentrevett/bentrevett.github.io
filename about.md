@@ -3,7 +3,7 @@ layout: page
 title: About
 ---
 
-![](assets/me.jpg)
+My name is Ben Trevett.
 
 I have a first class honors masters degree in Digital Electronics from the University of Sheffield.
 
