@@ -1,7 +1,9 @@
 ---
 layout: page
-title: about
+title: About
 ---
+
+![](assets/me.jpg)
 
 I have a first class honors masters degree in Digital Electronics from the University of Sheffield.
 
