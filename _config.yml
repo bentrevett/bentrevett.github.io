@@ -12,12 +12,14 @@ show_excerpts: false
 minima:
   date_format: "%b %-d, %Y"
 
-social_links:
-  twitter: ben_trevett
-  github:  bentrevett
+  social_links:
+    twitter: ben_trevett
+    github:  bentrevett
 
 header_pages:
  - about.md
+
+google_analytics: UA-124821553-1
 
 theme: minima
 
