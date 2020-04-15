@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Trick-taking card games
-categories: games
+title: Hello World!
+categories: misc
 author:
 - Ben Trevett
 ---
