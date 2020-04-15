@@ -18,7 +18,7 @@ minima:
 
 header_pages:
  - about.md
- - wiki
+ - wiki/index.html
 
 google_analytics: UA-124821553-1
 
