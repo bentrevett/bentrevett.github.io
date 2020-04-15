@@ -16,12 +16,8 @@ minima:
     twitter: ben_trevett
     github:  bentrevett
 
-include:
-  - wiki
-
 header_pages:
  - about.md
- - wiki/index.html
 
 google_analytics: UA-124821553-1
 
