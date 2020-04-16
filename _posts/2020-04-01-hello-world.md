@@ -8,9 +8,11 @@ author:
 
 Every blog needs a 'Hello World' post upon creation. That is the law.
 
-$$
-a = b^2 + c^2
-$$
+Equations inline: $$a + b = c$$.
+
+Display equation:
+
+$$a + b = c$$
 
 ```python
 def cross_entropy(p, q, eps = 1e-10):
