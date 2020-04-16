@@ -2,7 +2,6 @@
 layout: post
 title: Hello World!
 categories: misc
-use_math: true
 author:
 - Ben Trevett
 ---
