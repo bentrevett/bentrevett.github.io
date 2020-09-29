@@ -28,7 +28,7 @@ body {
     line-height: 1.5em; /* not have consecutive lines too close together */
     overflow: scroll; /* always show scroll bar to stop contents shifting when scroll bar not present */
     margin: auto; /* automatically center text */
-    font-size: 1.25vw; /* automatically adjust font size */
+    font-size: 1.2em;
 }
 
 ::selection {
