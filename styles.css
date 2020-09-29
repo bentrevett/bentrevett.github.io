@@ -1,35 +1,37 @@
 table {
+    position: static;
     width: 100%; /* tables should span the page width */
 }
 
 hr {
-    border: 3px solid blue;
-    background-color: blue;
+    border: 3px solid blue; /* horiztonal line should be thick and blue */
+    background-color: blue; /* needed to make line solid */
 }
 
 a:link {
-    color: blue;
+    color: blue; /* unvisited links */
 }
 
 a:visited {
-    color: blue;
+    color: blue; /* visited links, make same color as unvisited */
 }
 
 a:hover {
-    color: white;
-    background-color: blue;
-    cursor: pointer;
+    color: white; /* invert color */
+    background-color: blue; /* invert color */
+    cursor: pointer; /* turn cursor into a pointer */
 }
 
 body {
     font-family: monospace; /* use default monospace font */
-    max-width: 75em; /* set maximum width for readability */
+    max-width: 80ch; /* set maximum width for readability */
     line-height: 1.5em; /* not have consecutive lines too close together */
-    margin-left: 10em; /* have some space on the left hand side of the text */
-    margin-right: 10em; 
+    overflow: scroll; /* always show scroll bar to stop contents shifting when scroll bar not present */
+    margin: auto; /* automatically center text */
+    font-size: 1.25vw; /* automatically adjust font size */
 }
 
 ::selection {
-    color: white;
-    background-color: blue;
+    color: white; /* invert color when highlighting */
+    background-color: blue; /* invert color when highlighting */
 }
