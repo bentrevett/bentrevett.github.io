@@ -18,7 +18,7 @@ a:hover { /* invert link color on hover */
 }
 
 body {
-    font-family: 'DejaVu Sans Mono'; /* explicitly set font */
+    font-family: 'DejaVu Sans Mono', 'Courier New', Courier, monospace; /* explicitly set font */
     max-width: 80ch; /* set maximum width for readability */
     line-height: 1.5em; /* not have consecutive lines too close together */
     overflow: scroll; /* always show scroll bar to stop contents shifting when scroll bar not present */
