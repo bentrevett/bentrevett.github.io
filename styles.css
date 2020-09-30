@@ -1,5 +1,5 @@
 table {
-    width: 100%; /* tables should span the page width */
+    width: 100%; /* tables should span the body width */
 }
 
 hr {
@@ -7,22 +7,14 @@ hr {
     background-color: red; /* needed to make line solid */
 }
 
-a:visited {
-    transition: color 1s, background-color 1s;
-    color: red; /* visited links, make same color as unvisited */
+a { /* default link color */
+    color: red; 
     background-color: white;
 }
 
-a:link {
-    transition: color 1s, background-color 1s;
-    color: red; /* unvisited links */
-    background-color: white;
-}
-
-a:hover {
-    transition: color 1s, background-color 1s; /* color inversion transition when hovering */
-    color: white; /* invert color */
-    background-color: red; /* invert color */
+a:hover { /* invert link color on hover */
+    color: white; 
+    background-color: red;
 }
 
 body {
@@ -31,10 +23,10 @@ body {
     line-height: 1.5em; /* not have consecutive lines too close together */
     overflow: scroll; /* always show scroll bar to stop contents shifting when scroll bar not present */
     margin: auto; /* automatically center text */
-    font-size: 1.2em;
+    font-size: 1.2em; /* bigger font size */
 }
 
-::selection {
-    color: white; /* invert color when highlighting */
-    background-color: red; /* invert color when highlighting */
+::selection { /* invert color when highlighting */
+    color: white;
+    background-color: red;
 }
