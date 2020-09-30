@@ -18,7 +18,6 @@ a:visited {
 a:hover {
     color: white; /* invert color */
     background-color: blue; /* invert color */
-    cursor: pointer; /* turn cursor into a pointer */
 }
 
 body {
