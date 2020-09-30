@@ -3,21 +3,26 @@ table {
 }
 
 hr {
-    border: 3px solid blue; /* horiztonal line should be thick and blue */
-    background-color: blue; /* needed to make line solid */
-}
-
-a:link {
-    color: blue; /* unvisited links */
+    border: 3px solid red; /* horiztonal line should be thick and red */
+    background-color: red; /* needed to make line solid */
 }
 
 a:visited {
-    color: blue; /* visited links, make same color as unvisited */
+    transition: color 1s, background-color 1s;
+    color: red; /* visited links, make same color as unvisited */
+    background-color: white;
+}
+
+a:link {
+    transition: color 1s, background-color 1s;
+    color: red; /* unvisited links */
+    background-color: white;
 }
 
 a:hover {
+    transition: color 1s, background-color 1s; /* color inversion transition when hovering */
     color: white; /* invert color */
-    background-color: blue; /* invert color */
+    background-color: red; /* invert color */
 }
 
 body {
@@ -31,5 +36,5 @@ body {
 
 ::selection {
     color: white; /* invert color when highlighting */
-    background-color: blue; /* invert color when highlighting */
+    background-color: red; /* invert color when highlighting */
 }
