@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../styles.css">
+        <title>Ben Trevett</title>
+    </head>
+    <body>
+        <!-- begin header -->
+        <table>
+            <td style="text-align:left">
+                <b>Ben Trevett</b>
+            </td>
+            <td style="text-align:right">
+                <a href="../index.html">Home</a>
+            </td>
+        </table>
+        <hr>
+        <!-- end header -->
+
+        <h1>Language Modelling Tips</h1>
+
+        <p>Nobody actually uses standard language modelling anymore, it's all masked language modelling with Transformers now. Anyway if you're a hardcore LSTM fanboy then here's some sequential language modelling tips.</p>
+
+        <p>First, language modelling is always explained as the task of predicting the word that follows a given sequence of words. So you'd probably start off by having your input be a sequence and then having a single output/prediction of what the following word should be.</p>
+
+        <p>IMAGE OF SINGLE PREDICTION HERE.</p>
+
+        <p>If you have a sequence length of ten, why only make one prediction? Why not make ten? Your targets should be the input sequence shifted by one</p>
+
+        <p>IMAGE OF MULTIPLE PREDICTIONS HERE.</p>
+
+        <p>You're now calculating your loss over ten times as many predictions. You are literally a 10x machine learning engineer.</p>
+
+        <p>I also believe this helps regulate the hidden states before the final time-step as if they only need to be in a good position to make a prediction at the end of the sequence then who knows what they're doing between the initial hidden state and then?</p>
+
+        <p>Second, the way you present your data to the model is important. If you're coming to language modelling after doing something like text classification you'll probably start off by sampling sequences at random from the dataset. This is bad.</p>
+
+        <p>IMAGE OF TWO EXAMPLES THAT DON'T FOLLOW ON FROM EACH OTHER.</p>
+
+        <p>You want to preserve the sequential nature of the data. Using a toy dataset that's just the integers one to a million and a sequence length of ten then you want the first example to be [0,1,2,3,4,5,6,7,8,9] and the second example to be [10,11,12,13,14,15,16,17,18,19].</p>
+
+        <p>IMAGE OF TWO EXAMPLES THAT DO FOLLOW ON FROM EACH OTHER.</p>
+
+        <p>This is because you want to retain the last hidden (and cell) state of your LSTM after the first example to be used as the initial hidden state of your LSTM in the next example. If not then the second example is going to most probably start off in the middle of the sentence and the language model isn't going to have a clue what is going on.</p>
+
+        <p>That's all fine and dandy with a batch size of one, but how does this extend to more than one example at a time?</p>
+
+        <p>IMAGE OF DATA SPLITTING HERE</p>
+
+        <p>Yadda yadda.</p>
+
+        <p>IMAGE OF TWO EXAMPLES WITH MULTIPLE EXAMPLES PER BATCH THAT ALL FOLLOW ON FROM EACH OTHER.</p>
+
+        <p>to add: variable sequence-length parameter - remember to scale the learning rate appropriately.</p>
+
+        <p>variational dropout and dropconnect? or leave that to a second post? probably a second post.</p>
+
+        <br>
+        <!-- begin footer -->
+        <hr>
+        <table>
+            <td style="text-align:right">
+                <a href="#">Top</a>
+            </td>
+        </table>
+        <!-- end footer -->
+    </body>
+</html>
