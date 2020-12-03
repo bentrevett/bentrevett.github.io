@@ -34,3 +34,7 @@ body {
     color: white; /* invert color when highlighting */
     background-color: blue; /* invert color when highlighting */
 }
+
+li {
+    margin: 5px 0;
+}
