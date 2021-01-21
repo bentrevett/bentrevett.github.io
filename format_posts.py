@@ -1,5 +1,8 @@
 import os
 import subprocess
+import proselint
+import language_tool_python
+tool = language_tool_python.LanguageTool('en-US')
 
 html_template = """<!DOCTYPE html>
 <html>
@@ -40,6 +43,34 @@ html_template = """<!DOCTYPE html>
     </body>
 </html>"""
 
+def check_grammar(md_path):
+
+    with open(md_path, 'r') as f:
+        content = f.read()
+    suggestions = tool.check(content)
+
+    for suggestion in suggestions:
+        if suggestion.ruleId == 'EN_QUOTES':
+            pass
+        else:
+            suggestion = str(suggestion)
+            suggestion = suggestion.replace('\n', '\n\t')
+            print(f'\t{suggestion}')
+
+    return suggestions
+
+def check_prose(md_path):
+
+    with open(md_path, 'r') as f:
+        content = f.read()
+    suggestions = proselint.tools.lint(content)
+
+    for suggestion in suggestions:
+        check, message, line, column, *_ = suggestion
+        print(f'\t{md_path}:{line}:{column}: {check} {message}')
+
+    return suggestions
+
 def get_html_from_md(title, md_path):
 
     html_content = subprocess.run(['pandoc', '-f', 'markdown', '-t', 'html', md_path],
@@ -57,6 +88,8 @@ for md_path in md_paths:
     title = md_path.split('.md')[0]
     md_path = os.path.join('posts', md_path)
     print(f'generating html from {md_path}')
+    grammar_suggestions = check_grammar(md_path)
+    prose_suggestions = check_prose(md_path)
     html = get_html_from_md(title, md_path)
     html_path = md_path.replace('.md', '.html')
     with open(html_path, 'w') as f:
