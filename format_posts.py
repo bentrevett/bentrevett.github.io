@@ -85,7 +85,7 @@ def get_html_from_md(title, md_path):
 md_paths = [path for path in os.listdir('posts') if path.endswith('.md')]
 
 for md_path in md_paths:
-    title = md_path.split('.md')[0]
+    title = md_path.split('.md')[0].title()
     md_path = os.path.join('posts', md_path)
     print(f'generating html from {md_path}')
     grammar_suggestions = check_grammar(md_path)
