@@ -40,14 +40,14 @@ Research is similar to journalism in the fact that some authors get a "beat", a 
 
 I found this website through the author's [Proof of X](https://julian.digital/2020/08/06/proof-of-x/) post, which I enjoyed, but I mostly enjoy the website's simple and clean design. I've been collecting a few links on simple websites for the last few weeks:
 
-* https://1mb.club/
-* https://simplifier.neocities.org/
-* https://neat.joeldare.com/
-* https://100r.co/site/home.html
-* https://marijnflorence.neocities.org/linkroll/
-* https://webring.xxiivv.com/
-* https://dreamwiki.sixey.es/welcome.dream/
-* https://drewdevault.com/
-* https://andybrewer.github.io/mvp/
+* <https://1mb.club/>
+* <https://simplifier.neocities.org/>
+* <https://neat.joeldare.com/>
+* <https://100r.co/site/home.html>
+* <https://marijnflorence.neocities.org/linkroll/>
+* <https://webring.xxiivv.com/>
+* <https://dreamwiki.sixey.es/welcome.dream/>
+* <https://drewdevault.com/>
+* <https://andybrewer.github.io/mvp/>
 
 Oh yeah, bring back [webrings](https://en.wikipedia.org/wiki/Webring).
