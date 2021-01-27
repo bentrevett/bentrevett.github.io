@@ -10,6 +10,7 @@ hr {
 
 a:link {
     color: blue; /* unvisited links */
+    font-weight: bold; /* links should be bold, to stand out */
 }
 
 a:visited {
