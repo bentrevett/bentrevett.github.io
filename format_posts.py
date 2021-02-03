@@ -88,8 +88,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('file_name', type=str, nargs='?', default=None)
 args = parser.parse_args()
 
-print(args.file_name)
-
 if args.file_name is None:
     md_paths = [path for path in os.listdir('posts') if path.endswith('.md')]
 else:
