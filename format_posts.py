@@ -1,7 +1,9 @@
-import os
-import subprocess
-import proselint
+import argparse
 import language_tool_python
+import os
+import proselint
+import subprocess
+
 tool = language_tool_python.LanguageTool('en-US')
 
 html_template = """<!DOCTYPE html>
@@ -82,7 +84,16 @@ def get_html_from_md(title, md_path):
 
     return html
 
-md_paths = [path for path in os.listdir('posts') if path.endswith('.md')]
+parser = argparse.ArgumentParser()
+parser.add_argument('file_name', type=str, nargs='?', default=None)
+args = parser.parse_args()
+
+print(args.file_name)
+
+if args.file_name is None:
+    md_paths = [path for path in os.listdir('posts') if path.endswith('.md')]
+else:
+    md_paths = [path for path in os.listdir('posts') if (args.file_name in path and path.endswith('.md'))]
 
 for md_path in md_paths:
     title = md_path.split('.md')[0].title()
