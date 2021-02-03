@@ -10,6 +10,7 @@ html_template = """<!DOCTYPE html>
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="../styles.css">
+        <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
         <title>Ben Trevett - {}</title>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124821553-1"></script>
@@ -73,12 +74,18 @@ def check_prose(md_path):
 
     return suggestions
 
-def get_html_from_md(title, md_path):
+def get_html_from_md(md_path):
 
     html_content = subprocess.run(['pandoc', '-f', 'markdown', '-t', 'html', md_path],
                                   capture_output=True,
                                   check=True,
                                   text=True).stdout
+
+    with open(md_path, 'r') as f:
+        content = f.read()
+    header = content.split('\n')[0]
+    assert header.startswith('# '), f'{md_path} is missing a header!'
+    title = header.split('# ')[-1]
 
     html = html_template.format(title, html_content)
 
@@ -94,12 +101,11 @@ else:
     md_paths = [path for path in os.listdir('posts') if (args.file_name in path and path.endswith('.md'))]
 
 for md_path in md_paths:
-    title = md_path.split('.md')[0].title()
     md_path = os.path.join('posts', md_path)
     print(f'generating html from {md_path}')
     grammar_suggestions = check_grammar(md_path)
     prose_suggestions = check_prose(md_path)
-    html = get_html_from_md(title, md_path)
+    html = get_html_from_md(md_path)
     html_path = md_path.replace('.md', '.html')
     with open(html_path, 'w') as f:
         f.write(html)
