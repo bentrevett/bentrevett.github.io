@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../styles.css">
+        <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+        <title>Ben Trevett - Weak Links IV</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124821553-1"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-124821553-1');
+        </script>
+    </head>
+    <body>
+        <!-- begin header -->
+        <table>
+            <td style="text-align:left">
+                <b>Ben Trevett</b>
+            </td>
+            <td style="text-align:right">
+                <a href="https://bentrevett.com">Home</a> | <a href="https://www.github.com/bentrevett/">GitHub</a> | <a href="https://www.twitter.com/ben_trevett/">Twitter</a>
+            </td>
+        </table>
+        <hr>
+        <!-- end header -->
+
+<h1 id="weak-links-iv">Weak Links IV</h1>
+<p>On the recurring theme of tweaking the website, the index page is now generated from Markdown too. This was mainly done for consistency with the posts and the fact that it’s a lot nicer to write in Markdown than it is in HTML.</p>
+<p>I finished writing a <a href="https://github.com/bentrevett/a-tour-of-pytorch-optimizers">short tutorial</a> on how different gradient descent optimizers work, with a focus on ones used in PyTorch. There has been a significant amount of new optimizers proposed since <a href="https://arxiv.org/abs/1412.6980">Adam</a> in 2014, but none have caught on. Most people seem to be fiddling around with learning rate schedulers, such as cosine annealing or using a warm-up then cool-down schedule when fine-tuning a pre-trained model.</p>
+<h2 id="links">Links</h2>
+<h3 id="httpsmonetize.substack.compopen-source-eras">https://monetize.substack.com/p/open-source-eras</h3>
+<p>Open source software has taken over the world. This is a good thing. However, open source software is maintained by few people, all of whom receive little funding whilst their software is used by multi-billion dollar companies. This is not a good thing. I don’t think the GitHub Sponsors/Patreon payment model will work for anyone except a few whales. Most open source software now is created with the aims of using it as a marketing tool in order to sell business/enterprise support. Are people mainly doing this as a way to support their open source software? Or did they do all of this just to make money? To the independent software developer it doesn’t matter at all. They get access to high quality open source software without paying a penny, see: <a href="https://github.com/huggingface/transformers">transformers</a>, <a href="https://github.com/wandb/client">wandb</a>, etc.</p>
+<h3 id="httpsmatklad.github.io20210206architecture.md.html">https://matklad.github.io//2021/02/06/ARCHITECTURE.md.html</h3>
+<p>More documentation is always good. Reading code is hard. Trying to read a monolithic code base in order to find something is extremely hard, especially because GitHub search is so awful. Always use <a href="https://grep.app/">grep.app</a> instead of GitHub search.</p>
+<h3 id="httpsbrandur.orgfragmentsgraceful-degradation-time">https://brandur.org/fragments/graceful-degradation-time</h3>
+<p>You should write your website in Markdown and use Git for version control, because these things will last a long time. Hey, look, that’s exactly what I’m doing on my website!</p>
+<h3 id="httpsmeltingasphalt.cominteractivegoing-critical">https://meltingasphalt.com/interactive/going-critical/</h3>
+<p>Fun visualizations showing how complex systems can be created by constantly adding simple rules. Especially interesting is the fact they used it to model the spread of diseases back in 2019.</p>
+<h3 id="httpsgithub.compytorchlightningpytorch-lightning">https://github.com/PyTorchLightning/pytorch-lightning</h3>
+<p>The lead of pytorch-lightning got into trouble recently because his new library, <a href="https://github.com/PyTorchLightning/lightning-flash">lightning-flash</a>, was apparently a little too similar to the <a href="https://github.com/fastai/fastai">fastai</a> library. This caused some Twitter drama, which nobody enjoys, but at least it caused me to finally check out pytorch-lightning.</p>
+<p>My verdict? I’m split. The main two classes are the <code>LightningModule</code> and the <code>Trainer</code>. The <code>LightningModule</code> is a wrapper around PyTorch modules and the <code>Trainer</code> performs the train-val-test loop. It is definitely a good thing that there exists well tested code for the train-val-test loop. It saves other developers having to write potentially buggy implementations themselves. The downside is that because you need this structure in the train-val-test loop you need your PyTorch module wrapped up in a <code>LightningModule</code> which uses a weird mismatch of inheritance and callbacks, both of which are good things but really don’t work well together here. Or maybe I’m just too used to plain PyTorch. Saying that, I do like the fact that it doesn’t abstract code away but merely re-arranges it, and I do like some extra things included in the <code>Trainer</code>, like being able to run two validation batches at the beginning of training just to check for bugs. I only train models on a single GPU, so I can’t speak for how well it generalizes code to multi-GPU, but I’ve heard good things.</p>
+<p>Speaking of ML/DL libraries, <a href="https://github.com/huggingface/datasets">HuggingFace datasets</a> is great.</p>
+<h3 id="httpswww.thisworddoesnotexist.com">https://www.thisworddoesnotexist.com/</h3>
+<p>Probably the best use of NLP ever.</p>
+
+        <!-- begin footer -->
+        <hr>
+        <table>
+            <td style="text-align:right">
+                <a href="#">Top</a>
+            </td>
+        </table>
+        <!-- end footer -->
+    </body>
+</html>
