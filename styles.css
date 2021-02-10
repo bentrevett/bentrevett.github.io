@@ -37,5 +37,5 @@ body {
 }
 
 li {
-    margin: 5px 0;
+    margin: 5px; /* space between list elements */
 }
