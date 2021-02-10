@@ -6,3 +6,4 @@
 * https://madewithml.com/courses/applied-ml/
 * https://huyenchip.com/machine-learning-systems-design/toc.html
 * https://stanford-cs329s.github.io/syllabus.html
+* https://huggingface.co/blog/accelerated-inference
