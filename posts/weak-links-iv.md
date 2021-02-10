@@ -6,23 +6,19 @@ I finished writing a [short tutorial](https://github.com/bentrevett/a-tour-of-py
 
 ## Links
 
-### https://monetize.substack.com/p/open-source-eras
-
-Open source software has taken over the world. This is a good thing. However, open source software is maintained by few people, all of whom receive little funding whilst their software is used by multi-billion dollar companies. This is not a good thing. I don't think the GitHub Sponsors/Patreon payment model will work for anyone except a few whales. Most open source software now is created with the aims of using it as a marketing tool in order to sell business/enterprise support. Are people mainly doing this as a way to support their open source software? Or did they do all of this just to make money? To the independent software developer it doesn't matter at all. They get access to high quality open source software without paying a penny, see: [transformers](https://github.com/huggingface/transformers), [wandb](https://github.com/wandb/client), etc.
-
-### https://matklad.github.io//2021/02/06/ARCHITECTURE.md.html
-
-More documentation is always good. Reading code is hard. Trying to read a monolithic code base in order to find something is extremely hard, especially because GitHub search is so awful. Always use [grep.app](https://grep.app/) instead of GitHub search.
-
-### https://brandur.org/fragments/graceful-degradation-time
+### [Blog with Markdown + Git, and degrade gracefully through time](https://brandur.org/fragments/graceful-degradation-time)
 
 You should write your website in Markdown and use Git for version control, because these things will last a long time. Hey, look, that's exactly what I'm doing on my website!
 
-### https://meltingasphalt.com/interactive/going-critical/
+### [The After Open Source Era Has Started](https://monetize.substack.com/p/open-source-eras)
 
-Fun visualizations showing how complex systems can be created by constantly adding simple rules. Especially interesting is the fact they used it to model the spread of diseases back in 2019.
+Open source software has taken over the world. This is a good thing. However, open source software is maintained by few people, all of whom receive little funding whilst their software is used by multi-billion dollar companies. This is not a good thing. I don't think the GitHub Sponsors/Patreon payment model will work for anyone except a few whales. Most open source software now is created with the aims of using it as a marketing tool in order to sell business/enterprise support. Are people mainly doing this as a way to support their open source software? Or did they do all of this just to make money? To the independent software developer it doesn't matter at all. They get access to high quality open source software without paying a penny, see: [transformers](https://github.com/huggingface/transformers), [wandb](https://github.com/wandb/client), etc.
 
-### https://github.com/PyTorchLightning/pytorch-lightning
+### [ARCHITECTURE.md](https://matklad.github.io//2021/02/06/ARCHITECTURE.md.html)
+
+More documentation is always good. Reading code is hard. Trying to read a monolithic code base in order to find something is extremely hard, especially because GitHub search is so awful. Always use [grep.app](https://grep.app/) instead of GitHub search.
+
+### [PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning)
 
 The lead of pytorch-lightning got into trouble recently because his new library, [lightning-flash](https://github.com/PyTorchLightning/lightning-flash), was apparently a little too similar to the [fastai](https://github.com/fastai/fastai) library. This caused some Twitter drama, which nobody enjoys, but at least it caused me to finally check out pytorch-lightning.
 
@@ -30,6 +26,10 @@ My verdict? I'm split. The main two classes are the `LightningModule` and the `T
 
 Speaking of ML/DL libraries, [HuggingFace datasets](https://github.com/huggingface/datasets) is great.
 
-### https://www.thisworddoesnotexist.com/
+### [Going Critical](https://meltingasphalt.com/interactive/going-critical/)
+
+Fun visualizations showing how complex systems can be created by constantly adding simple rules. Especially interesting is the fact they used it to model the spread of diseases back in 2019.
+
+### [This Word Does Not Exist](https://www.thisworddoesnotexist.com/)
 
 Probably the best use of NLP ever.
