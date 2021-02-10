@@ -7,3 +7,4 @@
 * https://huyenchip.com/machine-learning-systems-design/toc.html
 * https://stanford-cs329s.github.io/syllabus.html
 * https://huggingface.co/blog/accelerated-inference
+* Machine Learning Design Patterns book
