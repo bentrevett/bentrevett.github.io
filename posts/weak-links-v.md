@@ -1,0 +1,50 @@
+# Weak Links V
+
+No website tweaks this week. Instead, I went ahead and bought an ergomic keyboard, the [Microsoft Ergonimic](https://www.amazon.co.uk/dp/B07YGNN6N1). I've only ever used the cheapest keyboards possible -- I was only on the market for a new keyboard because the shift, backspace and control keys of my previous one kept jamming -- but decided to finally splash out.
+
+This week I'm just going to write about things I like, because why not?
+
+## Links
+
+### [Vimium](https://github.com/philc/vimium/)
+
+My first thoughts on the Microsoft Ergonomic were that it looks stupid and I hate typing on it. After about an hour of using it I have decided it is one of the greatest things I've ever purchased. The way your hands rest in the two valleys is perfect for comfort. It is so comfortable that I now find using the mouse to be awkward and jarring. To cut down on the amount of mouse usage I installed [Vimium](https://github.com/philc/vimium/) which has taken some getting used to as I could never be bothered to learn Vim and always just used Visual Studio Code. The most useful Vimium shortcut is `f` which slaps on a two letter code to every link on the page, and typing in that code takes you to that link. The other useful ones are `j` and `k` for moving down and up a page -- though I always feel like "up" should always come before "down" so `j` should go up, but that's something I've not gotten used to. `x` closes a tab, and `X` opens the last closed tab -- for when you accidentally press `x`. `H` goes back and `L` goes forward, `J` goes one tab left and `K` goes one tab right. `o` opens a Chrome-like omnibar that also does searches through your history and bookmarks and opens it in the current tab, whilst `O` does the same but opens the link in a new tab. `yy` to copy the current URL to the clipboard, which it turns out I use more often than I thought I would. Finally, `?`, lets you view the shortcuts in case you forget, which I did a lot. Some websites are incompatible with Vimium and hijack your keyboard so you can't use shortcuts, which sucks. You can alleviate this a bit by ticking `Don't let pages steal the focus on load` in the Vimium options, but it doesn't work everywhere.
+
+### [Bitwarden](https://bitwarden.com/)
+
+I used to use three passwords for everything: a short one for things I didn't care about, a longer one for things I did, and an even longer one for really important stuff like my e-mail account -- which is able to get the passwords of all of other things. Then, due to websites leaking passwords online, I had to keep changing my three passwords. Every new leak would mean three more passwords and eventually I lost track of which ones I changed and which ones I hadn't. I thought that there definitely had to be a better way of doing this, so decided to use a password manager. Initially, I used LastPass, but after running into a few issues with the LastPass Chrome extension I decided to move to Bitwarden, and haven't looked back (which is handy because as of a few days ago LastPass removed even more features from the free version).
+
+### [Visual Studio Code](https://code.visualstudio.com/)
+
+I do most of my programming in Python so my main two choices are to either write code in Visual Studio (VS) Code or PyCharm. I found PyCharm to be much too heavy to use, so settled on VS Code. Yes, I understand that PyCharm is an IDE and VS Code is a text editor, but the extension ecosystem that comes with VS Code does a good enough job at adding IDE features. The only other time I write Python code is exploring data or doing literate programming in a Jupyter notebook, and VS Code is starting to add notebook support -- although it is so buggy it is currently unusable.
+
+I also use VS Code for general writing. I maintain a personal [Zettlekasten](https://en.wikipedia.org/wiki/Zettelkasten) and also a set of notes about future projects and personal information, all done in VS Code.
+
+Some VS Code shortcuts that I am using frequently with my new keyboard:
+
+* `ctrl` + `P` to open the command bar, from there you can do most things
+* `ctrl` + `p` to open the file picker
+* `ctrl` + `b` to open/close the sidebar
+* `ctrl` + `f` to search within the current file
+* `ctrl` + `F` to search within all open files
+* `ctrl` + ` ` ` to open/close the terminal
+* `ctrl` + `tab` to change between tabs
+* `ctrl` + `\` to split the current window
+* `ctrl` + `page up/down` to change between windows
+* `ctrl` + `w` to close the current tab
+
+### [Paperpile](https://paperpile.com/)
+
+I save and organize a lot of research papers -- most of which I never read, but I like to pretend I will one day. I used to use Mendeley to do this, however I found Mendeley's sync functionality to be absolutely terrible. I had papers that I would repeatedly delete, only for them to re-sync to my library the next day. Mendeley is also owned by Elsevier, which I hate due to their stance on open access. I initially switch from Mendeley to Zotero, however I found Zotero lacking features that I wanted. I saw a tweet mentioning Paperpile and decided to check it out. I've found it to be the best academic paper manager, and this has only improved with the introduction of their iOS apps -- which allow me to read and annotate papers on my iPad, something Mendeley and Zotero could never do. The only downside is that it's not free, and costs $3 a month, which works out to about £25 a year. I'm more than happy to pay this, considering most subscriptions services now start at around £10 a month.
+
+### Kindle Paperwhite
+
+Getting a Kindle was the best decision I ever made for reading. I only ever read in bed and the backlight on the paperwhite means I don't have to struggle to get into the right position to read using a bedside lamp. I'm always looking at cutting down on the amount of stuff I have, and as much as physical books are nice things to own, it's infinitely easier to have thousands of books on a Kindle. Not to mention that it ends up saving you a lot of money if you know where to look for eBooks.
+
+### Wireless Headphones
+
+The ability to move around without a physical cable between you and your phone is a massive convenience. I got my wireless headphones, [Jaybird Vistas](https://www.amazon.co.uk/dp/B07VP91M7D) just before the pandemic hit and thought I'd massively regret getting them as I wouldn't be commuting or walking around as much, but it turns out the added convience holds when you're just moving about the house, or even if you want your phone charging nearby whilst you do some cleaning. I'm not sure how good the Jaybird Vista is compared to other wireless headphones as they're the only one I've tried, but happy with them.
+
+### [Flameshot](https://github.com/flameshot-org/flameshot)
+
+I like to take a lot of screenshots for making flashcards. Most of the time I only want to screenshot part of a page to the clipboard and paste it into the flashcard. Ubuntu comes with `gnome-screenshot` that has a selection tool but copying directly to clipboard doesn't work, so I use flameshot which I bind to `ctrl` + `shift` + `s`.
