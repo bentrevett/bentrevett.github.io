@@ -96,16 +96,17 @@ parser.add_argument('file_name', type=str, nargs='?', default=None)
 args = parser.parse_args()
 
 if args.file_name is None:
-    md_paths = [path for path in os.listdir('posts') if path.endswith('.md')]
+    md_paths = [path for path in os.listdir('source') if path.endswith('.md')]
 else:
-    md_paths = [path for path in os.listdir('posts') if (args.file_name in path and path.endswith('.md'))]
+    md_paths = [path for path in os.listdir('source') if (args.file_name in path and path.endswith('.md'))]
 
 for md_path in md_paths:
-    md_path = os.path.join('posts', md_path)
+    md_path = os.path.join('source', md_path)
     print(f'generating html from {md_path}')
     grammar_suggestions = check_grammar(md_path)
     prose_suggestions = check_prose(md_path)
     html = get_html_from_md(md_path)
-    html_path = md_path.replace('.md', '.html')
+    html_path = md_path.replace('source', 'posts')
+    html_path = html_path.replace('.md', '.html')
     with open(html_path, 'w') as f:
         f.write(html)
