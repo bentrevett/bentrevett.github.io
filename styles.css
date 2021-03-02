@@ -4,7 +4,7 @@ table {
 }
 
 hr {
-    border: 3px solid blue; /* horiztonal line should be thick and blue */
+    border: 3px solid blue; /* horizontal line should be thick and blue */
     background-color: blue; /* needed to make line solid */
 }
 
