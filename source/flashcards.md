@@ -1,3 +1,3 @@
 # Flashcards
 
-* https://paulbricman.com/
+- https://paulbricman.com/
