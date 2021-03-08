@@ -52,6 +52,7 @@ def get_html_from_md(md_path):
     return html
 
 md_path = 'index.md'
+print(f'formatting index.md')
 html = get_html_from_md(md_path)
 html_path = md_path.replace('.md', '.html')
 with open(html_path, 'w') as f:
