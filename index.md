@@ -35,7 +35,7 @@ Around once a week I round up all of the interesting articles I've seen online a
 - [Weak Links III](https://bentrevett.com/posts/weak-links-iii.html) (3 Feb, 2021)
 - [Weak Links IV](https://bentrevett.com/posts/weak-links-iv.html) (10 Feb, 2021)
 - [Weak Links V](https://bentrevett.com/posts/weak-links-v.html) (22 Feb, 2021)
-- [Weak Links VI](https://bentrevett.com/posts/weak-links-v.html) (8 March, 2021)
+- [Weak Links VI](https://bentrevett.com/posts/weak-links-vi.html) (8 March, 2021)
 
 ### Misc. Posts
 
