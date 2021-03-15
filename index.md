@@ -41,4 +41,5 @@ Around once a week I round up all of the interesting articles I've seen online a
 
 Posts that don't fit into the above section.
 
-- [Beginning](https://bentrevett.com/posts/beginning) (4 Jan, 2021)
+- [Beginning](https://bentrevett.com/posts/beginning.html) (4 Jan, 2021), an obligatory "Hello World!" post.
+- [Intelligence](https://bentrevett.com/posts/intelligence.html) (15 March, 2021), what does it meant to be intelligent?
