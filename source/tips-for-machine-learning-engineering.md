@@ -10,3 +10,4 @@
 - https://huggingface.co/blog/accelerated-inference
 - Machine Learning Design Patterns book
 - https://neptune.ai/blog/how-to-structure-organize-track-and-manage-reinforcement-learning-rl-projects
+- https://www.youtube.com/playlist?list=PL2UML_KCiC0UlY7iCQDSiGDMovaupqc83
