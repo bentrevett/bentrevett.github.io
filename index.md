@@ -43,3 +43,4 @@ Posts that don't fit into the above section.
 
 - [Beginning](https://bentrevett.com/posts/beginning.html) (4 Jan, 2021), an obligatory "Hello World!" post.
 - [Intelligence](https://bentrevett.com/posts/intelligence.html) (15 March, 2021), what does it meant to be intelligent?
+- [Conscious Coding Practice](https://bentrevett.com/posts/conscious-coding-practice.html) (18 March, 2021), how can you consciously practice coding?
