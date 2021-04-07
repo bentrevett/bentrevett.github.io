@@ -11,3 +11,7 @@
 - Machine Learning Design Patterns book
 - https://neptune.ai/blog/how-to-structure-organize-track-and-manage-reinforcement-learning-rl-projects
 - https://www.youtube.com/playlist?list=PL2UML_KCiC0UlY7iCQDSiGDMovaupqc83
+- https://www.reddit.com/r/MachineLearning/comments/m22ofn/d_why_does_everyone_talk_of_deployment_as/
+- https://www.reddit.com/r/datascience/comments/m22qso/why_does_everyone_talk_of_deployment_as_something/
+- https://github.com/binhnguyennus/awesome-scalability
+- https://www.youtube.com/watch?v=vcE9WGbi4QY&list=PL2UML_KCiC0UlY7iCQDSiGDMovaupqc83
