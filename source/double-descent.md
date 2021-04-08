@@ -8,3 +8,4 @@
 - https://towardsdatascience.com/deep-double-descent-when-more-data-and-bigger-models-are-a-bad-thing-3a3f108d5538
 - https://www.reddit.com/r/MachineLearning/comments/ml94yy/d_training_strategy_given_double_descent/
 - https://arxiv.org/abs/1912.06190
+- https://arxiv.org/abs/2008.01036
