@@ -1,3 +1,0 @@
-# Flashcards
-
-- https://paulbricman.com/
