@@ -14,14 +14,14 @@ You can contact me on [twitter](https://www.twitter.com/ben_trevett) or via [e-m
 
 ## Projects
 
-- **[UUIDv4 Generator](https://bentrevett.com/projects/uuid)**: A tool for generating UUIDv4s, because I didn't like the way the top result on Google generated them.
+- **[UUIDv4 Generator](projects/uuid)**: A tool for generating UUIDv4s, because I didn't like the way the top result on Google generated them.
 - **[easynlp](https://github.com/easynlp/easynlp)**: A library for performing natural language processing - such as zero-shot classification, translation, named entity recognition, summarization, and question answering - inference on given data utilizing the pre-trained models from [transformers](https://github.com/huggingface/transformers).
 - **[pytorch-sentiment-analysis](https://github.com/bentrevett/pytorch-sentiment-analysis)**: A tutorial on how to implement some common deep learning based sentiment analysis (text classification) models in PyTorch with torchtext, specifically the NBOW, GRU, bi-LSTM, CNN and Transformer models. Somehow got popular and has quite a few stars.
 - **[pytorch-seq2seq](https://github.com/bentrevett/pytorch-seq2seq)**: A tutorial implementing neural (deep learning based) sequence-to-sequence models in PyTorch with torchtext, by implementing six NMT papers. Also has quite a few stars and was used as a basis for the [official PyTorch language translation tutorial](https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html).
 - **[pytorch-image-classification](https://github.com/bentrevett/pytorch-image-classification)**: A tutorial covering how to implement some deep learning computer vision models in PyTorch with torchvision. Covers: a basic multi-layer perceptron, LeNet, AlexNet, VGG and ResNet.
 - **[a-tour-of-optimizers](https://github.com/bentrevett/a-tour-of-pytorch-optimizers)**: A tutorial on common optimization algorithms used for neural networks, including: SGD, Adagrad, Adadelta, RMSprop and Adam.
-- **[snake](https://bentrevett.com/projects/snake.html)**: Snake in Javascript.
-- **[difference](https://bentrevett.com/projects/difference.html)**: A timed mental maths game in Javascript
+- **[snake](projects/snake.html)**: Snake in Javascript.
+- **[difference](projects/difference.html)**: A timed mental maths game in Javascript
 
 ## Posts
 
