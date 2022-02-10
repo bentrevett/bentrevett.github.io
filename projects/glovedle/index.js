@@ -44,18 +44,23 @@ submit_btn.addEventListener("click", function () {
       result.innerHTML = `<strong>${guess_word}</strong> has a similarity of ${similarity}`;
       result.style.color = "blue";
     }
-    guesses.push({ guess: guess_word, similarity: similarity });
-    guesses.sort((a, b) => b.similarity - a.similarity);
-    var guesses_html_string = guesses
-      .map(
-        (a) =>
-          `${a.guess == target_word ? "<strong>" : ""}${a.guess}: ${
-            a.similarity
-          }${a.guess == target_word ? "</strong>" : ""}`
-      )
-      .join("<br>");
-    results = document.getElementById("results");
-    results.innerHTML = guesses_html_string;
+    if (
+      typeof guesses.map((x) => x.guess).find((x) => x == guess_word) ===
+      "undefined"
+    ) {
+      guesses.push({ guess: guess_word, similarity: similarity });
+      guesses.sort((a, b) => b.similarity - a.similarity);
+      var guesses_html_string = guesses
+        .map(
+          (a) =>
+            `${a.guess == target_word ? "<strong>" : ""}${a.guess}: ${
+              a.similarity
+            }${a.guess == target_word ? "</strong>" : ""}`
+        )
+        .join("<br>");
+      results = document.getElementById("results");
+      results.innerHTML = guesses_html_string;
+    }
   }
   document.getElementById("guess").value = "";
 });
