@@ -28,7 +28,7 @@ guess.addEventListener("keyup", function (event) {
 
 var submit_btn = document.getElementById("submit_button");
 submit_btn.addEventListener("click", function () {
-  var guess_word = document.getElementById("guess").value;
+  var guess_word = document.getElementById("guess").value.toLowerCase();
   var guess_vec = embeddings.get(guess_word);
   if (typeof guess_vec === "undefined") {
     result = document.getElementById("result");
