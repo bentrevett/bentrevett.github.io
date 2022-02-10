@@ -14,6 +14,7 @@ You can contact me on [twitter](https://www.twitter.com/ben_trevett) or via [e-m
 
 ## Projects
 
+- **[GloVedle](/projects/glovedle/)**: A version of [Wordle](https://www.powerlanguage.co.uk/wordle/) using [GloVe](https://nlp.stanford.edu/projects/glove/) embeddings.
 - **[Wordle Terminal](https://github.com/bentrevett/wordle-terminal)**: A Python port of [Wordle](https://www.powerlanguage.co.uk/wordle/) which is played in the terminal.
 - **[UUIDv4 Generator](projects/uuid)**: A tool for generating UUIDv4s, because I didn't like the way the top result on Google generated them.
 - **[easynlp](https://github.com/easynlp/easynlp)**: A library for performing natural language processing - such as zero-shot classification, translation, named entity recognition, summarization, and question answering - inference on given data utilizing the pre-trained models from [transformers](https://github.com/huggingface/transformers).
