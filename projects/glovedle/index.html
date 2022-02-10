@@ -11,7 +11,7 @@
             <p>The similarity is calculated using the <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> between the <a href="https://nlp.stanford.edu/projects/glove/">GloVe embeddings</a> of the guess and target words. The similarity value is between -1 and +1, where higher similarity is better, and similarity is 1 when the guess word equals the target word.</p>
             <p>Valid words are those which are in Wordle's list of valid words and have a GloVe embedding. The target word is randomly chosen from Wordle's list of target words that have a Glove embedding.
             <p>Inspired by <a href="https://semantle.novalis.org/">Semantle</a>, which uses <a href="https://code.google.com/archive/p/word2vec/">word2vec embeddings</a> instead of GloVe embeddings.</p>
-            <input placeholder="Guess" autocorrect="off" autocapitalize="none" autocomplete="off" id="guess">
+            <input placeholder="Guess" maxlength="5" autocorrect="off" autocapitalize="none" autocomplete="off" id="guess">
             <button id="submit_button">Submit</button>
             <p id="result"></p>
             <p id="results"></p>
