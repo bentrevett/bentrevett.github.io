@@ -32,7 +32,7 @@ submit_btn.addEventListener("click", function () {
   var guess_vec = embeddings.get(guess_word);
   if (typeof guess_vec === "undefined") {
     result = document.getElementById("result");
-    result.innerHTML = `<strong>${guess_word}</strong> is not in the vocabulary!`;
+    result.innerHTML = `<strong>${guess_word}</strong> is not a valid word!`;
     result.style.color = "red";
   } else {
     similarity = getCosineSimilarity(target_vec, guess_vec).toFixed(3);
