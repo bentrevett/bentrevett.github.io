@@ -10,7 +10,7 @@
             <p>It's like <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a>, but instead guessing a word and being given the positions of the correct letters, you are given the "similarity" between your guess word and the target word.</p>
             <p>The similarity is calculated using the <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> between the <a href="https://nlp.stanford.edu/projects/glove/">GloVe embeddings</a> of the guess and target words. The similarity value is between -1 and +1, where higher similarity is better, and similarity is 1 when the guess word equals the target word.</p>
             <p>Valid words are all those in GloVe embeddings: single words, all <strong>lower case</strong>. The target word is randomly chosen from Wordle's list of target words.
-            <p>Inspired by <a href="https://semantle.novalis.org/">Semantle</a>, which uses <a href="https://code.google.com/archive/p/word2vec/">word2vec embeddings</a> instead of GloVe.</p>
+            <p>Inspired by <a href="https://semantle.novalis.org/">Semantle</a>, which uses <a href="https://code.google.com/archive/p/word2vec/">word2vec embeddings</a> instead of GloVe embeddings.</p>
             <input placeholder="Guess" autocorrect="off" autocapitalize="none" autocomplete="off" id="guess">
             <button id="submit_button">Submit</button>
             <p id="result"></p>
