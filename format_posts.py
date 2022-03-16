@@ -92,7 +92,7 @@ def get_html_from_md(md_path):
     return html
 
 parser = argparse.ArgumentParser()
-parser.add_argument('file_name', type=str, nargs='?', default=None)
+parser.add_argument('--file_name', type=str, nargs='?', default=None)
 args = parser.parse_args()
 
 if args.file_name is None:
