@@ -33,17 +33,18 @@ One of my ~~2021~~ resolutions is to write more. Most of the writing will be abo
 
 Around once a week I round up all of the interesting articles I've seen online and post them alongside my comments and adjacent thoughts.
 
-- [Weak Links I](https://bentrevett.com/posts/weak-links-i.html) (20 Jan, 2021)
-- [Weak Links II](https://bentrevett.com/posts/weak-links-ii.html) (26 Jan, 2021)
-- [Weak Links III](https://bentrevett.com/posts/weak-links-iii.html) (3 Feb, 2021)
-- [Weak Links IV](https://bentrevett.com/posts/weak-links-iv.html) (10 Feb, 2021)
-- [Weak Links V](https://bentrevett.com/posts/weak-links-v.html) (22 Feb, 2021)
-- [Weak Links VI](https://bentrevett.com/posts/weak-links-vi.html) (8 March, 2021)
+- **[Weak Links I](https://bentrevett.com/posts/weak-links-i.html)** (20 Jan, 2021)
+- **[Weak Links II](https://bentrevett.com/posts/weak-links-ii.html)** (26 Jan, 2021)
+- **[Weak Links III](https://bentrevett.com/posts/weak-links-iii.html)** (3 Feb, 2021)
+- **[Weak Links IV](https://bentrevett.com/posts/weak-links-iv.html)** (10 Feb, 2021)
+- **[Weak Links V](https://bentrevett.com/posts/weak-links-v.html)** (22 Feb, 2021)
+- **[Weak Links VI](https://bentrevett.com/posts/weak-links-vi.html)** (8 March, 2021)
 
 ### Misc. Posts
 
 Posts that don't fit into the above section.
 
-- [Beginning](https://bentrevett.com/posts/beginning.html) (4 Jan, 2021), an obligatory "Hello World!" post.
-- [Intelligence](https://bentrevett.com/posts/intelligence.html) (15 March, 2021), what does it meant to be intelligent?
-- [Conscious Coding Practice](https://bentrevett.com/posts/conscious-coding-practice.html) (18 March, 2021), how can you consciously practice coding?
+- **[Beginning](posts/beginning.html)** (4 Jan, 2021), an obligatory "Hello World!" post.
+- **[Intelligence](posts/intelligence.html)** (15 March, 2021), what does it meant to be intelligent?
+- **[Conscious Coding Practice](posts/conscious-coding-practice.html)** (18 March, 2021), how can you consciously practice coding?
+- **[You Will Always Be Stupid and Naive](posts/you-will-always-be-stupid-and-naive.html)** (16 March, 2022), a retrospective look back on a previous post I made in 2016.
