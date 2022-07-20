@@ -4,6 +4,7 @@ html_template = """<!DOCTYPE html>
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="/lib/font-awesome.min.css">
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
         <title>Ben Trevett</title>
         <!-- Global site tag (gtag.js) - Google Analytics -->

@@ -1,5 +1,7 @@
 # Weak Links IV
 
+**<span style="color:grey">2021-02-10</span>**
+
 On the recurring theme of tweaking the website, the index page is now generated from Markdown too. This was mainly done for consistency with the posts and the fact that it's a lot nicer to write in Markdown than it is in HTML.
 
 I finished writing a [short tutorial](https://github.com/bentrevett/a-tour-of-pytorch-optimizers) on how different gradient descent optimizers work, with a focus on ones used in PyTorch. There has been a significant amount of new optimizers proposed since [Adam](https://arxiv.org/abs/1412.6980) in 2014, but none have caught on. Most people seem to be fiddling around with learning rate schedulers, such as cosine annealing or using a warm-up then cool-down schedule when fine-tuning a pre-trained model.

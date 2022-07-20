@@ -1,5 +1,7 @@
 # Weak Links II
 
+**<span style="color:grey">2021-01-26</span>**
+
 I've decided to keep up with constantly posting interesting links along with my comments and adjacent thoughts on them. It actually helps me write down a lot of things that I'm subconsciously thinking and haven't ever put down on paper or expressed to anyone else, which is good.
 
 The names of these posts has changed to *weak links*, because weak sounds like week, and I'd like to post these weekly but not actually commit to posting weekly, hence the pun. The name changed has also helped because I don't know how much longer I could've kept thinking of decent post titles.

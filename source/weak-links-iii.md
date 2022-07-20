@@ -1,5 +1,7 @@
 # Weak Links III
 
+**<span style="color:grey">2021-02-03</span>**
+
 I did a third post. If you do something three times does it finally count as a habit?
 
 I've been getting on fine with using bare URLs for the headers for links until this post, where I had a long link. Why haven't I noticed this before? Is there a correlation between short URLs and quality of posts? Shorter URLs usually imply the posts are from a personal website which usually, in my opinion, are higher quality than posts on social media websites which usually have long URLs full of tracking information. The long URL post here is from Medium, technically someone's Medium backup on their personal site, and although Medium isn't a social media website, it is usually a sign of low quality clickbait articles.
