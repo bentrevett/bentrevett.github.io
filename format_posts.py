@@ -93,6 +93,8 @@ def get_html_from_md(md_path):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file_name', type=str, nargs='?', default=None)
+parser.add_argument('--skip_prose', action="store_true")
+parser.add_argument("--skip_grammar", action="store_true")
 args = parser.parse_args()
 
 if args.file_name is None:
@@ -103,8 +105,10 @@ else:
 for md_path in md_paths:
     md_path = os.path.join('source', md_path)
     print(f'generating html from {md_path}')
-    grammar_suggestions = check_grammar(md_path)
-    prose_suggestions = check_prose(md_path)
+    if not args.skip_grammar:
+        grammar_suggestions = check_grammar(md_path)
+    if not args.skip_prose:
+        prose_suggestions = check_prose(md_path)
     html = get_html_from_md(md_path)
     html_path = md_path.replace('source', 'posts')
     html_path = html_path.replace('.md', '.html')
