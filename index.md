@@ -31,20 +31,20 @@ One of my ~~2021~~ resolutions is to write more. Most of the writing will be abo
 
 ### Weak Links
 
-Around once a week I round up all of the interesting articles I've seen online and post them alongside my comments and adjacent thoughts.
+~~Around once a week~~ Sometimes I round up all of the interesting articles I've seen online and post them alongside my comments and adjacent thoughts.
 
-- **[Weak Links I](https://bentrevett.com/posts/weak-links-i.html)** (20 Jan, 2021)
-- **[Weak Links II](https://bentrevett.com/posts/weak-links-ii.html)** (26 Jan, 2021)
-- **[Weak Links III](https://bentrevett.com/posts/weak-links-iii.html)** (3 Feb, 2021)
-- **[Weak Links IV](https://bentrevett.com/posts/weak-links-iv.html)** (10 Feb, 2021)
-- **[Weak Links V](https://bentrevett.com/posts/weak-links-v.html)** (22 Feb, 2021)
-- **[Weak Links VI](https://bentrevett.com/posts/weak-links-vi.html)** (8 March, 2021)
+- **<span style="color:grey">2021-01-20</span>** **[Weak Links I](posts/weak-links-i.html)**
+- **<span style="color:grey">2021-01-26</span>** **[Weak Links II](posts/weak-links-ii.html)**
+- **<span style="color:grey">2021-02-03</span>** **[Weak Links III](posts/weak-links-iii.html)**
+- **<span style="color:grey">2021-02-10</span>** **[Weak Links IV](posts/weak-links-iv.html)**
+- **<span style="color:grey">2021-02-22</span>** **[Weak Links V](posts/weak-links-v.html)**
+- **<span style="color:grey">2021-03-08</span>** **[Weak Links VI](posts/weak-links-vi.html)**
 
 ### Misc. Posts
 
 Posts that don't fit into the above section.
 
-- **[Beginning](posts/beginning.html)** (4 Jan, 2021), an obligatory "Hello World!" post.
-- **[Intelligence](posts/intelligence.html)** (15 March, 2021), what does it meant to be intelligent?
-- **[Conscious Coding Practice](posts/conscious-coding-practice.html)** (18 March, 2021), how can you consciously practice coding?
-- **[You Will Always Be Stupid and Naive](posts/you-will-always-be-stupid-and-naive.html)** (16 March, 2022), a retrospective look back on a previous post I made in 2016.
+- **<span style="color:grey">2021-01-04</span>** **[Beginning](posts/beginning.html)**, an obligatory "Hello World!" post.
+- **<span style="color:grey">2021-03-15</span>** **[Intelligence](posts/intelligence.html)**, what does it meant to be intelligent?
+- **<span style="color:grey">2021-03-18</span>** **[Conscious Coding Practice](posts/conscious-coding-practice.html)**, how can you consciously practice coding?
+-** <span style="color:grey">2022-03-16</span>** **[You Will Always Be Stupid and Naive](posts/you-will-always-be-stupid-and-naive.html)** (16 March, 2022), a retrospective look back on a previous post I made in 2016.
