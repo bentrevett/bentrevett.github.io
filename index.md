@@ -47,4 +47,4 @@ Posts that don't fit into the above section.
 - **<span style="color:grey">2021-01-04</span>** **[Beginning](posts/beginning.html)**, an obligatory "Hello World!" post.
 - **<span style="color:grey">2021-03-15</span>** **[Intelligence](posts/intelligence.html)**, what does it meant to be intelligent?
 - **<span style="color:grey">2021-03-18</span>** **[Conscious Coding Practice](posts/conscious-coding-practice.html)**, how can you consciously practice coding?
--** <span style="color:grey">2022-03-16</span>** **[You Will Always Be Stupid and Naive](posts/you-will-always-be-stupid-and-naive.html)** (16 March, 2022), a retrospective look back on a previous post I made in 2016.
+- **<span style="color:grey">2022-03-16</span>** **[You Will Always Be Stupid and Naive](posts/you-will-always-be-stupid-and-naive.html)**, a retrospective look back on a previous post I made in 2016.
