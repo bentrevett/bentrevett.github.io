@@ -1,5 +1,7 @@
 # Weak Links V
 
+**<span style="color:grey">2021-02-22</span>**
+
 No website tweaks this week. Instead, I went ahead and bought an ergonomic keyboard, the [Microsoft Ergonomic](https://www.amazon.co.uk/dp/B07YGNN6N1). I've only ever used the cheapest keyboards possible -- I was only on the market for a new keyboard because the shift, backspace and control keys of my previous one kept jamming -- but decided to finally splash out.
 
 This week I'm just going to write about things I like, because why not?

@@ -1,5 +1,7 @@
 # You Will Always Be Stupid and Naive
 
+**<span style="color:grey">2022-03-16</span>**
+
 My goal for the past year was to post more, however I predictably stopped posting about three months into the year due to things -- finishing my PhD, getting a job and other miscellaneous life stuff -- getting in the way. I thought it would be fun to look back at a post of mine from the past and see what mistakes (of which there are many) I'd made, mostly because I could just spew out a stream-of-consciousness style post in order to bash something out quickly, and it would be pretty painless to write.
 
 In December 2016, not long after I started my PhD, I wrote a post called ["Learning to Learn"](https://github.com/bentrevett/bentrevett.github.io/blob/fd0c0631931bbec010669bdb64d87f7ae9fbc373/blog/learning-to-learn/index.html), in which I talked about how I had tried to blog consistently in the past, and it had never worked out, but *somehow* this time would be different. Obviously, I was wrong. I mentioned that Paul Graham and Steve Yegge were my inspirations for blogging. Why were they my inspirations? Because I was interested in tech, those people worked in tech, and they blogged, and I wanted to be like them. I don't think I've read either of their blogs for a good couple of years now -- does Yegge even post anymore?. Of course, I wrote about two blog posts before running out of things to say and stopped completely. I was stupid and naive to think that this time would be different, and I'd be able to blog consistently.

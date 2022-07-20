@@ -1,5 +1,7 @@
 # Weak Links V
 
+**<span style="color:grey">2021-03-08</span>**
+
 I almost gave up on posting because I have had zero motivation recently and don't think I saw a single article worth sharing. However, I sat down and forced myself to at least write something, so here it is. Less links this week and more opinions.
 
 Website tweaking update: I didn't like how the Markdown and HTML generated from the Markdown were in the same folder, so there's now a `source` folder in which the raw Markdown files live, and a `posts` folder where the generated HTML lives. I don't really like how the `index.md` and `index.html` both live in the main directory of the website, but I think the main index page is a special enough case that it can be a little different.
