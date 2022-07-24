@@ -1,6 +1,6 @@
 # Weak Links VII
 
-<span class="date">2022-07-08</span>
+<span class="date">2022-07-24</span>
 
 Of course, like almost everybody, I stopped posting on a regular basis for various reasons. [Life finds a way](https://www.youtube.com/watch?v=dMjQ3hA9mEA) (to get in the way). On a related note: I didn't think Jurassic World 3 was as bad as reviewers say. Sure, it wasn't great, but a [38 on metacritic](https://www.metacritic.com/movie/jurassic-world-dominion)?!
 
