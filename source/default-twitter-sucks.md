@@ -1,6 +1,6 @@
 # Default Twitter Sucks
 
-**<span class="date">2022-07-24</span>**
+<span class="date">2022-07-24</span>
 
 I started using twitter around ~2012 when I started university. I would use it to (what is now called) shitpost and just tweet absolute garbage. Eventually, I got bored of it and deleted my account. When I started my PhD I created a new twitter account with the aim of using it to only follow machine learning researchers as twitter was (and still is) the best way to keep up with the field. The problem is: the default twitter experience sucks.
 
