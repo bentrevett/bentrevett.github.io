@@ -25,6 +25,7 @@ You can contact me on [twitter](https://www.twitter.com/ben_trevett) or via [e-m
 
 ## Posts
 
+- <span class="date">2022-07-24</span> **[Default Twitter Sucks](posts/default-twitter-sucks.html)** <span class="tags">#twitter #rambling</span>
 - <span class="date">2022-07-24</span> **[Weak Links VII](posts/weak-links-vii.html)** <span class="tags">#blogs #subscriptions #bookmarks #notes</span>
 - <span class="date">2022-03-16</span> **[You Will Always Be Stupid and Naive](posts/you-will-always-be-stupid-and-naive.html)** <span class="tags">#retrospective</span>
 - <span class="date">2021-03-18</span> **[Conscious Coding Practice](posts/conscious-coding-practice.html)** <span class="tags">#rambling</span>

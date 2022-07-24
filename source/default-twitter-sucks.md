@@ -1,0 +1,21 @@
+# Default Twitter Sucks
+
+**<span class="date">2022-07-24</span>**
+
+I started using twitter around ~2012 when I started university. I would use it to (what is now called) shitpost and just tweet absolute garbage. Eventually, I got bored of it and deleted my account. When I started my PhD I created a new twitter account with the aim of using it to only follow machine learning researchers as twitter was (and still is) the best way to keep up with the field. The problem is: the default twitter experience sucks.
+
+My default timeline (which twitter calls "Home") is constantly filled with tweets which I have no interest in. These tweets appear because people I follow like those tweets, or they're posted by accounts which are followed by people I follow. I get it, twitter wants you to discover new stuff because it keeps you on their site longer and therefore you'll see more adverts. But, why isn't there a way to turn this off? There's a reason why I'm not following those accounts after all this time, it's because I have no interest in what they post.
+
+Twitter does actually have decent tools for filtering the timeline. I make heavy use of these using the muted words. I don't really care about any false positives my muted word list hits because I am so adamant about not seeing stuff I don't want to see. However, most of the junk filling my timeline is either an image or video (with no words to mute) or is impossible to add to the word list. So, instead, I have to mute every single account which pops into my timeline, and it's something I don't want to see. This doesn't actually work because twitter doesn't like that I'm doing this. The amount of junk appearing never ends. I've muted 100 accounts, but there's thousands more waiting in the wings to pollute my timeline.
+
+I wouldn't mind the occasional cat video appearing in my timeline, however twitter (especially tech twitter) has now turned into LinkedIn, where everyone wants to be an "influencer". These tech twitter influencers only have two types posts:
+
+1. The lowest quality bait questions designed to get tech novices to reply to them. Examples include: "What's your favorite mouse?", "What's everyone coding this weekend?", "Windows, Mac, or Linux?". These are bait questions because there is no discussion. People post their answer and move on. The original poster gets some engagement and potentially some followers so they can shill their online course.
+
+2. Threads explaining the most basic of concepts over twice as many tweets as needed. Twitter is not designed for long-form posts. Most of the time these threads contain less information than you'd find in a simple Google search. They'll always end with some variation of "Like this type of content? If so, follow me, because I shit this crap out every single day.".
+
+Don't even get me started on topics. I don't think there's even any benefit of following topics which you're actually interested in because all they ever show you is posts by tech influencers.
+
+There is a solution to all of this, which is the use the "Latest Tweets" timeline option instead of "Home". This will, I believe, only show you tweets and retweets from your followers. This can't stop people I follow from tweeting or retweeting things I don't want to see, but at least the problem is more manageable. The problem with the "Latest Tweets" timeline is that it's reverse chronological only. What if there was something I'd actually be interested in that was posted when I was asleep? I have to hope someone I follow retweets it. Why can't I have an algorithmic feed only showing me my followers tweets and retweets? Why can I only have the worst of both worlds?
+
+If someone else wrote this post, my response would be: just stop using twitter, what type of maniac uses something they hate? Well, there is a lot of actually useful and interesting stuff posted by people I follow. The problem is that it's somehow sandwiched between a lot of absolute crap that I despise. Unfortunately, my monkey brain is too addicted to the dopamine rush of finding the gold nugget in the dirt. Whenever I open twitter, there's a 50% chance that I find an actual good tweet, and I just cannot resist spinning that roulette wheel over and over and over again.
