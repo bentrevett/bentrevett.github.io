@@ -33,11 +33,13 @@ html_template = """<!DOCTYPE html>
         </table>
         <hr>
         <!-- end header -->
-
 {}
         <!-- begin footer -->
         <hr>
         <table>
+            <td style="text-align:left">
+                <a href="../index.html">Home</a>
+            </td>
             <td style="text-align:right">
                 <a href="#">Top</a>
             </td>

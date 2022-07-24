@@ -33,6 +33,9 @@ html_template = """<!DOCTYPE html>
         <!-- begin footer -->
         <hr>
         <table>
+            <td style="text-align:left">
+                <a href="#">Home</a>
+            </td>
             <td style="text-align:right">
                 <a href="#">Top</a>
             </td>
