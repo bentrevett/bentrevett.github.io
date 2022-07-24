@@ -23,7 +23,7 @@ You can contact me on [twitter](https://www.twitter.com/ben_trevett) or via [e-m
 - **[snake](projects/snake.html)**: Snake in Javascript.
 - **[difference](projects/difference.html)**: A timed mental maths game in Javascript
 
-## Posts
+## Posts <span class="tags">[RSS](feed.xml)</span>
 
 - <span class="date">2022-07-24</span> **[Default Twitter Sucks](posts/default-twitter-sucks.html)** <span class="tags">#twitter #rambling</span>
 - <span class="date">2022-07-24</span> **[Weak Links VII](posts/weak-links-vii.html)** <span class="tags">#blogs #subscriptions #bookmarks #notes</span>
