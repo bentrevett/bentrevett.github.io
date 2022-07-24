@@ -28,7 +28,7 @@ html_template = """<!DOCTYPE html>
                 <b>Ben Trevett</b>
             </td>
             <td style="text-align:right">
-                <a href="https://bentrevett.com">Home</a> | <a href="https://www.github.com/bentrevett/">GitHub</a> | <a href="https://www.twitter.com/ben_trevett/">Twitter</a>
+                <a href="../index.html">Home</a> | <a href="https://www.github.com/bentrevett/">GitHub</a> | <a href="https://www.twitter.com/ben_trevett/">Twitter</a>
             </td>
         </table>
         <hr>
