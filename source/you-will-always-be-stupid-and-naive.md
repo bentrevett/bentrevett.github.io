@@ -1,6 +1,6 @@
 # You Will Always Be Stupid and Naive
 
-**<span style="color:grey">2022-03-16</span>**
+**<span class="date">2022-03-16</span>**
 
 My goal for the past year was to post more, however I predictably stopped posting about three months into the year due to things -- finishing my PhD, getting a job and other miscellaneous life stuff -- getting in the way. I thought it would be fun to look back at a post of mine from the past and see what mistakes (of which there are many) I'd made, mostly because I could just spew out a stream-of-consciousness style post in order to bash something out quickly, and it would be pretty painless to write.
 
