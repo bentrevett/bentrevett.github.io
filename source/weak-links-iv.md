@@ -1,6 +1,6 @@
 # Weak Links IV
 
-**<span style="color:grey">2021-02-10</span>**
+<span class="date">2021-02-10</span>
 
 On the recurring theme of tweaking the website, the index page is now generated from Markdown too. This was mainly done for consistency with the posts and the fact that it's a lot nicer to write in Markdown than it is in HTML.
 

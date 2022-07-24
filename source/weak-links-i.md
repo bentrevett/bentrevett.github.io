@@ -1,6 +1,6 @@
 # Weak Links I
 
-**<span style="color:grey">2021-01-20</span>**
+<span class="date">2021-01-20</span>
 
 Well, I did it. I managed to write two posts within one month, a new record. I also finally got around to installing `pandoc` and am now using that to generate the HTML for these posts. A while ago I used a static site generator, but I always felt like they took too much messing about with to configure anything. I never wanted my website to be anything more than basic HTML anyway, so I wrote everything myself. The issue was a lot of copy and pasting whenever I wanted to add a new page. Now I can just write everything up in Markdown and have `pandoc` generate the HTML, which is then added to an HTML template. Now I only have to change a single template instead of multiple HTML files.
 

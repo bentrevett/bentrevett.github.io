@@ -1,6 +1,6 @@
 # Conscious Coding Practice
 
-**<span style="color:grey">2021-03-18</span>**
+<span class="date">2021-03-18</span>
 
 Taken from Noah Gibbs' [talk](https://www.youtube.com/watch?v=NF4rHCUElVI).
 

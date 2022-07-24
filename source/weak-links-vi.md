@@ -1,6 +1,6 @@
 # Weak Links V
 
-**<span style="color:grey">2021-03-08</span>**
+<span class="date">2021-03-08</span>
 
 I almost gave up on posting because I have had zero motivation recently and don't think I saw a single article worth sharing. However, I sat down and forced myself to at least write something, so here it is. Less links this week and more opinions.
 

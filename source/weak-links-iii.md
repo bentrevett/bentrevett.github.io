@@ -1,6 +1,6 @@
 # Weak Links III
 
-**<span style="color:grey">2021-02-03</span>**
+<span class="date">2021-02-03</span>
 
 I did a third post. If you do something three times does it finally count as a habit?
 

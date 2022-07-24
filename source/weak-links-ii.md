@@ -1,6 +1,6 @@
 # Weak Links II
 
-**<span style="color:grey">2021-01-26</span>**
+<span class="date">2021-01-26</span>
 
 I've decided to keep up with constantly posting interesting links along with my comments and adjacent thoughts on them. It actually helps me write down a lot of things that I'm subconsciously thinking and haven't ever put down on paper or expressed to anyone else, which is good.
 

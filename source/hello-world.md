@@ -1,6 +1,6 @@
-# Beginning
+# Hello World
 
-**<span style="color:grey">2021-01-04</span>**
+<span class="date">2021-01-04</span>
 
 Why am I writing this? I don't write a lot, and I'm always reading about how you should write a lot because it's good for you, both in terms of learning how to write well and getting ideas out of your head and on to a page in order to explore your own thoughts and interpretations of whatever you're thinking of. I've tried writing multiple times before, and it never took off, so why do I think this time will be different? To be honest, I don't, but I think I'm considerably better at writing than I have been before, though I still don't think I'm great. I was mostly inspired to start writing after reading [this](https://www.newyorker.com/magazine/2021/01/04/is-substack-the-media-future-we-want) article, which also reminded me to read Anna Weiner's memoir at some point, and I like the idea of being able to write as a hobby. I don't care about being able to generate money from it, which seems impossible to do on substack unless you already have an existing audience anyway, or even being good at it. The objective is to have somewhere to spew out whatever is on my mind at the time.
 

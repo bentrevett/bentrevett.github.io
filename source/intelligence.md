@@ -1,6 +1,6 @@
 # Intelligence
 
-**<span style="color:grey">2021-03-15</span>**
+<span class="date">2021-03-15</span>
 
 What is intelligence? The stereotypical example is someone who is good at math. What does being "good at math" even mean? Someone who can multiply two 10-digit numbers in their head in under a second seems to be "good at math". What about someone who isn't quick at mental math but can solve a complex mathematical problem after methodically working through the correct steps? I'd say they were also intelligent. Of course, intelligence isn't just tied to mathematical ability what about someone who can write a great novel? Or can compose a beautiful piece of music? Surely they're intelligent too, and there's no guarantee they're good at math.
 
