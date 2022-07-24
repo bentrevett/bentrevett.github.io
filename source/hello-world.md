@@ -10,7 +10,7 @@ I'd also like these rambling bits of writing to act as a sort of newsletter, but
 
 Anyway, about me: my life is currently in a state of flux as I'm finishing off my PhD and will start transitioning in to full-time employment. As much as I enjoyed certain aspects of my PhD, I am looking forward to employment, even the parts that people generally seem to dislike (open-plan offices, office politics, water cooler conversations) not that I think these are good things, but I think they're funny. I like it when people tell me a story about some co-worker they dislike, and now I'll also be able to reply with my own anecdote.
 
-2020 was, overall, a decent year for me, mostly because I'm fortunate enough to be able to work fully remotely and spend lockdown with friends and then family. I was able to visit Munich in September whilst things were relatively calm before they picked up again, at least I can now say I've travelled during a global pandemic, and I managed to beat my reading goal of twelve books by reading twenty books. My favorite book, by far, was A Short Stay in Hell by Steven Peck.
+2020 was, overall, a decent year for me, mostly because I'm fortunate enough to be able to work fully remotely and spend lockdown with friends and then family. I was able to visit Munich in September whilst things were relatively calm before they picked up again, at least I can now say I've traveled during a global pandemic, and I managed to beat my reading goal of twelve books by reading twenty books. My favorite book, by far, was A Short Stay in Hell by Steven Peck.
 
 For 2021 my goals are:
 
