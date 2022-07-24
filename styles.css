@@ -23,8 +23,8 @@ a:hover {
 }
 
 body {
-    font-size: 18px;
-    font-family: "Meslo LG", "Menlo", monospace;
+    font-size: 18px; /* make text larger */
+    font-family: "Meslo LG", "Menlo", monospace; /* use monospace font */
     max-width: 80ch; /* set maximum width for readability */
     line-height: 1.5em; /* not have consecutive lines too close together */
     overflow: scroll; /* always show scroll bar to stop contents shifting when scroll bar not present */
@@ -38,4 +38,14 @@ body {
 
 li {
     margin: 5px; /* space between list elements */
+}
+
+.date {
+    color: gray; /* gray text */
+    font-weight: bold; /* bold text */
+}
+
+.tags {
+    font-size: 12px; /* smaller text */
+    color: blue; /* blue text */
 }
