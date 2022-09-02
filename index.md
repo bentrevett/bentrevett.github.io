@@ -21,17 +21,17 @@ You can contact me on [twitter](https://www.twitter.com/ben_trevett) or via [e-m
 - **[pytorch-image-classification](https://github.com/bentrevett/pytorch-image-classification)**: A tutorial covering how to implement some deep learning computer vision models in PyTorch with torchvision. Covers: a basic multi-layer perceptron, LeNet, AlexNet, VGG and ResNet.
 - **[a-tour-of-optimizers](https://github.com/bentrevett/a-tour-of-pytorch-optimizers)**: A tutorial on common optimization algorithms used for neural networks, including: SGD, Adagrad, Adadelta, RMSprop and Adam.
 - **[snake](projects/snake.html)**: Snake in Javascript.
-- **[difference](projects/difference.html)**: A timed mental maths game in Javascript
+- **[difference](projects/difference.html)**: A timed mental maths game in Javascript.
 
 ## Posts <span class="tags">[RSS](feed.xml)</span>
 
 - <span class="date">2022-07-24</span> **[Default Twitter Sucks](posts/default-twitter-sucks.html)** <span class="tags">#twitter #rambling</span>
 - <span class="date">2022-07-24</span> **[Weak Links VII](posts/weak-links-vii.html)** <span class="tags">#blogs #subscriptions #bookmarks #notes</span>
 - <span class="date">2022-03-16</span> **[You Will Always Be Stupid and Naive](posts/you-will-always-be-stupid-and-naive.html)** <span class="tags">#retrospective</span>
-- <span class="date">2021-03-18</span> **[Conscious Coding Practice](posts/conscious-coding-practice.html)** <span class="tags">#rambling</span>
+- <span class="date">2021-03-18</span> **[Conscious Coding Practice](posts/conscious-coding-practice.html)** <span class="tags">#tutorial</span>
 - <span class="date">2021-03-15</span> **[Intelligence](posts/intelligence.html)** <span class="tags">#rambling</span>
-- <span class="date">2021-03-08</span> **[Weak Links VI](posts/weak-links-vi.html)** <span class="tags">#keyboard #shortcuts #reading</span>
-- <span class="date">2021-02-22</span> **[Weak Links V](posts/weak-links-v.html)** <span class="tags">#weak-links</span>
+- <span class="date">2021-03-08</span> **[Weak Links VI](posts/weak-links-vi.html)** <span class="tags">#websites</span>
+- <span class="date">2021-02-22</span> **[Weak Links V](posts/weak-links-v.html)** <span class="tags">#keyboards #shortcuts #reading</span>
 - <span class="date">2021-02-10</span> **[Weak Links IV](posts/weak-links-iv.html)** <span class="tags">#open-source</span>
 - <span class="date">2021-02-03</span> **[Weak Links III](posts/weak-links-iii.html)** <span class="tags">#software-engineering</span>
 - <span class="date">2021-01-26</span> **[Weak Links II](posts/weak-links-ii.html)** <span class="tags">#machine-learning #agi #research #design</span>
