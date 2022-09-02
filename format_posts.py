@@ -78,7 +78,7 @@ def check_prose(md_path):
 
 def get_html_from_md(md_path):
 
-    html_content = subprocess.run(['pandoc', '-f', 'markdown', '-t', 'html', md_path],
+    html_content = subprocess.run(['pandoc', '--wrap=none', '-f', 'markdown', '-t', 'html', md_path],
                                   capture_output=True,
                                   check=True,
                                   text=True).stdout
