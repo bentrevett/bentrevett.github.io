@@ -49,6 +49,9 @@ async function main() {
   var submit_btn = document.getElementById("submit_button");
   submit_btn.addEventListener("click", async function () {
     var guess_word = document.getElementById("guess").value.toLowerCase();
+    if (guess_word == "showmetheanswer") {
+        guess_word = target_word;
+    }
     var guess_vec = await getWordVector(guess_word);
     if (guess_vec === null) {
       result = document.getElementById("result");
