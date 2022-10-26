@@ -12,6 +12,7 @@ You can contact me on [twitter](https://www.twitter.com/ben_trevett) or via [e-m
 
 ## Projects
 
+- **[lexisearch](https://github.com/bentrevett/lexisearch)**: A small project showing how to use semantic similarity models to query transcriptions from the [Lex Fridman Podcast](https://lexfridman.com/podcast/).
 - **[GloVedle](projects/glovedle/index.html)**: A version of [Wordle](https://www.powerlanguage.co.uk/wordle/) using [GloVe](https://nlp.stanford.edu/projects/glove/) embeddings.
 - **[Wordle Terminal](https://github.com/bentrevett/wordle-terminal)**: A Python port of [Wordle](https://www.powerlanguage.co.uk/wordle/) which is played in the terminal.
 - **[UUIDv4 Generator](projects/uuid/index.html)**: A tool for generating UUIDv4s, because I didn't like the way the top result on Google generated them.
