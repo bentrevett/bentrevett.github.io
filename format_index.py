@@ -4,17 +4,8 @@ html_template = """<!DOCTYPE html>
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="styles.css">
-        <link rel="stylesheet" type="text/css" href="/lib/font-awesome.min.css">
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
         <title>Ben Trevett</title>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124821553-1"></script>
-        <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){{dataLayer.push(arguments);}}
-        gtag('js', new Date());
-        gtag('config', 'UA-124821553-1');
-        </script>
     </head>
     <body>
         <!-- begin header -->
@@ -44,20 +35,24 @@ html_template = """<!DOCTYPE html>
     </body>
 </html>"""
 
+
 def get_html_from_md(md_path):
 
-    html_content = subprocess.run(['pandoc', '-f', 'markdown', '-t', 'html', md_path],
-                                  capture_output=True,
-                                  check=True,
-                                  text=True).stdout
+    html_content = subprocess.run(
+        ["pandoc", "-f", "markdown", "-t", "html", md_path],
+        capture_output=True,
+        check=True,
+        text=True,
+    ).stdout
 
     html = html_template.format(html_content)
 
     return html
 
-md_path = 'index.md'
-print(f'formatting index.md')
+
+md_path = "index.md"
+print("formatting index.md")
 html = get_html_from_md(md_path)
-html_path = md_path.replace('.md', '.html')
-with open(html_path, 'w') as f:
+html_path = md_path.replace(".md", ".html")
+with open(html_path, "w") as f:
     f.write(html)

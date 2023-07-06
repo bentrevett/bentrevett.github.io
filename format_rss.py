@@ -28,8 +28,10 @@ for post in posts:
     with open(os.path.join("source", post), "r") as f:
         content = f.read()
     title = content.splitlines()[0].split("# ")[-1]
-    iso_date = re.search("(?<=<span class=\"date\">)(.*?)(?=</span>)", content).group(0)
-    formatted_date = datetime.datetime.strptime(iso_date, "%Y-%m-%d").strftime("%a, %d %b %Y %H:%M:%S")
+    iso_date = re.search('(?<=<span class="date">)(.*?)(?=</span>)', content).group(0)
+    formatted_date = datetime.datetime.strptime(iso_date, "%Y-%m-%d").strftime(
+        "%a, %d %b %Y %H:%M:%S"
+    )
     description = content.split("\n")[4]
     item = {
         "title": title,
