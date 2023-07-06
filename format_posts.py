@@ -12,6 +12,14 @@ html_template = """<!DOCTYPE html>
         <link rel="stylesheet" type="text/css" href="../styles.css">
         <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
         <title>Ben Trevett - {}</title>
+        <script>
+            function darkMode() {{
+                var element = document.body;
+                element.classList.toggle("dark");
+                document.getElementById("darkMode").innerHTML = element.classList.contains("dark") ? "Light Mode" : "Dark Mode";
+                console.log("toggled dark mode");
+            }}
+        </script>
     </head>
     <body>
         <!-- begin header -->
@@ -20,7 +28,10 @@ html_template = """<!DOCTYPE html>
                 <b>Ben Trevett</b>
             </td>
             <td style="text-align:right">
-                <a href="../index.html">Home</a> | <a href="https://www.github.com/bentrevett/">GitHub</a> | <a href="https://www.twitter.com/ben_trevett/">Twitter</a>
+                <a href="../index.html">Home</a> |
+                <a href="https://www.github.com/bentrevett/">GitHub</a> |
+                <a href="https://www.twitter.com/ben_trevett/">Twitter</a> |
+                <a id="darkMode" href="#" onclick="darkMode();return false;">Dark Mode</a>
             </td>
         </table>
         <hr>
