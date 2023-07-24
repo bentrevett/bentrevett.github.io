@@ -1,83 +1,176 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="styles.css">
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-        <title>Ben Trevett</title>
-        <script>
-            function darkMode() {
-                var element = document.body;
-                element.classList.toggle("dark");
-                document.getElementById("darkMode").innerHTML = element.classList.contains("dark") ? "Light Mode" : "Dark Mode";
-                console.log("toggled dark mode");
-            }
-        </script>
-    </head>
-    <body>
-        <!-- begin header -->
-        <table>
-            <td style="text-align:left">
-                <b>Ben Trevett</b>
-            </td>
-            <td style="text-align:right">
-                <a href="index.html">Home</a> |
-                <a href="https://www.github.com/bentrevett/">GitHub</a> |
-                <a href="https://www.twitter.com/ben_trevett/">Twitter</a> |
-                <a id="darkMode" href="#" onclick="darkMode();return false;">Dark Mode</a>
-            </td>
-        </table>
-        <hr>
-        <!-- end header -->
-<h1 id="about-me">About Me</h1>
-<p>I’m currently working as an NLP Engineer @ <a href="https://www.aveni.ai">aveni</a>.</p>
-<p>I have a PhD from <a href="https://www.hw.ac.uk/">Heriot-Watt University</a> on applying natural language processing based machine learning algorithms to programming languages, as well as a first class honors masters degree in Digital Electronics from the <a href="https://www.sheffield.ac.uk/">University of Sheffield</a>.</p>
-<p>In my spare time I enjoy: reading, listening to podcasts, playing board games, and watching baseball.</p>
-<h2 id="contact">Contact</h2>
-<p>You can contact me on <a href="https://www.twitter.com/ben_trevett">twitter</a> or via <a href="mailto:bentrevett@gmail.com">e-mail</a>.</p>
-<h2 id="projects">Projects</h2>
-<ul>
-<li><strong><a href="https://github.com/bentrevett/lexisearch">lexisearch</a></strong>: A small project showing how to use semantic similarity models to query transcriptions from the <a href="https://lexfridman.com/podcast/">Lex Fridman Podcast</a>.</li>
-<li><strong><a href="projects/glovedle/index.html">GloVedle</a></strong>: A version of <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a> using <a href="https://nlp.stanford.edu/projects/glove/">GloVe</a> embeddings.</li>
-<li><strong><a href="https://github.com/bentrevett/wordle-terminal">Wordle Terminal</a></strong>: A Python port of <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a> which is played in the terminal.</li>
-<li><strong><a href="projects/uuid/index.html">UUIDv4 Generator</a></strong>: A tool for generating UUIDv4s, because I didn’t like the way the top result on Google generated them.</li>
-<li><strong><a href="https://github.com/easynlp/easynlp">easynlp</a></strong>: A library for performing natural language processing - such as zero-shot classification, translation, named entity recognition, summarization, and question answering - inference on given data utilizing the pre-trained models from <a href="https://github.com/huggingface/transformers">transformers</a>.</li>
-<li><strong><a href="https://github.com/bentrevett/pytorch-sentiment-analysis">Sentiment Analysis Tutorial</a></strong>: A tutorial on how to implement some common deep learning based sentiment analysis (text classification) models in PyTorch with torchtext, specifically the NBOW, GRU, bi-LSTM, CNN and Transformer models. Somehow got popular and has quite a few stars.</li>
-<li><strong><a href="https://github.com/bentrevett/pytorch-seq2seq">Sequence-to-Sequence Learning Tutorial</a></strong>: A tutorial implementing neural (deep learning based) sequence-to-sequence models in PyTorch with torchtext, by implementing six NMT papers. Also has quite a few stars and was used as a basis for the <a href="https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html">official PyTorch language translation tutorial</a>.</li>
-<li><strong><a href="https://github.com/bentrevett/pytorch-image-classification">Image Classification Tutorial</a></strong>: A tutorial covering how to implement some deep learning computer vision models in PyTorch with torchvision. Covers: a basic multi-layer perceptron, LeNet, AlexNet, VGG and ResNet.</li>
-<li><strong><a href="https://github.com/bentrevett/a-tour-of-pytorch-optimizers">A Tour of Optimizers</a></strong>: A tutorial on common optimization algorithms used for neural networks, including: SGD, Adagrad, Adadelta, RMSprop and Adam.</li>
-<li><strong><a href="https://github.com/bentrevett/recurrent-attention-model">Recurrent Attention Model</a></strong>: A PyTorch implementation of the Recurrent Attention Model from the <a href="https://arxiv.org/abs/1406.6247">Recurrent Models of Visual Attention</a> paper.</li>
-<li><strong><a href="https://github.com/bentrevett/glyphs-of-dialogue">Glyphs of Dialogue</a></strong>: A small project combining ideas from <a href="https://github.com/noahtren/GlyphNet">GlyphNet</a> and <a href="https://www.joelsimon.net/dimensions-of-dialogue.html">Dimensions of Dialogue</a>.</li>
-<li><strong><a href="https://github.com/bentrevett/countworld">countworld</a></strong>: Generating synthetic datasets that deal with counting.</li>
-<li><strong><a href="https://github.com/bentrevett/numberworld">numberworld</a></strong>: A reinforcement learning toy environment for task-oriented language grounding.</li>
-<li><strong><a href="projects/snake.html">snake</a></strong>: Snake in Javascript.</li>
-<li><strong><a href="projects/difference.html">difference</a></strong>: A timed mental maths game in Javascript.</li>
-</ul>
-<h2 id="posts-rss">Posts <span class="tags"><a href="feed.xml">RSS</a></span></h2>
-<ul>
-<li><span class="date">2022-07-24</span> <strong><a href="posts/default-twitter-sucks.html">Default Twitter Sucks</a></strong> <span class="tags">#twitter #rambling</span></li>
-<li><span class="date">2022-07-24</span> <strong><a href="posts/weak-links-vii.html">Weak Links VII</a></strong> <span class="tags">#blogs #subscriptions #bookmarks #notes</span></li>
-<li><span class="date">2022-03-16</span> <strong><a href="posts/you-will-always-be-stupid-and-naive.html">You Will Always Be Stupid and Naive</a></strong> <span class="tags">#retrospective</span></li>
-<li><span class="date">2021-03-18</span> <strong><a href="posts/conscious-coding-practice.html">Conscious Coding Practice</a></strong> <span class="tags">#tutorial</span></li>
-<li><span class="date">2021-03-15</span> <strong><a href="posts/intelligence.html">Intelligence</a></strong> <span class="tags">#rambling</span></li>
-<li><span class="date">2021-03-08</span> <strong><a href="posts/weak-links-vi.html">Weak Links VI</a></strong> <span class="tags">#websites</span></li>
-<li><span class="date">2021-02-22</span> <strong><a href="posts/weak-links-v.html">Weak Links V</a></strong> <span class="tags">#keyboards #shortcuts #reading</span></li>
-<li><span class="date">2021-02-10</span> <strong><a href="posts/weak-links-iv.html">Weak Links IV</a></strong> <span class="tags">#open-source</span></li>
-<li><span class="date">2021-02-03</span> <strong><a href="posts/weak-links-iii.html">Weak Links III</a></strong> <span class="tags">#software-engineering</span></li>
-<li><span class="date">2021-01-26</span> <strong><a href="posts/weak-links-ii.html">Weak Links II</a></strong> <span class="tags">#machine-learning #agi #research #design</span></li>
-<li><span class="date">2021-01-20</span> <strong><a href="posts/weak-links-i.html">Weak Links I</a></strong> <span class="tags">#machine-learning #data-science</span></li>
-<li><span class="date">2021-01-04</span> <strong><a href="posts/hello-world.html">Hello World!</a></strong> <span class="tags">#rambling</span></li>
-</ul>
-
-        <!-- begin footer -->
-        <hr>
-        <table>
-            <td style="text-align:left">
-                <a href="#">Home</a>
-            </td>
-            <td style="text-align:right">
-                <a href="#">Top</a>
-            </td>
-        </table>
-        <!-- end footer -->
-    </body>
+  <head>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <title>Ben Trevett</title>
+  </head>
+  <body>
+    <table>
+      <td style="text-align: left">
+        <b>Ben Trevett</b>
+      </td>
+      <td style="text-align: right">
+        <a href="index.html">Home</a> |
+        <a href="https://www.github.com/bentrevett/">GitHub</a> |
+        <a href="https://www.twitter.com/ben_trevett/">Twitter</a>
+      </td>
+    </table>
+    <hr />
+    <h1 id="about-me">About Me</h1>
+    <p>
+      I'm currently working as an NLP Engineer @
+      <a href="https://www.aveni.ai">aveni</a>.
+    </p>
+    <p>
+      I have a PhD from
+      <a href="https://www.hw.ac.uk/">Heriot-Watt University</a> on applying
+      natural language processing based machine learning algorithms to
+      programming languages, as well as a first class honors masters degree in
+      Digital Electronics from the
+      <a href="https://www.sheffield.ac.uk/">University of Sheffield</a>.
+    </p>
+    <p>
+      In my spare time I enjoy: reading, listening to podcasts, playing board
+      games, and watching baseball.
+    </p>
+    <h2 id="contact">Contact</h2>
+    <p>
+      You can contact me on
+      <a href="https://www.twitter.com/ben_trevett">twitter</a> or via
+      <a href="mailto:bentrevett@gmail.com">e-mail</a>.
+    </p>
+    <h2 id="projects">Projects</h2>
+    <ul>
+      <li> <span class="date">2022-07-24</span>
+        <strong
+          ><a href="https://github.com/bentrevett/lexisearch"
+            >lexisearch</a
+          ></strong
+        >: A small project showing how to use semantic similarity models to
+        query transcriptions from the
+        <a href="https://lexfridman.com/podcast/">Lex Fridman Podcast</a>.
+      </li>
+      <li>
+        <strong><a href="projects/glovedle/index.html">GloVedle</a></strong
+        >: A version of
+        <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a> using
+        <a href="https://nlp.stanford.edu/projects/glove/">GloVe</a> embeddings.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/wordle-terminal"
+            >Wordle Terminal</a
+          ></strong
+        >: A Python port of
+        <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a> which is
+        played in the terminal.
+      </li>
+      <li>
+        <strong><a href="projects/uuid/index.html">UUIDv4 Generator</a></strong
+        >: A tool for generating UUIDv4s, because I didn't like the way the top
+        result on Google generated them.
+      </li>
+      <li>
+        <strong><a href="https://github.com/easynlp/easynlp">easynlp</a></strong
+        >: A library for performing natural language processing - such as
+        zero-shot classification, translation, named entity recognition,
+        summarization, and question answering - inference on given data
+        utilizing the pre-trained models from
+        <a href="https://github.com/huggingface/transformers">transformers</a>.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/pytorch-sentiment-analysis"
+            >Sentiment Analysis Tutorial</a
+          ></strong
+        >: A tutorial on how to implement some common deep learning based
+        sentiment analysis (text classification) models in PyTorch with
+        torchtext, specifically the NBOW, GRU, bi-LSTM, CNN and Transformer
+        models. Somehow got popular and has quite a few stars.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/pytorch-seq2seq"
+            >Sequence-to-Sequence Learning Tutorial</a
+          ></strong
+        >: A tutorial implementing neural (deep learning based)
+        sequence-to-sequence models in PyTorch with torchtext, by implementing
+        six NMT papers. Also has quite a few stars and was used as a basis for
+        the
+        <a
+          href="https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html"
+          >official PyTorch language translation tutorial</a
+        >.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/pytorch-image-classification"
+            >Image Classification Tutorial</a
+          ></strong
+        >: A tutorial covering how to implement some deep learning computer
+        vision models in PyTorch with torchvision. Covers: a basic multi-layer
+        perceptron, LeNet, AlexNet, VGG and ResNet.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/a-tour-of-pytorch-optimizers"
+            >A Tour of Optimizers</a
+          ></strong
+        >: A tutorial on common optimization algorithms used for neural
+        networks, including: SGD, Adagrad, Adadelta, RMSprop and Adam.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/recurrent-attention-model"
+            >Recurrent Attention Model</a
+          ></strong
+        >: A PyTorch implementation of the Recurrent Attention Model from the
+        <a href="https://arxiv.org/abs/1406.6247"
+          >Recurrent Models of Visual Attention</a
+        >
+        paper.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/glyphs-of-dialogue"
+            >Glyphs of Dialogue</a
+          ></strong
+        >: A small project combining ideas from
+        <a href="https://github.com/noahtren/GlyphNet">GlyphNet</a> and
+        <a href="https://www.joelsimon.net/dimensions-of-dialogue.html"
+          >Dimensions of Dialogue</a
+        >.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/countworld"
+            >countworld</a
+          ></strong
+        >: Generating synthetic datasets that deal with counting.
+      </li>
+      <li>
+        <strong
+          ><a href="https://github.com/bentrevett/numberworld"
+            >numberworld</a
+          ></strong
+        >: A reinforcement learning toy environment for task-oriented language
+        grounding.
+      </li>
+      <li>
+        <strong><a href="projects/snake.html">snake</a></strong
+        >: Snake in Javascript.
+      </li>
+      <li>
+        <strong><a href="projects/difference.html">difference</a></strong
+        >: A timed mental maths game in Javascript.
+      </li>
+    </ul>
+    <hr />
+    <table>
+      <td style="text-align: right">
+        <a href="#">Top</a>
+      </td>
+    </table>
+  </body>
 </html>

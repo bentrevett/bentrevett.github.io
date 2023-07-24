@@ -4,21 +4,20 @@ table {
 }
 
 hr {
-    border: 3px solid teal; /* horizontal line should be thick and teal */
-    background-color: teal; /* needed to make line solid */
+    border: 3px solid blue; /* horizontal line should be thick and blue */
 }
 
 a:link {
-    color: teal; /* unvisited links */
+    color: blue; /* unvisited links */
 }
 
 a:visited {
-    color: teal; /* visited links, make same color as unvisited */
+    color: blue; /* visited links, make same color as unvisited */
 }
 
 a:hover {
     color: white; /* invert color */
-    background-color: teal; /* invert color */
+    background-color: blue; /* invert color */
     cursor: pointer; /* turn cursor into a pointer */
 }
 
@@ -36,14 +35,9 @@ body {
     margin: auto; /* automatically center text */
 }
 
-.dark {
-    color: gray;
-    background-color: black;
-}
-
 ::selection {
     color: white; /* invert color when highlighting */
-    background-color: teal; /* invert color when highlighting */
+    background-color: blue; /* invert color when highlighting */
 }
 
 li {
@@ -53,9 +47,4 @@ li {
 .date {
     color: gray; /* gray text */
     font-weight: bold; /* bold text */
-}
-
-.tags {
-    font-size: 12px; /* smaller text */
-    color: teal; /* teal text */
 }
