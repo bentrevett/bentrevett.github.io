@@ -9,6 +9,7 @@ hr {
 
 a:link {
     color: blue; /* unvisited links */
+    font-weight: bold;
 }
 
 a:visited {
@@ -46,5 +47,5 @@ li {
 
 .date {
     color: gray; /* gray text */
-    font-weight: bold; /* bold text */
+    font-family: monospace;
 }
