@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css" />
+        <title>Trigonometry Calculator</title>
+        <script>
+            // Small tolerance for floating-point checks
+            function approxEqual(x, y, epsilon = 1e-9) {
+                return Math.abs(x - y) < epsilon;
+            }
+
+            function calculateValues() {
+                const sideA = document.Triangle.sideA.value;
+                const sideB = document.Triangle.sideB.value;
+                const sideC = document.Triangle.sideC.value;
+                const angleA = document.Triangle.angleA.value;
+                const angleB = document.Triangle.angleB.value;
+
+                // 1) Validate
+                if (CheckForValidInput(sideA, sideB, sideC, angleA, angleB)) {
+                    // 2) Solve for angles
+                    const anglesOK = SolveForAngles(
+                        sideA,
+                        sideB,
+                        sideC,
+                        angleA,
+                        angleB
+                    );
+                    if (anglesOK) {
+                        // 3) IMPORTANT: read the newly updated angle fields,
+                        //    and pass THOSE to SolveForSides
+                        const updatedA = document.Triangle.angleA.value;
+                        const updatedB = document.Triangle.angleB.value;
+                        SolveForSides(sideA, sideB, sideC, updatedA, updatedB);
+                    }
+                }
+            }
+
+            function CheckForValidInput(sideA, sideB, sideC, angleA, angleB) {
+                // If both angles are given, check they sum to ~90
+                if (angleA > 0 && angleB > 0) {
+                    const sum = parseFloat(angleA) + parseFloat(angleB);
+                    if (!approxEqual(sum, 90)) {
+                        alert(
+                            "Two angles given do not sum to 90°.\n" +
+                                "Use only one angle or two that total 90°."
+                        );
+                        return false;
+                    }
+                }
+                // If all three sides given, check if right triangle
+                if (sideA > 0 && sideB > 0 && sideC > 0) {
+                    const a = parseFloat(sideA);
+                    const b = parseFloat(sideB);
+                    const c = parseFloat(sideC);
+                    const pythag = Math.sqrt(a * a + b * b);
+                    if (!approxEqual(c, pythag)) {
+                        alert(
+                            "Three sides given do not form a right triangle."
+                        );
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function RadiansToDegrees(valRad) {
+                return valRad * (180 / Math.PI);
+            }
+
+            function DegreesToRadians(valDeg) {
+                return valDeg * (Math.PI / 180);
+            }
+
+            function SolveForAngles(sideA, sideB, sideC, angleA, angleB) {
+                let A = parseFloat(angleA) || 0;
+                let B = parseFloat(angleB) || 0;
+                let a = parseFloat(sideA) || 0;
+                let b = parseFloat(sideB) || 0;
+                let c = parseFloat(sideC) || 0;
+
+                // 1) If angle A is given, angle B = 90 - A
+                if (A > 0) {
+                    B = 90 - A;
+                }
+                // 2) Else if angle B is given, angle A = 90 - B
+                else if (B > 0) {
+                    A = 90 - B;
+                }
+                // 3) Else if a & b are given, A = atan(a/b), B = 90 - A
+                else if (a > 0 && b > 0) {
+                    A = RadiansToDegrees(Math.atan(a / b));
+                    B = 90 - A;
+                }
+                // 4) Else if a & c are given, A = asin(a/c), B = 90 - A
+                else if (a > 0 && c > 0) {
+                    A = RadiansToDegrees(Math.asin(a / c));
+                    B = 90 - A;
+                }
+                // 5) Else if b & c are given, B = asin(b/c), A = 90 - B
+                else if (b > 0 && c > 0) {
+                    B = RadiansToDegrees(Math.asin(b / c));
+                    A = 90 - B;
+                }
+
+                // Make sure we got valid angles
+                if (A > 0 && B > 0) {
+                    // Write them back to the form
+                    document.Triangle.angleA.value = A;
+                    document.Triangle.angleB.value = B;
+                    return true;
+                } else {
+                    alert(
+                        "Not enough info.\n" +
+                            "You need at least:\n" +
+                            "• one side + one angle, OR\n" +
+                            "• two sides."
+                    );
+                    return false;
+                }
+            }
+
+            function SolveForSides(sideA, sideB, sideC, angleA, angleB) {
+                let A = parseFloat(angleA) || 0;
+                let B = parseFloat(angleB) || 0;
+                let a = parseFloat(sideA) || 0;
+                let b = parseFloat(sideB) || 0;
+                let c = parseFloat(sideC) || 0;
+
+                // If side A is known, solve b & c
+                if (a > 0) {
+                    const A_radians = DegreesToRadians(A);
+                    b = a / Math.tan(A_radians);
+                    c = a / Math.sin(A_radians);
+                }
+                // Else if side B is known, solve a & c
+                else if (b > 0) {
+                    // Use B, which we just updated
+                    const B_radians = DegreesToRadians(B);
+                    a = b / Math.tan(B_radians);
+                    c = b / Math.sin(B_radians);
+                }
+                // Else if side C is known, solve a & b
+                else if (c > 0) {
+                    const A_radians = DegreesToRadians(A);
+                    a = c * Math.sin(A_radians);
+                    b = c * Math.cos(A_radians);
+                }
+
+                if (a > 0 && b > 0 && c > 0) {
+                    document.Triangle.sideA.value = a;
+                    document.Triangle.sideB.value = b;
+                    document.Triangle.sideC.value = c;
+                } else {
+                    alert(
+                        "Not enough info.\n" +
+                            "You need at least:\n" +
+                            "• one side + one angle, OR\n" +
+                            "• two sides."
+                    );
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <h2>Trigonometry Calculator</h2>
+        <p>
+            Enter:<br />
+            • One side + one angle, OR<br />
+            • Two sides, OR<br />
+            • Both angles (must total ~90°) + one side.<br /><br />
+            Then click <strong>Calculate</strong>.
+        </p>
+        <img src="triangle.png" alt="Right Triangle" />
+        <form name="Triangle">
+            <label>Side a: <br /><input type="text" name="sideA" /></label
+            ><br />
+            <label>Side b: <br /><input type="text" name="sideB" /></label
+            ><br />
+            <label>Side c: <br /><input type="text" name="sideC" /></label
+            ><br />
+            <label
+                >Angle A (degrees): <br /><input
+                    type="text"
+                    name="angleA" /></label
+            ><br />
+            <label
+                >Angle B (degrees): <br /><input
+                    type="text"
+                    name="angleB" /></label
+            ><br /><br />
+            <input
+                type="button"
+                value="Calculate"
+                onclick="calculateValues()"
+            />
+            <input type="reset" value="Reset" />
+        </form>
+    </body>
+</html>

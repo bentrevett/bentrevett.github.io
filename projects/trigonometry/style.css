@@ -1,0 +1,12 @@
+* {
+    font-family: monospace;
+    font-size: large;
+}
+
+body {
+    overflow: scroll;
+}
+
+div {
+    text-align: center;
+}
