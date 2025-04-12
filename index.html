@@ -7,9 +7,6 @@
     </head>
     <body>
         <table>
-            <td style="text-align: left">
-                <b>Ben Trevett</b>
-            </td>
             <td style="text-align: right">
                 <a href="index.html">Home</a> |
                 <a href="https://www.github.com/bentrevett/">GitHub</a> |
@@ -19,9 +16,6 @@
         <hr />
         <table style="margin-bottom: -20px; margin-top: -10px">
             <td style="text-align: left"><h1 id="about-me">About Me</h1></td>
-            <td style="text-align: right">
-                <canvas class="circle"></canvas>
-            </td>
         </table>
         <p>
             I'm currently working as an NLP Engineer @
@@ -53,24 +47,23 @@
             <a href="https://www.twitter.com/ben_trevett">twitter</a> or via
             <a href="mailto:bentrevett@gmail.com">e-mail</a>.
         </p>
-        <h2 id="tils">TILs</h2>
+        <h2 id="notebooks">Notebooks</h2>
         <p>Things I've learned, formatted as Python notebooks.</p>
         <table>
             <tr>
                 <td class="date">2024-12-15</td>
                 <td>
                     <a
-                        href="til/making-llms-smarter-with-structured-generation-and-outlines.html"
+                        href="notebooks/making-llms-smarter-with-structured-generation-and-outlines.html"
                         >Making LLMs smarter with structured generation and
                         Outlines</a
                     >
-                    <img style="margin-left: 10px" src="assets/new.gif" />
                 </td>
             </tr>
             <tr>
                 <td class="date">2024-02-17</td>
                 <td>
-                    <a href="til/information-theory.html"
+                    <a href="notebooks/information-theory.html"
                         >Introduction to information theory (from a machine
                         learning perspective)</a
                     >
@@ -79,7 +72,7 @@
             <tr>
                 <td class="date">2024-02-10</td>
                 <td>
-                    <a href="til/decision-tree-random-forest.html"
+                    <a href="notebooks/decision-tree-random-forest.html"
                         >Decision trees and random forests from scratch</a
                     >
                 </td>
@@ -87,7 +80,7 @@
             <tr>
                 <td class="date">2023-10-03</td>
                 <td>
-                    <a href="til/bootstrapping-confidence-intervals.html"
+                    <a href="notebooks/bootstrapping-confidence-intervals.html"
                         >Bootstrapping confidence intervals</a
                     >
                 </td>
@@ -95,13 +88,15 @@
             <tr>
                 <td class="date">2023-09-27</td>
                 <td>
-                    <a href="til/parallelism.html">Parallelism in Python</a>
+                    <a href="notebooks/parallelism.html"
+                        >Parallelism in Python</a
+                    >
                 </td>
             </tr>
             <tr>
                 <td class="date">2023-09-07</td>
                 <td>
-                    <a href="til/walrus-operator-use-cases.html"
+                    <a href="notebooks/walrus-operator-use-cases.html"
                         >Some practical use cases for the walrus operator</a
                     >
                 </td>
@@ -109,7 +104,7 @@
             <tr>
                 <td class="date">2023-08-28</td>
                 <td>
-                    <a href="til/retrieval-augmented-generation.html"
+                    <a href="notebooks/retrieval-augmented-generation.html"
                         >Retrieval augmented generation</a
                     >
                 </td>
@@ -117,7 +112,7 @@
             <tr>
                 <td class="date">2023-08-27</td>
                 <td>
-                    <a href="til/tfidf-from-scratch.html"
+                    <a href="notebooks/tfidf-from-scratch.html"
                         >Implementing TF-IDF from scratch</a
                     >
                 </td>
@@ -125,7 +120,7 @@
             <tr>
                 <td class="date">2023-08-06</td>
                 <td>
-                    <a href="til/ab-testing-chi-squared.html"
+                    <a href="notebooks/ab-testing-chi-squared.html"
                         >A/B testing with the chi-squared test</a
                     >
                 </td>
@@ -133,7 +128,7 @@
             <tr>
                 <td class="date">2023-08-03</td>
                 <td>
-                    <a href="til/lora-peft.html"
+                    <a href="notebooks/lora-peft.html"
                         >Fine-tuning a sequence classification model with LoRA
                         and the peft library</a
                     >
@@ -142,7 +137,7 @@
             <tr>
                 <td class="date">2023-07-31</td>
                 <td>
-                    <a href="til/openai-function-calling.html"
+                    <a href="notebooks/openai-function-calling.html"
                         >How to use Open AI's "function calling" ability</a
                     >
                 </td>
@@ -150,7 +145,7 @@
             <tr>
                 <td class="date">2023-07-30</td>
                 <td>
-                    <a href="til/strip-punctuation.html"
+                    <a href="notebooks/strip-punctuation.html"
                         >What's the best way to strip punctuation from a
                         string?</a
                     >
@@ -159,143 +154,215 @@
             <tr>
                 <td class="date">2023-07-29</td>
                 <td>
-                    <a href="til/softmax.html"
+                    <a href="notebooks/softmax.html"
                         >Why is the softmax function "off by one"?</a
                     >
                 </td>
             </tr>
         </table>
         <h2 id="projects">Projects</h2>
-        <ul>
-            <li>
-                <a href="https://github.com/bentrevett/clip-search"
-                    >clip-search</a
-                >: Text-to-image search with OpenCLIP, Docker, Flask, Faiss,
-                etc. and a basic front-end.
-            </li>
-
-            <li>
-                <a href="https://github.com/bentrevett/lexisearch">lexisearch</a
-                >: Retrieval augmented generation on transcriptions from the
-                <a href="https://lexfridman.com/podcast/">Lex Fridman Podcast</a
-                >.
-            </li>
-            <li>
-                <a href="projects/glovedle/index.html">GloVedle</a>: A version
-                of
-                <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a>
-                using
-                <a href="https://nlp.stanford.edu/projects/glove/">GloVe</a>
-                embeddings.
-            </li>
-            <li>
-                <a href="https://github.com/bentrevett/wordle-terminal"
-                    >Wordle Terminal</a
-                >: A Python port of
-                <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a>
-                which is played in the terminal.
-            </li>
-            <li>
-                <a href="projects/uuid/index.html">UUIDv4 Generator</a>:
-                Generate UUIDv4s in the browser, because I didn't like the way
-                the top result on Google generated them.
-            </li>
-            <li>
-                <a href="https://github.com/easynlp/easynlp">easynlp</a>: A
-                library for performing natural language processing - such as
-                zero-shot classification, translation, named entity recognition,
-                summarization, and question answering - inference on given data
-                utilizing the pre-trained models from
-                <a href="https://github.com/huggingface/transformers"
-                    >transformers</a
-                >.
-            </li>
-            <li>
-                <a
-                    href="https://github.com/bentrevett/pytorch-sentiment-analysis"
-                    >Sentiment Analysis Tutorial</a
-                >: A tutorial on how to implement some common deep learning
-                based sentiment analysis (text classification) models in PyTorch
-                with torchtext, specifically the NBOW, GRU, bi-LSTM, CNN and
-                Transformer models. Somehow got popular and has quite a few
-                stars.
-            </li>
-            <li>
-                <a href="https://github.com/bentrevett/pytorch-seq2seq"
-                    >Sequence-to-Sequence Learning Tutorial</a
-                >: A tutorial implementing neural (deep learning based)
-                sequence-to-sequence models in PyTorch with torchtext, by
-                implementing six NMT papers. Also has quite a few stars and was
-                used as a basis for the
-                <a
-                    href="https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html"
-                    >official PyTorch language translation tutorial</a
-                >.
-            </li>
-            <li>
-                <a
-                    href="https://github.com/bentrevett/pytorch-image-classification"
-                    >Image Classification Tutorial</a
-                >: A tutorial covering how to implement some deep learning
-                computer vision models in PyTorch with torchvision. Covers: a
-                basic multi-layer perceptron, LeNet, AlexNet, VGG and ResNet.
-            </li>
-            <li>
-                <a
-                    href="https://github.com/bentrevett/a-tour-of-pytorch-optimizers"
-                    >A Tour of Optimizers</a
-                >: A tutorial on common optimization algorithms used for neural
-                networks, including: SGD, Adagrad, Adadelta, RMSprop and Adam.
-            </li>
-            <li>
-                <a
-                    href="https://github.com/bentrevett/recurrent-attention-model"
-                    >Recurrent Attention Model</a
-                >: A PyTorch implementation of the Recurrent Attention Model
-                from the
-                <a href="https://arxiv.org/abs/1406.6247"
-                    >Recurrent Models of Visual Attention</a
-                >
-                paper.
-            </li>
-            <li>
-                <a href="https://github.com/bentrevett/glyphs-of-dialogue"
-                    >Glyphs of Dialogue</a
-                >: A small project combining ideas from
-                <a href="https://github.com/noahtren/GlyphNet">GlyphNet</a> and
-                <a href="https://www.joelsimon.net/dimensions-of-dialogue.html"
-                    >Dimensions of Dialogue</a
-                >.
-            </li>
-            <li>
-                <a href="https://github.com/bentrevett/countworld">countworld</a
-                >: Generating synthetic datasets that deal with counting.
-            </li>
-            <li>
-                <a href="https://github.com/bentrevett/numberworld"
-                    >numberworld</a
-                >: A reinforcement learning toy environment for task-oriented
-                language grounding.
-            </li>
-            <li>
-                <a href="projects/snake.html">snake</a>: Snake in Javascript.
-            </li>
-            <li>
-                <a href="projects/difference.html">difference</a>: A timed
-                mental maths game in Javascript.
-            </li>
-        </ul>
+        <p>Things that I've worked on.</p>
+        <table>
+            <tr>
+                <td class="date">2025-04</td>
+                <td>
+                    <a href="https://github.com/bentrevett/repository-template"
+                        >repository-template</a
+                    >: A repository template for Python projects, using:
+                    <code>uv</code>, <code>ruff</code>, <code>pre-commit</code>,
+                    and <code>pytest</code>.
+                    <img style="margin-left: 10px" src="assets/new.gif" />
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2024-04</td>
+                <td>
+                    <a href="https://github.com/bentrevett/clip-search"
+                        >clip-search</a
+                    >: Text-to-image search with OpenCLIP, Docker, Flask, Faiss,
+                    etc. and a basic front-end.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2024-04</td>
+                <td>
+                    <a
+                        href="https://github.com/bentrevett/hackerdaily2hackernews"
+                        >hackerdaily2hackernews</a
+                    >: A Google Chrome extension that redirects from HackerDaily
+                    comments to Hacker News comments.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2022-10</td>
+                <td>
+                    <a href="https://github.com/bentrevett/lexisearch"
+                        >lexisearch</a
+                    >: Retrieval augmented generation on transcriptions from the
+                    <a href="https://lexfridman.com/podcast/"
+                        >Lex Fridman Podcast</a
+                    >.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2022-02</td>
+                <td>
+                    <a href="projects/glovedle/index.html">GloVedle</a>: A
+                    version of
+                    <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a>
+                    using
+                    <a href="https://nlp.stanford.edu/projects/glove/">GloVe</a>
+                    embeddings.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2022-02</td>
+                <td>
+                    <a href="https://github.com/bentrevett/wordle-terminal"
+                        >Wordle Terminal</a
+                    >: A Python port of
+                    <a href="https://www.powerlanguage.co.uk/wordle/">Wordle</a>
+                    which is played in the terminal.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2022-01</td>
+                <td>
+                    <a href="projects/uuid/index.html">UUIDv4 Generator</a>:
+                    Generate UUIDv4s in the browser, because I didn't like the
+                    way the top result on Google generated them.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2021-XX</td>
+                <td>
+                    <a
+                        href="https://github.com/bentrevett/pytorch-sentiment-analysis"
+                        >Sentiment Analysis Tutorial</a
+                    >: A tutorial on how to implement some common deep learning
+                    based sentiment analysis (text classification) models in
+                    PyTorch with torchtext, specifically the NBOW, GRU, bi-LSTM,
+                    CNN and Transformer models. Somehow got popular and has
+                    quite a few stars.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2021-XX</td>
+                <td>
+                    <a href="https://github.com/bentrevett/pytorch-seq2seq"
+                        >Sequence-to-Sequence Learning Tutorial</a
+                    >: A tutorial implementing neural (deep learning based)
+                    sequence-to-sequence models in PyTorch with torchtext, by
+                    implementing six NMT papers. Also has quite a few stars and
+                    was used as a basis for the
+                    <a
+                        href="https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html"
+                        >official PyTorch language translation tutorial</a
+                    >.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2021-08</td>
+                <td>
+                    <a href="https://github.com/easynlp/easynlp">easynlp</a>: A
+                    library for performing natural language processing - such as
+                    zero-shot classification, translation, named entity
+                    recognition, summarization, and question answering -
+                    inference on given data utilizing the pre-trained models
+                    from
+                    <a href="https://github.com/huggingface/transformers"
+                        >transformers</a
+                    >.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2021-02</td>
+                <td>
+                    <a
+                        href="https://github.com/bentrevett/pytorch-image-classification"
+                        >Image Classification Tutorial</a
+                    >: A tutorial covering how to implement some deep learning
+                    computer vision models in PyTorch with torchvision. Covers:
+                    a basic multi-layer perceptron, LeNet, AlexNet, VGG and
+                    ResNet.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2021-01</td>
+                <td>
+                    <a
+                        href="https://github.com/bentrevett/a-tour-of-pytorch-optimizers"
+                        >A Tour of Optimizers</a
+                    >: A tutorial on common optimization algorithms used for
+                    neural networks, including: SGD, Adagrad, Adadelta, RMSprop
+                    and Adam.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2020-10</td>
+                <td>
+                    <a href="https://github.com/bentrevett/numberworld"
+                        >numberworld</a
+                    >: A reinforcement learning toy environment for
+                    task-oriented language grounding.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2020-07</td>
+                <td>
+                    <a href="https://github.com/bentrevett/glyphs-of-dialogue"
+                        >Glyphs of Dialogue</a
+                    >: A small project combining ideas from
+                    <a href="https://github.com/noahtren/GlyphNet">GlyphNet</a>
+                    and
+                    <a
+                        href="https://www.joelsimon.net/dimensions-of-dialogue.html"
+                        >Dimensions of Dialogue</a
+                    >.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2020-03</td>
+                <td>
+                    <a
+                        href="https://github.com/bentrevett/recurrent-attention-model"
+                        >Recurrent Attention Model</a
+                    >: A PyTorch implementation of the Recurrent Attention Model
+                    from the
+                    <a href="https://arxiv.org/abs/1406.6247"
+                        >Recurrent Models of Visual Attention</a
+                    >
+                    paper.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2019-03</td>
+                <td>
+                    <a href="https://github.com/bentrevett/countworld"
+                        >countworld</a
+                    >: Generating synthetic datasets that deal with counting.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2016</td>
+                <td>
+                    <a href="projects/snake.html">snake</a>: Snake in
+                    Javascript.
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2016</td>
+                <td>
+                    <a href="projects/difference.html">difference</a>: A timed
+                    mental maths game in Javascript.
+                </td>
+            </tr>
+        </table>
         <hr />
         <table>
             <td style="text-align: right">
                 <a href="#">Top</a>
             </td>
         </table>
-        <canvas
-            style="display: block; margin: 0 auto; margin-top: -40px"
-            class="figureEight"
-        ></canvas>
     </body>
-    <script src="animations/figureEight.js"></script>
-    <script src="animations/circle.js"></script>
 </html>

@@ -48,4 +48,7 @@ li {
 .date {
     color: gray; /* gray text */
     font-family: monospace;
+    vertical-align: top;
+    white-space: nowrap; /* don't wrap text */
+    padding-right: 10px;
 }
