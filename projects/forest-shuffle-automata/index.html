@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Shuffle Automata</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #action-display {
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 30px;
+            cursor: pointer;
+        }
+        #cards-remaining {
+            margin-top: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Forest Shuffle Automata</h1>
+    <p>Taken from <a href="https://boardgamegeek.com/thread/3294885/2024-solomode-solo-shuffle-a-scenario-based-solomo">here.</a></p>
+    <p style="text-align: left;"><b>Set-up:</b><br>- Randomly remove 30 cards.<br>- Shuffle 1 winter card into 10 cards.<br>- Shuffle the remaining cards and place on top of the pile with the winter card.<br>- Draw 6 cards.<br>- Place 5 cards into the clearing.</p>
+    <div id="action-display">Click "Next" at the end of each turn to draw an automata card.</div>
+    <button onclick="drawNextCard()">Next</button>
+    <div id="cards-remaining">Cards remaining: 20</div>
+
+    <script>
+        const actions = [
+            "Discard 4 cards from the right of the clearing.",
+            "Discard 4 cards from the left of the clearing.",
+            "Discard 3 cards from the right of the clearing.",
+            "Discard 3 cards from the left of the clearing.",
+            "Discard 2 cards from the right of the clearing.",
+            "Discard 2 cards from the right of the clearing.",
+            "Discard 2 cards from the left of the clearing.",
+            "Discard 2 cards from the left of the clearing.",
+            "Discard 1 card from the right of the clearing and discard 1 card from the deck.",
+            "Discard 1 card from the right of the clearing and discard 1 card from the deck.",
+            "Discard 1 card from the left of the clearing and discard 1 card from the deck.",
+            "Discard 1 card from the left of the clearing and discard 1 card from the deck.",
+            "Add 4 cards from the deck to the right of the clearing.",
+            "Add 4 cards from the deck to the right of the clearing.",
+            "Add 3 cards from the deck to the right of the clearing.",
+            "Add 3 cards from the deck to the right of the clearing.",
+            "Add 2 cards from the deck to the right of the clearing.",
+            "Add 2 cards from the deck to the right of the clearing.",
+            "Add 1 card from the deck to the right of the clearing and discard 1 card from the deck.",
+            "Add 1 card from the deck to the right of the clearing and discard 1 card from the deck.",
+        ];
+
+        // Create a copy of the deck that we can draw from
+        let currentDeck = [];
+
+        // Initialize the deck
+        function shuffleDeck() {
+            currentDeck = [...actions];
+            // Fisher-Yates shuffle
+            for (let i = currentDeck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
+            }
+        }
+
+        // Draw the next card
+        function drawNextCard() {
+            // If deck is empty, reshuffle
+            if (currentDeck.length === 0) {
+                shuffleDeck();
+            }
+
+            document.getElementById('action-display').style.backgroundColor = '#e8f5e9';
+            setTimeout(() => {
+                document.getElementById('action-display').style.backgroundColor = 'transparent';
+            }, 250);
+
+            // Draw a card
+            const drawnCard = currentDeck.pop();
+            document.getElementById('action-display').textContent = drawnCard;
+            document.getElementById('cards-remaining').textContent = `Cards remaining: ${currentDeck.length}`;
+        }
+
+        // Initialize on load
+        shuffleDeck();
+    </script>
+</body>
+</html>
