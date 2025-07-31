@@ -32,7 +32,7 @@
             margin-top: 20px;
             color: #666;
         }
-        #setup-header {
+        #setup-header, #challenges-header {
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
@@ -40,26 +40,122 @@
             user-select: none;
             display: inline-block;
         }
-        #setup-header:hover {
+        #setup-header:hover, #challenges-header:hover {
             color: #555;
         }
-        #setup-content {
+        #setup-content, #challenges-content {
             text-align: left;
             margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        table td {
+            border: 1px solid #ccc;
+            padding: 5px;
+            text-align: left;
+            height: 25px;
+        }
+        table tr:first-child td {
+            background-color: #f5f5f5;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <h1>Forest Shuffle Automata</h1>
     <p>Taken from <a href="https://boardgamegeek.com/thread/3294885/2024-solomode-solo-shuffle-a-scenario-based-solomo">here.</a></p>
+    <p><a href="https://forestshuffle.app/define-forest">Scoring app.</a></p>
     <div id="setup-section">
         <div id="setup-header" onclick="toggleSetup()">▼ Set-up</div>
         <div id="setup-content">
-            - Randomly remove 30 cards.<br>
-            - Shuffle 1 winter card into 10 cards.<br>
-            - Shuffle the remaining cards and place on top of the pile with the winter card.<br>
-            - Draw 6 cards.<br>
-            - Place 5 cards into the clearing.
+            <ul>
+                <li>Randomly remove 30 cards (55 with Alpine, 90 with Alpine + Woodland).</li>
+                <li>Shuffle 1 winter card into 10 cards.</li>
+                <li>Shuffle the remaining cards and place on top of the pile with the winter card.</li>
+                <li>Draw 6 cards.</li>
+                <li>Place 5 cards into the clearing.</li>
+                <li>You take the first turn, at the end of each turn click "Next" to draw an automata card, resolve it and then it is your turn again.</li>
+                <li>Always close gaps in the clearing, without changing their order.</li>
+                <li>The game ends immediately when the winter card is drawn.</li>
+                <li>Lindens now score 3 points if you have at least 3 Lindens in your forest.</li>
+                <li>The Great Spotted Woodpecker now scores 10 points if you have at least 10 trees in your forest.</li>
+            </ul>
+        </div>
+    </div>
+    <div id="challenges-section">
+        <div id="challenges-header" onclick="toggleChallenges()">▼ Challenges</div>
+        <div id="challenges-content">
+            Base game:
+            <table>
+                <tr>
+                    <td>Name</td>
+                    <td>Task</td>
+                    <td>Bronze</td>
+                    <td>Silver</td>
+                    <td>Gold</td>
+                </tr>
+                <tr><td>Bat Forest</td><td>Have at least 4 bats in your forest at the end of the game.</td><td>200</td><td>250</td><td>300</td></tr>
+                <tr><td>Ornithologist</td><td>Have a bird on each of your trees at the end of the game.</td><td>200</td><td>275</td><td>350</td></tr>
+                <tr><td>Reforestation</td><td>Have at least 15 trees in your forest (including saplings) at the end of the game.</td><td>200</td><td>275</td><td>300</td></tr>
+                <tr><td>Butterfly Collector</td><td>Have at least 5 <b>different</b> butterflies in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Amphibians</td><td>Have at least 5 amphibians in your forest at the end of the game.</td><td>200</td><td>275</td><td>350</td></tr>
+                <tr><td>Pawed Animals</td><td>Have at least 15 pawed animals in your forest at the end of the game.</td><td>200</td><td>275</td><td>350</td></tr>
+                <tr><td>Bargain Hunters</td><td>Have at least 17 cards with a cost of 0 in your forest at the end of the game. (Tree saplings do not count.)</td><td>200</td><td>275</td><td>350</td></tr>
+                <tr><td>A Fistful of Insects</td><td>Have an insect on each of your trees and at least 10 insects in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Hunters and Prey</td><td>Earn at least 100 points from Lynx and Roe Deer.</td><td>200</td><td>250</td><td>300</td></tr>
+                <tr><td>Where Fox and Hare Say Good Night</td><td>Have at least 8 Red Foxes and European Hares <b>combined</b> in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Stampede</td><td>Have 4 <b>different</b> cloven-hoofed animals in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Shuffled Forest</td><td>Have 8 <b>different</b> tree species in your forest at the end of the game.</td><td>200</td><td>250</td><td>300</td></tr>
+            </table>
+            <br>
+            Base game + Alpine:
+            <table>
+                <tr>
+                    <td>Name</td>
+                    <td>Task</td>
+                    <td>Bronze</td>
+                    <td>Silver</td>
+                    <td>Gold</td>
+                </tr>
+                <tr><td>Bat Forest</td><td>Have at least 5 bats in your forest at the end of the game.</td><td>200</td><td>275</td><td>350</td></tr>
+                <tr><td>Ornithologist</td><td>Have a bird on each of your trees at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Reforestation</td><td>Have at least 15 trees in your forest (including saplings) at the end of the game.</td><td>200</td><td>275</td><td>350</td></tr>
+                <tr><td>Butterfly Collector</td><td>Have at least 6 <b>different</b> butterflies in your forest at the end of the game.</td><td>200</td><td>325</td><td>450</td></tr>
+                <tr><td>Amphibians</td><td>Have at least 7 amphibians in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Pawed Animals</td><td>Have at least 15 pawed animals in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Bargain Hunters</td><td>Have at least 17 cards with a cost of 0 in your forest at the end of the game. (Tree saplings do not count.)</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>A Fistful of Insects</td><td>Have an insect on each of your trees and at least 10 insects in your forest at the end of the game.</td><td>200</td><td>325</td><td>450</td></tr>
+                <tr><td>Hunters and Prey</td><td>Earn at least 90 points from Lynx and Roe Deer.</td><td>200</td><td>250</td><td>300</td></tr>
+                <tr><td>Where Fox and Hare Say Good Night</td><td>Have at least 8 Red Foxes and Hares <b>combined</b> in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Stampede</td><td>Have 5 <b>different</b> cloven-hoofed animals in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Shuffled Forest</td><td>Have 10 <b>different</b> tree species in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+            </table>
+        <br>
+            Base game + Alpine + Woodland:
+        <table>
+                <tr>
+                    <td>Name</td>
+                    <td>Task</td>
+                    <td>Bronze</td>
+                    <td>Silver</td>
+                    <td>Gold</td>
+                </tr>
+                <tr><td>Bat Forest</td><td>Have at least 6 bats in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Ornithologist</td><td>Have a bird on each of your trees at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Reforestation</td><td>Have at least 18 trees in your forest (including saplings) at the end of the game. (Your starting hand is a random Water Vole and 5 random cards.)</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Butterfly Collector</td><td>Have at least 7 <b>different</b> butterflies in your forest at the end of the game.</td><td>200</td><td>325</td><td>450</td></tr>
+                <tr><td>Amphibians</td><td>Have at least 5 amphibians in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Pawed Animals</td><td>Have at least 14 pawed animals in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Bargain Hunters</td><td>Have at least 20 cards with a cost of 0 in your forest at the end of the game. (Tree saplings do not count.)</td><td>200</td><td>325</td><td>450</td></tr>
+                <tr><td>A Fistful of Insects</td><td>Have an insect on each of your trees and at least 12 insects in your forest at the end of the game.</td><td>200</td><td>325</td><td>450</td></tr>
+                <tr><td>Hunters and Prey</td><td>Earn at least 80 points from Lynx and Roe Deer.</td><td>200</td><td>250</td><td>300</td></tr>
+                <tr><td>Where Fox and Hare Say Good Night</td><td>Have at least 6 Red Foxes and Hares <b>combined</b> in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Stampede</td><td>Have 6 <b>different</b> cloven-hoofed animals in your forest at the end of the game.</td><td>200</td><td>300</td><td>400</td></tr>
+                <tr><td>Shuffled Forest</td><td>Have 10 <b>different</b> tree species in your forest at the end of the game.</td><td>200</td><td>275</td><td>350</td></tr>
+            </table>
         </div>
     </div>
     <div id="action-display">Click "Next" at the end of each turn to draw an automata card.</div>
@@ -68,26 +164,26 @@
 
     <script>
         const actions = [
-            "Discard 4 cards from the right of the clearing.",
-            "Discard 4 cards from the left of the clearing.",
-            "Discard 3 cards from the right of the clearing.",
-            "Discard 3 cards from the left of the clearing.",
-            "Discard 2 cards from the right of the clearing.",
-            "Discard 2 cards from the right of the clearing.",
-            "Discard 2 cards from the left of the clearing.",
-            "Discard 2 cards from the left of the clearing.",
-            "Discard 1 card from the right of the clearing and discard 1 card from the deck.",
-            "Discard 1 card from the right of the clearing and discard 1 card from the deck.",
-            "Discard 1 card from the left of the clearing and discard 1 card from the deck.",
-            "Discard 1 card from the left of the clearing and discard 1 card from the deck.",
-            "Add 4 cards from the deck to the right of the clearing.",
-            "Add 4 cards from the deck to the right of the clearing.",
-            "Add 3 cards from the deck to the right of the clearing.",
-            "Add 3 cards from the deck to the right of the clearing.",
-            "Add 2 cards from the deck to the right of the clearing.",
-            "Add 2 cards from the deck to the right of the clearing.",
-            "Add 1 card from the deck to the right of the clearing and discard 1 card from the deck.",
-            "Add 1 card from the deck to the right of the clearing and discard 1 card from the deck.",
+            "Discard 4 cards from the right side of the clearing.",
+            "Discard 4 cards from the left side of the clearing. Shift remaining cards to the left.",
+            "Discard 3 cards from the right side of the clearing.",
+            "Discard 3 cards from the left side of the clearing. Shift remaining cards to the left.",
+            "Discard 2 cards from the right side of the clearing.",
+            "Discard 2 cards from the right side of the clearing. Shift remaining cards to the left.",
+            "Discard 2 cards from the left side of the clearing.",
+            "Discard 2 cards from the left side of the clearing. Shift remaining cards to the left.",
+            "Discard 1 card from the right side of the clearing and discard 1 card from the top of the deck.",
+            "Discard 1 card from the right side of the clearing and discard 1 card from the top of the deck.",
+            "Discard 1 card from the left side of the clearing, shift remaining cards to the left, and discard 1 card from the top of the deck.",
+            "Discard 1 card from the left side of the clearing, shift remaining cards to the left, and discard 1 card from the top of the deck.",
+            "Add 4 cards from the deck to the right side of the clearing.",
+            "Add 4 cards from the deck to the right side of the clearing.",
+            "Add 3 cards from the deck to the right side of the clearing.",
+            "Add 3 cards from the deck to the right side of the clearing.",
+            "Add 2 cards from the deck to the right side of the clearing.",
+            "Add 2 cards from the deck to the right side of the clearing.",
+            "Add 1 card from the deck to the right side of the clearing and discard 1 card from the top of the deck.",
+            "Add 1 card from the deck to the right side of the clearing and discard 1 card from the top of the deck.",
         ];
 
         // Create a copy of the deck that we can draw from
@@ -135,8 +231,23 @@
             }
         }
 
+        // Toggle challenges visibility
+        function toggleChallenges() {
+            const challengesContent = document.getElementById('challenges-content');
+            const challengesHeader = document.getElementById('challenges-header');
+            
+            if (challengesContent.style.display === 'none') {
+                challengesContent.style.display = 'block';
+                challengesHeader.textContent = '▼ Challenges';
+            } else {
+                challengesContent.style.display = 'none';
+                challengesHeader.textContent = '▶ Challenges';
+            }
+        }
+
         // Initialize on load
         shuffleDeck();
+        toggleChallenges();
     </script>
 </body>
 </html>
