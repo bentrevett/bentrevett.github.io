@@ -32,12 +32,36 @@
             margin-top: 20px;
             color: #666;
         }
+        #setup-header {
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            user-select: none;
+            display: inline-block;
+        }
+        #setup-header:hover {
+            color: #555;
+        }
+        #setup-content {
+            text-align: left;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Forest Shuffle Automata</h1>
     <p>Taken from <a href="https://boardgamegeek.com/thread/3294885/2024-solomode-solo-shuffle-a-scenario-based-solomo">here.</a></p>
-    <p style="text-align: left;"><b>Set-up:</b><br>- Randomly remove 30 cards.<br>- Shuffle 1 winter card into 10 cards.<br>- Shuffle the remaining cards and place on top of the pile with the winter card.<br>- Draw 6 cards.<br>- Place 5 cards into the clearing.</p>
+    <div id="setup-section">
+        <div id="setup-header" onclick="toggleSetup()">▼ Set-up</div>
+        <div id="setup-content">
+            - Randomly remove 30 cards.<br>
+            - Shuffle 1 winter card into 10 cards.<br>
+            - Shuffle the remaining cards and place on top of the pile with the winter card.<br>
+            - Draw 6 cards.<br>
+            - Place 5 cards into the clearing.
+        </div>
+    </div>
     <div id="action-display">Click "Next" at the end of each turn to draw an automata card.</div>
     <button onclick="drawNextCard()">Next</button>
     <div id="cards-remaining">Cards remaining: 20</div>
@@ -95,6 +119,20 @@
             const drawnCard = currentDeck.pop();
             document.getElementById('action-display').textContent = drawnCard;
             document.getElementById('cards-remaining').textContent = `Cards remaining: ${currentDeck.length}`;
+        }
+
+        // Toggle setup visibility
+        function toggleSetup() {
+            const setupContent = document.getElementById('setup-content');
+            const setupHeader = document.getElementById('setup-header');
+            
+            if (setupContent.style.display === 'none') {
+                setupContent.style.display = 'block';
+                setupHeader.textContent = '▼ Set-up';
+            } else {
+                setupContent.style.display = 'none';
+                setupHeader.textContent = '▶ Set-up';
+            }
         }
 
         // Initialize on load
