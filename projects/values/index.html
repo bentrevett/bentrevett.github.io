@@ -168,7 +168,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Item Ranker</h1>
+        <h1>Value Ranker</h1>
         
         <div class="stats">
             <div class="progress">
@@ -196,13 +196,125 @@
     </div>
 
     <script>
-        // Hard-coded list of 25 items
+        // Hard-coded list of values
         const items = [
-            "Pizza", "Sushi", "Tacos", "Burger", "Pasta",
-            "Ice Cream", "Chocolate", "Coffee", "Tea", "Smoothie",
-            "Hiking", "Swimming", "Reading", "Gaming", "Cooking",
-            "Movies", "Music", "Painting", "Dancing", "Writing",
-            "Dogs", "Cats", "Travel", "Photography", "Gardening"
+            "Accountability",
+            "Achievement",
+            "Adaptability",
+            "Adventure",
+            "Altruism",
+            "Ambition",
+            "Authenticity",
+            "Balance",
+            "Beauty",
+            "Being the best",
+            "Belonging",
+            "Career",
+            "Caring",
+            "Collaboration",
+            "Commitment",
+            "Community",
+            "Compassion",
+            "Competence",
+            "Confidence",
+            "Connection",
+            "Contentment",
+            "Contribution",
+            "Cooperation",
+            "Courage",
+            "Creativity",
+            "Curiosity",
+            "Dignity",
+            "Diversity",
+            "Environment",
+            "Efficiency",
+            "Equality",
+            "Ethics",
+            "Excellence",
+            "Fairness",
+            "Faith",
+            "Family",
+            "Financial stability",
+            "Forgiveness",
+            "Freedom",
+            "Friendship",
+            "Fun",
+            "Future generations",
+            "Generosity",
+            "Giving back",
+            "Grace",
+            "Gratitude",
+            "Growth",
+            "Harmony",
+            "Health",
+            "Home",
+            "Honesty",
+            "Hope",
+            "Humility",
+            "Humor",
+            "Inclusion",
+            "Independence",
+            "Initiative",
+            "Integrity",
+            "Intuition",
+            "Job security",
+            "Joy",
+            "Justice",
+            "Kindness",
+            "Knowledge",
+            "Leadership",
+            "Learning",
+            "Legacy",
+            "Leisure",
+            "Love",
+            "Loyalty",
+            "Making a difference",
+            "Nature",
+            "Openness",
+            "Optimism",
+            "Order",
+            "Parenting",
+            "Patience",
+            "Patriotism",
+            "Peace",
+            "Perseverance",
+            "Personal fulfillment",
+            "Power",
+            "Pride",
+            "Recognition",
+            "Reliability",
+            "Resourcefulness",
+            "Respect",
+            "Responsibility",
+            "Risk-taking",
+            "Safety",
+            "Security",
+            "Self-discipline",
+            "Self-expression",
+            "Self-respect",
+            "Serenity",
+            "Service",
+            "Simplicity",
+            "Spirituality",
+            "Sportsmanship",
+            "Stewardship",
+            "Success",
+            "Teamwork",
+            "Thrift",
+            "Time",
+            "Tradition",
+            "Travel",
+            "Trust",
+            "Truth",
+            "Understanding",
+            "Uniqueness",
+            "Usefulness",
+            "Vision",
+            "Vulnerability",
+            "Wealth",
+            "Well-being",
+            "Wholeheartedness",
+            "Wisdom",
         ];
         
         // Initialize Bradley-Terry model data
@@ -258,18 +370,73 @@
         }
         
         function showNewPair() {
-            // Select two random different items
-            let idx1 = Math.floor(Math.random() * items.length);
-            let idx2 = Math.floor(Math.random() * items.length);
+            let idx1, idx2;
+            let usingTopBias = false;
+            const topN = 10;
             
-            while (idx2 === idx1) {
+            // After 10 comparisons, start biasing towards top items
+            if (comparisonCount >= 10 && Math.random() < 0.5) { // 50% chance to use top-bias strategy
+                usingTopBias = true;
+                // Get current rankings
+                const params = estimateBradleyTerryParams();
+                const rankedIndices = items.map((_, idx) => ({
+                    idx: idx,
+                    score: params[idx]
+                })).sort((a, b) => b.score - a.score);
+                
+                // Pick one item from the top N
+                const topIdx = Math.floor(Math.random() * Math.min(topN, items.length));
+                idx1 = rankedIndices[topIdx].idx;
+                
+                // For the second item, use weighted selection
+                // Higher chance of selecting items with similar scores
+                const weights = rankedIndices.map((item, rank) => {
+                    if (item.idx === idx1) return 0; // Don't select the same item
+                    
+                    // Weight inversely proportional to rank difference
+                    // Top items more likely to face each other
+                    const rankDiff = Math.abs(rank - topIdx);
+                    return Math.exp(-rankDiff / 10); // Exponential decay
+                });
+                
+                // Weighted random selection
+                const totalWeight = weights.reduce((a, b) => a + b, 0);
+                let random = Math.random() * totalWeight;
+                
+                for (let i = 0; i < weights.length; i++) {
+                    random -= weights[i];
+                    if (random <= 0) {
+                        idx2 = rankedIndices[i].idx;
+                        break;
+                    }
+                }
+                
+                // Fallback to random if something went wrong
+                if (idx2 === undefined || idx2 === idx1) {
+                    idx2 = Math.floor(Math.random() * items.length);
+                    while (idx2 === idx1) {
+                        idx2 = Math.floor(Math.random() * items.length);
+                    }
+                }
+            } else {
+                // Standard random selection
+                idx1 = Math.floor(Math.random() * items.length);
                 idx2 = Math.floor(Math.random() * items.length);
+                
+                while (idx2 === idx1) {
+                    idx2 = Math.floor(Math.random() * items.length);
+                }
             }
             
             currentPair = [idx1, idx2];
             
-            document.getElementById('option1').textContent = items[idx1];
-            document.getElementById('option2').textContent = items[idx2];
+            // Randomly swap positions so top items aren't always on the left
+            if (Math.random() < 0.5) {
+                currentPair = [idx2, idx1];
+            }
+            
+            document.getElementById('option1').textContent = items[currentPair[0]];
+            document.getElementById('option2').textContent = items[currentPair[1]];
         }
         
         function choose(option) {
