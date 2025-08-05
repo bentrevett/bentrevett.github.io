@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bradley-Terry Pairwise Ranker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        .comparison-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .option {
+            flex: 1;
+            min-width: 250px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+        
+        .option h2 {
+            color: #495057;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .option p {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .stats {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stats h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+        }
+        
+        .rankings {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .rankings h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .rank-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .rank-number {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 15px;
+        }
+        
+        .score {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .vs {
+            font-size: 2em;
+            color: #6c757d;
+            align-self: center;
+        }
+        
+        @media (max-width: 600px) {
+            .comparison-area {
+                flex-direction: column;
+            }
+            
+            .vs {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Item Ranker</h1>
+        
+        <div class="stats">
+            <div class="progress">
+                <span>Comparisons made: <strong id="comparison-count">0</strong></span>
+                <button class="btn" onclick="toggleRankings()">Show Rankings</button>
+            </div>
+        </div>
+        
+        <div class="comparison-area" id="comparison-area">
+            <div class="option" onclick="choose(0)">
+                <h2 id="option1">Loading...</h2>
+                <p>Click to prefer this</p>
+            </div>
+            <span class="vs">VS</span>
+            <div class="option" onclick="choose(1)">
+                <h2 id="option2">Loading...</h2>
+                <p>Click to prefer this</p>
+            </div>
+        </div>
+        
+        <div class="rankings" id="rankings" style="display: none;">
+            <h3>Current Rankings</h3>
+            <div id="rankings-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // Hard-coded list of 25 items
+        const items = [
+            "Pizza", "Sushi", "Tacos", "Burger", "Pasta",
+            "Ice Cream", "Chocolate", "Coffee", "Tea", "Smoothie",
+            "Hiking", "Swimming", "Reading", "Gaming", "Cooking",
+            "Movies", "Music", "Painting", "Dancing", "Writing",
+            "Dogs", "Cats", "Travel", "Photography", "Gardening"
+        ];
+        
+        // Initialize Bradley-Terry model data
+        const wins = new Array(items.length).fill(0);
+        const losses = new Array(items.length).fill(0);
+        const comparisons = [];
+        let currentPair = null;
+        let comparisonCount = 0;
+        
+        // Bradley-Terry parameter estimation using iterative method
+        function estimateBradleyTerryParams() {
+            const n = items.length;
+            const params = new Array(n).fill(1); // Initialize all parameters to 1
+            
+            // Iterative algorithm (simplified MLE)
+            for (let iter = 0; iter < 100; iter++) {
+                const newParams = new Array(n).fill(0);
+                
+                for (let i = 0; i < n; i++) {
+                    if (wins[i] + losses[i] === 0) {
+                        newParams[i] = 1;
+                        continue;
+                    }
+                    
+                    let denomSum = 0;
+                    for (let j = 0; j < n; j++) {
+                        if (i !== j) {
+                            const matchCount = getMatchCount(i, j);
+                            if (matchCount > 0) {
+                                denomSum += matchCount / (params[i] + params[j]);
+                            }
+                        }
+                    }
+                    
+                    newParams[i] = wins[i] / denomSum;
+                }
+                
+                // Normalize parameters
+                const sum = newParams.reduce((a, b) => a + b, 0);
+                for (let i = 0; i < n; i++) {
+                    params[i] = newParams[i] / sum * n;
+                }
+            }
+            
+            return params;
+        }
+        
+        function getMatchCount(i, j) {
+            return comparisons.filter(c => 
+                (c.winner === i && c.loser === j) || 
+                (c.winner === j && c.loser === i)
+            ).length;
+        }
+        
+        function showNewPair() {
+            // Select two random different items
+            let idx1 = Math.floor(Math.random() * items.length);
+            let idx2 = Math.floor(Math.random() * items.length);
+            
+            while (idx2 === idx1) {
+                idx2 = Math.floor(Math.random() * items.length);
+            }
+            
+            currentPair = [idx1, idx2];
+            
+            document.getElementById('option1').textContent = items[idx1];
+            document.getElementById('option2').textContent = items[idx2];
+        }
+        
+        function choose(option) {
+            if (!currentPair) return;
+            
+            const winner = currentPair[option];
+            const loser = currentPair[1 - option];
+            
+            wins[winner]++;
+            losses[loser]++;
+            comparisons.push({ winner, loser });
+            comparisonCount++;
+            
+            document.getElementById('comparison-count').textContent = comparisonCount;
+            
+            updateRankings();
+            showNewPair();
+        }
+        
+        function updateRankings() {
+            const params = estimateBradleyTerryParams();
+            const rankings = items.map((item, idx) => ({
+                name: item,
+                score: params[idx],
+                wins: wins[idx],
+                losses: losses[idx]
+            }));
+            
+            rankings.sort((a, b) => b.score - a.score);
+            
+            const rankingsList = document.getElementById('rankings-list');
+            rankingsList.innerHTML = rankings.map((item, idx) => `
+                <div class="rank-item">
+                    <div>
+                        <span class="rank-number">#${idx + 1}</span>
+                        <span>${item.name}</span>
+                    </div>
+                    <div>
+                        <span class="score">Score: ${item.score.toFixed(2)} (${item.wins}W-${item.losses}L)</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function toggleRankings() {
+            const rankings = document.getElementById('rankings');
+            const btn = document.querySelector('.btn');
+            
+            if (rankings.style.display === 'none') {
+                rankings.style.display = 'block';
+                btn.textContent = 'Hide Rankings';
+            } else {
+                rankings.style.display = 'none';
+                btn.textContent = 'Show Rankings';
+            }
+        }
+        
+        // Initialize
+        showNewPair();
+    </script>
+</body>
+</html>
