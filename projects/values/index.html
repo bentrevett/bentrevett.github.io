@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bradley-Terry Pairwise Ranker</title>
+    <title>Bradley-Terry Value Ranker</title>
     <style>
         * {
             margin: 0;
@@ -93,6 +93,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         .btn {
@@ -196,7 +198,8 @@
     </div>
 
     <script>
-        // Hard-coded list of values
+        // Hard-coded list of 25 items
+         // Hard-coded list of values
         const items = [
             "Accountability",
             "Achievement",
@@ -324,22 +327,44 @@
         let currentPair = null;
         let comparisonCount = 0;
         
-        // Bradley-Terry parameter estimation using iterative method
-        function estimateBradleyTerryParams() {
-            const n = items.length;
-            const params = new Array(n).fill(1); // Initialize all parameters to 1
+        // Cache for Bradley-Terry parameters
+        let cachedParams = null;
+        let cacheValid = false;
+        
+        // Lookup table for match counts
+        const matchCountCache = new Map();
+        
+        function getMatchCount(i, j) {
+            const key = i < j ? `${i},${j}` : `${j},${i}`;
+            return matchCountCache.get(key) || 0;
+        }
+        
+        function updateMatchCount(winner, loser) {
+            const key = winner < loser ? `${winner},${loser}` : `${loser},${winner}`;
+            matchCountCache.set(key, (matchCountCache.get(key) || 0) + 1);
+        }
+        
+        // Bradley-Terry parameter estimation with regularization
+        function estimateBradleyTerryParams(quickMode = false) {
+            // Use cache if valid
+            if (cacheValid && cachedParams && !quickMode) {
+                return cachedParams;
+            }
             
-            // Iterative algorithm (simplified MLE)
-            for (let iter = 0; iter < 100; iter++) {
+            const n = items.length;
+            const params = new Array(n).fill(1);
+            const pseudoCount = 0.5;
+            
+            // Fewer iterations for quick mode (selection phase)
+            const iterations = quickMode ? 20 : 100;
+            
+            for (let iter = 0; iter < iterations; iter++) {
                 const newParams = new Array(n).fill(0);
                 
                 for (let i = 0; i < n; i++) {
-                    if (wins[i] + losses[i] === 0) {
-                        newParams[i] = 1;
-                        continue;
-                    }
+                    const regularizedWins = wins[i] + pseudoCount;
+                    let denomSum = pseudoCount;
                     
-                    let denomSum = 0;
                     for (let j = 0; j < n; j++) {
                         if (i !== j) {
                             const matchCount = getMatchCount(i, j);
@@ -349,57 +374,103 @@
                         }
                     }
                     
-                    newParams[i] = wins[i] / denomSum;
+                    // Simplified regularization for unplayed matchups
+                    const totalComparisons = wins[i] + losses[i];
+                    if (totalComparisons < 3) {
+                        denomSum += (3 - totalComparisons) * 0.1;
+                    }
+                    
+                    newParams[i] = regularizedWins / denomSum;
                 }
                 
                 // Normalize parameters
-                const sum = newParams.reduce((a, b) => a + b, 0);
+                const logSum = newParams.reduce((sum, p) => sum + Math.log(p), 0);
+                const geoMean = Math.exp(logSum / n);
+                
                 for (let i = 0; i < n; i++) {
-                    params[i] = newParams[i] / sum * n;
+                    params[i] = newParams[i] / geoMean;
                 }
+            }
+            
+            // Cache the full calculation
+            if (!quickMode) {
+                cachedParams = params;
+                cacheValid = true;
             }
             
             return params;
         }
         
-        function getMatchCount(i, j) {
-            return comparisons.filter(c => 
-                (c.winner === i && c.loser === j) || 
-                (c.winner === j && c.loser === i)
-            ).length;
-        }
-        
         function showNewPair() {
             let idx1, idx2;
             let usingTopBias = false;
-            const topN = 10;
             
-            // After 10 comparisons, start biasing towards top items
-            if (comparisonCount >= 10 && Math.random() < 0.5) { // 50% chance to use top-bias strategy
+            // Track which items have been compared least
+            const comparisonCounts = new Array(items.length).fill(0);
+            for (const comp of comparisons) {
+                comparisonCounts[comp.winner]++;
+                comparisonCounts[comp.loser]++;
+            }
+            
+            // Find items with fewest comparisons
+            const minComparisons = Math.min(...comparisonCounts);
+            const undercomparedItems = comparisonCounts
+                .map((count, idx) => ({ idx, count }))
+                .filter(item => item.count <= minComparisons + 1)
+                .map(item => item.idx);
+            
+            // Strategy selection based on progress
+            const avgComparisons = comparisonCount * 2 / items.length;
+            
+            if (avgComparisons < 1.5 || undercomparedItems.length > items.length * 0.3) {
+                // Early phase or many undercompared items: Focus on coverage
+                if (undercomparedItems.length >= 2 && Math.random() < 0.7) {
+                    // 70% chance to compare undercompared items
+                    idx1 = undercomparedItems[Math.floor(Math.random() * undercomparedItems.length)];
+                    
+                    // Remove idx1 from candidates for idx2
+                    const remainingItems = undercomparedItems.filter(i => i !== idx1);
+                    if (remainingItems.length > 0) {
+                        idx2 = remainingItems[Math.floor(Math.random() * remainingItems.length)];
+                    } else {
+                        // Pair with random item
+                        idx2 = Math.floor(Math.random() * items.length);
+                        while (idx2 === idx1) {
+                            idx2 = Math.floor(Math.random() * items.length);
+                        }
+                    }
+                } else {
+                    // Random selection for diversity
+                    idx1 = Math.floor(Math.random() * items.length);
+                    idx2 = Math.floor(Math.random() * items.length);
+                    while (idx2 === idx1) {
+                        idx2 = Math.floor(Math.random() * items.length);
+                    }
+                }
+            } else if (comparisonCount >= 20 && Math.random() < 0.5) {
+                // Later phase: Focus on refining top items
                 usingTopBias = true;
-                // Get current rankings
-                const params = estimateBradleyTerryParams();
+                
+                // Use quick mode for selection (fewer iterations)
+                const params = estimateBradleyTerryParams(true);
                 const rankedIndices = items.map((_, idx) => ({
                     idx: idx,
                     score: params[idx]
                 })).sort((a, b) => b.score - a.score);
                 
-                // Pick one item from the top N
-                const topIdx = Math.floor(Math.random() * Math.min(topN, items.length));
+                // Pick one item from the top 5
+                const topIdx = Math.floor(Math.random() * Math.min(5, items.length));
                 idx1 = rankedIndices[topIdx].idx;
                 
-                // For the second item, use weighted selection
-                // Higher chance of selecting items with similar scores
+                // Weighted selection for opponent
                 const weights = rankedIndices.map((item, rank) => {
-                    if (item.idx === idx1) return 0; // Don't select the same item
+                    if (item.idx === idx1) return 0;
                     
-                    // Weight inversely proportional to rank difference
-                    // Top items more likely to face each other
+                    // Prefer similar-strength opponents
                     const rankDiff = Math.abs(rank - topIdx);
-                    return Math.exp(-rankDiff / 10); // Exponential decay
+                    return Math.exp(-rankDiff / 15);
                 });
                 
-                // Weighted random selection
                 const totalWeight = weights.reduce((a, b) => a + b, 0);
                 let random = Math.random() * totalWeight;
                 
@@ -411,7 +482,6 @@
                     }
                 }
                 
-                // Fallback to random if something went wrong
                 if (idx2 === undefined || idx2 === idx1) {
                     idx2 = Math.floor(Math.random() * items.length);
                     while (idx2 === idx1) {
@@ -422,7 +492,6 @@
                 // Standard random selection
                 idx1 = Math.floor(Math.random() * items.length);
                 idx2 = Math.floor(Math.random() * items.length);
-                
                 while (idx2 === idx1) {
                     idx2 = Math.floor(Math.random() * items.length);
                 }
@@ -430,7 +499,7 @@
             
             currentPair = [idx1, idx2];
             
-            // Randomly swap positions so top items aren't always on the left
+            // Randomly swap positions
             if (Math.random() < 0.5) {
                 currentPair = [idx2, idx1];
             }
@@ -448,37 +517,87 @@
             wins[winner]++;
             losses[loser]++;
             comparisons.push({ winner, loser });
+            updateMatchCount(winner, loser);
             comparisonCount++;
+            
+            // Invalidate cache
+            cacheValid = false;
             
             document.getElementById('comparison-count').textContent = comparisonCount;
             
-            updateRankings();
+            // Only update rankings if they're visible
+            if (document.getElementById('rankings').style.display !== 'none') {
+                updateRankings();
+            }
+            
             showNewPair();
         }
         
         function updateRankings() {
+            const startTime = performance.now();
+            
             const params = estimateBradleyTerryParams();
             const rankings = items.map((item, idx) => ({
                 name: item,
                 score: params[idx],
                 wins: wins[idx],
-                losses: losses[idx]
+                losses: losses[idx],
+                total: wins[idx] + losses[idx]
             }));
             
             rankings.sort((a, b) => b.score - a.score);
             
+            const computeTime = performance.now() - startTime;
+            
             const rankingsList = document.getElementById('rankings-list');
-            rankingsList.innerHTML = rankings.map((item, idx) => `
+            rankingsList.innerHTML = rankings.map((item, idx) => {
+                // Confidence indicator based on number of comparisons
+                let confidence = '';
+                if (item.total === 0) {
+                    confidence = '⚪'; // No data
+                } else if (item.total === 1) {
+                    confidence = '🔴'; // Very low confidence
+                } else if (item.total <= 3) {
+                    confidence = '🟡'; // Low confidence
+                } else {
+                    confidence = '🟢'; // Good confidence
+                }
+                
+                return `
                 <div class="rank-item">
                     <div>
                         <span class="rank-number">#${idx + 1}</span>
                         <span>${item.name}</span>
+                        <span style="margin-left: 5px;">${confidence}</span>
                     </div>
                     <div>
                         <span class="score">Score: ${item.score.toFixed(2)} (${item.wins}W-${item.losses}L)</span>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+            
+            // Add legend at the bottom
+            if (!document.getElementById('confidence-legend')) {
+                const legend = document.createElement('div');
+                legend.id = 'confidence-legend';
+                legend.style.cssText = 'margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef; font-size: 0.9em; color: #6c757d;';
+                legend.innerHTML = `
+                    <strong>Confidence:</strong><br>
+                    🟢 Good (4+ comparisons)<br>
+                    🟡 Low (2-3 comparisons)<br>
+                    🔴 Very Low (1 comparison)<br>
+                    ⚪ No data<br>
+                    <br><span style="font-size: 0.8em;">Computed in ${computeTime.toFixed(1)}ms</span>
+                `;
+                document.getElementById('rankings').appendChild(legend);
+            } else {
+                // Update computation time
+                const legend = document.getElementById('confidence-legend');
+                const timeSpan = legend.querySelector('span[style*="font-size: 0.8em"]');
+                if (timeSpan) {
+                    timeSpan.textContent = `Computed in ${computeTime.toFixed(1)}ms`;
+                }
+            }
         }
         
         function toggleRankings() {
@@ -486,6 +605,8 @@
             const btn = document.querySelector('.btn');
             
             if (rankings.style.display === 'none') {
+                // Update rankings when showing them
+                updateRankings();
                 rankings.style.display = 'block';
                 btn.textContent = 'Hide Rankings';
             } else {
