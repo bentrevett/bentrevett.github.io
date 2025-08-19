@@ -181,6 +181,19 @@
             .cards-container {
                 flex-direction: column;
                 gap: 30px;
+                align-items: center; /* keep cards centered */
+            }
+
+            .card-wrapper {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .card {
+                width: 90%;        /* responsive size */
+                max-width: 400px;  /* prevents it being too wide on tablets */
+                height: auto;      /* let it grow naturally */
             }
         }
     </style>
