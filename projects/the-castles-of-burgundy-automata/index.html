@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Castles of Burgundy Automata</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: normal;
+        }
+
+        #setup-section, #rules-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #setup-header, #rules-header {
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            user-select: none;
+            display: inline-block;
+        }
+
+        #setup-header:hover, #rules-header:hover {
+            color: #555;
+        }
+
+        #setup-content, #rules-content {
+            text-align: left;
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #setup-content ul, #rules-content ul {
+            margin-left: 20px;
+        }
+
+        #setup-content li, #rules-content li {
+            margin-bottom: 5px;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .card-wrapper {
+            position: relative;
+        }
+
+        .card-wrapper.fade-out {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            width: 280px;
+            height: 480px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .card-points {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .actions-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: flex-start;
+            overflow-y: auto;
+        }
+
+        .action-box {
+            padding: 10px;
+            border-radius: 3px;
+            font-weight: normal;
+            color: white;
+            text-align: center;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-shrink: 0;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            transition: opacity 0.2s ease;
+        }
+
+        .action-box:hover {
+            opacity: 0.85;
+        }
+
+        .action-box.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .action-box.gray { background: #808080; }
+        .action-box.light-green { background: #90EE90; color: #333; }
+        .action-box.yellow { background: #FFD700; color: #333; }
+        .action-box.brown { background: #8B4513; }
+        .action-box.dark-green { background: #006400; }
+        .action-box.blue { background: #4169E1; }
+        .action-box.green { background: #228B22; }
+
+        .box-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .done-button {
+            background: white;
+            color: #333;
+            border: 2px solid #ccc;
+            padding: 10px 30px;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+
+        .done-button:hover {
+            background: #f5f5f5;
+        }
+
+        .done-button:active {
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                flex-direction: column;
+                gap: 30px;
+                align-items: center; /* keep cards centered */
+            }
+
+            .card-wrapper {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .card {
+                width: 90%;        /* responsive size */
+                max-width: 400px;  /* prevents it being too wide on tablets */
+                height: auto;      /* let it grow naturally */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>The Castles of Burgundy Automata</h1>
+    
+    <div id="setup-section">
+        <div id="setup-header" onclick="toggleSetup()">▼ Setup</div>
+        <div id="setup-content">
+            <ul>
+                <li>Give the automata one of each good, one silver, one unused colored die, and a castle.</li>
+                <li>The automata will have a "left", "right", "reserve" and "duchy" spaces. You can use a piece of paper to indicate these.</li>
+                <li>Click "done" on the left card until it shows one with a dark green space.</li>
+                <li>Click the "dark green" item on the left card to mark it as complete and place the castle in the "left" space.</li>
+                <li>The automata always starts as the last player.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="rules-section">
+        <div id="rules-header" onclick="toggleRules()">▼ Rules</div>
+        <div id="rules-content">
+            <ul>
+                <li>The automata ignores the effects of yellow tiles.</li>
+                <li>The automata ignores the restrictions on duplicate buildings.</li>
+                <li><b>Taking and Placing Tiles:</b></li>
+                <ul>
+                    <li>On the automata's turn, roll its color die.</li>
+                    <li>If the white die is 1-4, the automata's left card is "active", if 5-6 the right card is "active".</li>
+                    <li>Search the depot indicated by the automata's color die for the tile matching the top most item on the automata's active card that has not been marked as complete.</li>
+                    <li>If no tile matches, check the next item on the automata's active card.</li>
+                    <li>If none of the tiles on the active card are in that depot space, move to the next depot space and repeat, starting from the top most item that has not been marked as complete.</li>
+                    <li>If no tiles across all depot spaces match any item on the active card, the automata checks its reserve starting from the top most item that has not been marked as complete.</li>
+                    <li>If no tiles in the reserve match any item on the active card, take a wild tile from the reserve and place on the top most item that has not been marked as complete.</li>
+                    <li>If there are no wild tiles in the reserve, take the top/left most tile in the black market and place it face down in the reserve as a wild tile.</li>
+                    <li>If there are no tiles in the black market, the automata receives two silver.</li>
+                    <li>If a tile does match, place it in the "left" or "right" space (depending on the active card), mark that item as complete, and activate the placement bonus.</li>
+                </ul>
+                <li><b>Placement Bonuses:</b></li>
+                <ul>
+                    <li><b>Dark Green:</b> The automata takes and places another tile, this time using the white die.</li>
+                    <li><b>Light Green:</b> The automata scores using livestock in the duchy and both active cards, but not the reserve.</li>
+                    <li><b>Blue:</b> The automata takes goods from the depot with the most goods. If tied, the first clockwise from the white die. It then moves forward in the turn order track.</li>
+                    <li><b>Brown:</b></li>
+                    <ul>
+                        <li><b>Silver Building:</b> The automata gains two silver.</li>
+                        <li><b>Worker Building:</b> The automata gains two points.</li>
+                        <li><b>Points Building:</b> The automata scores four points.</li>
+                        <li><b>Shipping Building:</b> The automata sells goods.</li>
+                        <li><b>Placement Building:</b> The automata places a tile, of which it has the most of in its reserve, onto the active card. If there is a tie for most, it uses the top most non-complete item. This triggers placement bonuses. If the active card is complete, it looks at the other card. If both are complete or there are no tiles in the reserve, it does nothing.</li>
+                        <li><b>Remaining Buildings:</b> The automata takes the brown, dark green/gray/yellow, blue/light green tiles from the board, starting from the white die and going clockwise. It places these in the reserve. If none are available, it does nothing.</li>
+                    </ul>
+                </ul>
+                <li><b>Selling Goods:</b></li>
+                <ul>
+                    <li>Triggered by the shipping building or when a tile with a box icon is marked as complete (cards 3 and 5-9).</li>
+                    <li>The automata sells the goods of which it has the most of. If tied, it prefers the ones with the lower number.</li>
+                    <li>It gains one silver and the standard amount of points.</li>
+                    <li>If it has no goods, it does nothing.</li>
+                </ul>
+                <li><b>Completing a Card:</b></li>
+                <ul>
+                    <li>The automata scores the points at the top of the card, which are easy/medium/hard difficulty.</li>
+                    <li>The tiles on the card are then moved to the automata's duchy. There is no limit to the number of tiles of each color the automata can have.</li>
+                    <li>Any wild tiles are flipped to their other side.</li>
+                    <li>If the automata has placed at least: three gray, four dark green, six light green/blue/yellow, or twelve brown tiles, respectively. It has completed that color and claims/score the corresponding bonus tile, if there is one remaining.</li>
+                </ul>
+                <li><b>End of Turn:</b></li>
+                <ul>
+                    <li>If the automata has at least two silver coins it will purchase a tile from the black market and place it in reserve.</li>
+                    <li>It will pick a tile it does not have in the reserve, if tied will pick the top/left most tile.</li>
+                </ul>
+                <li><b>End of Game:</b></li>
+                <ul>
+                    <li>The automata scores:
+                        <ul>
+                            <li>4 points for each yellow tile on cards or in its duchy (not the reserve)</li>
+                            <li>1 point for each unsold good</li>
+                            <li>1 point for each silver</li>
+                            <li>1 point for each tile in reserve</li>
+                            <li>2 points for each tile on incomplete cards.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="cards-container" id="cards-container"></div>
+
+    <script>
+        const cardDefinitions = [
+            { id: 1, actions: ['GRAY', 'LIGHT GREEN', 'YELLOW'], points: '8/12/16 points' },
+            { id: 2, actions: ['BROWN', 'BROWN', 'LIGHT GREEN', 'YELLOW'], points: '14/18/22 points' },
+            { id: 3, actions: ['BLUE', 'BROWN', 'LIGHT GREEN (BOX)', 'BROWN'], points: '14/18/22 points' },
+            { id: 4, actions: ['BROWN', 'DARK GREEN', 'YELLOW', 'GRAY', 'BROWN'], points: '17/21/25 points' },
+            { id: 5, actions: ['YELLOW (BOX)', 'BROWN', 'LIGHT GREEN', 'YELLOW'], points: '14/18/22 points' },
+            { id: 6, actions: ['BLUE (BOX)', 'YELLOW', 'BROWN', 'BLUE'], points: '14/18/22 points' },
+            { id: 7, actions: ['BROWN', 'DARK GREEN', 'BROWN (BOX)', 'LIGHT GREEN', 'BLUE'], points: '17/21/25 points' },
+            { id: 8, actions: ['DARK GREEN', 'GRAY (BOX)', 'GREEN', 'BLUE'], points: '14/18/22 points' },
+            { id: 9, actions: ['LIGHT GREEN', 'BROWN', 'BROWN', 'YELLOW (BOX)'], points: '14/18/22 points' }
+        ];
+
+        let deck = [];
+        let discardPile = [];
+        let currentCards = [null, null];
+
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function getBoxIcon() {
+            return `<svg class="box-icon" viewBox="0 0 24 24">
+                <path d="M12 2L2 7v10c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-6l7 4l7-4v6c0 .55.45 1 1 1h1c.55 0 1-.45 1-1V7L12 2z"/>
+                <path d="M12 13L5 9v8c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V9l-7 4z" opacity="0.7"/>
+            </svg>`;
+        }
+
+        function createActionBox(action, cardId, actionIndex) {
+            const hasBox = action.includes('(BOX)');
+            const color = action.replace(' (BOX)', '').toLowerCase().replace(' ', '-');
+            const colorText = action.replace(' (BOX)', '').toLowerCase()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+            
+            return `
+                <div class="action-box ${color}" onclick="toggleAction(${cardId}, ${actionIndex})" data-card="${cardId}" data-action="${actionIndex}">
+                    ${colorText}
+                    ${hasBox ? getBoxIcon() : ''}
+                </div>
+            `;
+        }
+
+        function toggleAction(cardId, actionIndex) {
+            const actionBox = document.querySelector(`[data-card="${cardId}"][data-action="${actionIndex}"]`);
+            if (actionBox) {
+                actionBox.classList.toggle('completed');
+            }
+        }
+
+        function toggleSetup() {
+            const setupContent = document.getElementById('setup-content');
+            const setupHeader = document.getElementById('setup-header');
+            
+            if (setupContent.style.display === 'none') {
+                setupContent.style.display = 'block';
+                setupHeader.textContent = '▼ Setup';
+            } else {
+                setupContent.style.display = 'none';
+                setupHeader.textContent = '▶ Setup';
+            }
+        }
+
+        function toggleRules() {
+            const rulesContent = document.getElementById('rules-content');
+            const rulesHeader = document.getElementById('rules-header');
+            
+            if (rulesContent.style.display === 'none') {
+                rulesContent.style.display = 'block';
+                rulesHeader.textContent = '▼ Rules';
+            } else {
+                rulesContent.style.display = 'none';
+                rulesHeader.textContent = '▶ Rules';
+            }
+        }
+
+        function createCard(cardDef, position) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-wrapper';
+            wrapper.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-points">${cardDef.points}</div>
+                    </div>
+                    <div class="actions-container">
+                        ${cardDef.actions.map((action, index) => createActionBox(action, cardDef.id, index)).join('')}
+                    </div>
+                    <button class="done-button" onclick="discardCard(${position})">Done</button>
+                </div>
+            `;
+            return wrapper;
+        }
+
+        function drawCard() {
+            if (deck.length === 0) {
+                if (discardPile.length === 0) return null;
+                deck = shuffle(discardPile);
+                discardPile = [];
+            }
+            return deck.pop();
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            
+            currentCards.forEach((card, index) => {
+                if (card) {
+                    const cardElement = createCard(card, index);
+                    container.appendChild(cardElement);
+                }
+            });
+        }
+
+        function discardCard(position) {
+            const discardedCard = currentCards[position];
+            if (!discardedCard) return;
+            
+            // Add fade effect
+            const cardWrapper = document.querySelectorAll('.card-wrapper')[position];
+            if (cardWrapper) {
+                cardWrapper.classList.add('fade-out');
+            }
+            
+            setTimeout(() => {
+                discardPile.push(discardedCard);
+                
+                if (position === 0) {
+                    // Left card discarded - slide right to left
+                    currentCards[0] = currentCards[1];
+                    currentCards[1] = drawCard();
+                } else {
+                    // Right card discarded - just replace it
+                    currentCards[1] = drawCard();
+                }
+                
+                renderCards();
+            }, 200);
+        }
+
+        function initGame() {
+            deck = shuffle([...cardDefinitions]);
+            discardPile = [];
+            currentCards[0] = drawCard();
+            currentCards[1] = drawCard();
+            renderCards();
+        }
+
+        // Initialize the game
+        initGame();
+        
+        // Start with rules collapsed
+        toggleRules();
+    </script>
+</body>
+</html>
