@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pineapple Lines 🍍</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Pineapple Lines 🍍</u></h1>
+
+    <p>
+      A daily solo puzzle based on
+      <a href="https://en.wikipedia.org/wiki/Chinese_poker#Open-face_Chinese_poker">
+        Pineapple Open Face Chinese Poker</a>.
+    </p>
+
+    <p>
+      You have three rows &mdash; <b>top</b>, <b>middle</b> and <b>bottom</b>
+      &mdash; each holding five cards. Over five turns you are dealt five cards,
+      place three of them into the rows (you may split them across rows) and
+      discard the other two. After five turns all fifteen slots are full.
+    </p>
+
+    <p>
+      Each row scores the points for its five card poker hand, multiplied by
+      the row's multiplier. The top row is the hardest to fill well, so it pays
+      the most. Everybody gets the same cards in the same order each day.
+    </p>
+
+    <p>
+      The rows want to run <b>weakest at the top to strongest at the bottom</b>,
+      and a row that beats the one below it is knocked down a multiplier:
+    </p>
+
+    <ul>
+      <li>
+        the <b>top</b> row pays <b>4&times;</b>, or <b>2&times;</b> if it beats
+        the middle row;
+      </li>
+      <li>
+        the <b>middle</b> row pays <b>2&times;</b>, or <b>1&times;</b> if it
+        beats the bottom row;
+      </li>
+      <li>the <b>bottom</b> row always pays <b>1&times;</b>.</li>
+    </ul>
+
+    <p>
+      Hands are compared in full, so a pair of aces beats a pair of twos. Rows
+      show their full multiplier until they are seen to beat the row below, at
+      which point it drops and turns red.
+    </p>
+    
+    <p>
+      <button id="practice">Practice (random deal)</button>
+      <input id="seed" placeholder="Seed" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <h2>Scoring</h2>
+
+    <table id="scoring"></table>
+
+    <h2>Board</h2>
+
+    <p id="status"></p>
+
+    <table id="board"></table>
+
+    <h2>Hand</h2>
+
+    <div id="hand"></div>
+
+    <p id="discards"></p>
+
+    <p>
+      <button id="undo">Undo</button>
+    </p>
+
+    <script src="index.js"></script>
+  </body>
+</html>

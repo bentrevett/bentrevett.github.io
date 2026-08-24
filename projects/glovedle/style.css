@@ -4,9 +4,10 @@
 }
 
 body {
-  overflow: scroll;
-}
-
-div {
-  text-align: center;
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+  /* Always show the scroll bar, so the guess list growing does not shift
+     the page sideways when the bar appears. */
+  overflow-y: scroll;
 }

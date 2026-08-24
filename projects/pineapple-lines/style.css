@@ -1,0 +1,77 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/* A row of five cards must never break across lines. */
+#board td,
+#board th,
+#discards {
+  white-space: nowrap;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+/* The hand table is only for alignment, so it needs no grid lines. */
+#handTable td {
+  border: none;
+  padding: 2px 6px 2px 0;
+}
+
+/* A placed card greys out in place instead of disappearing. */
+.placed {
+  opacity: 0.45;
+}
+
+/* Keep the chosen row readable through the fade. */
+.placed button.chosen {
+  color: black;
+  font-weight: bold;
+}
+
+/* Pad the rank to a fixed width so "10" lines up with "J", keeping the
+   card width constant from one hand to the next. */
+.rank {
+  display: inline-block;
+  width: 2ch;
+  text-align: right;
+}
+
+.red {
+  color: red;
+}
+
+.slot {
+  color: gray;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* A multiplier knocked down because the row beats the one below it. Shown
+   only as colour, in a column that is always there, so the board keeps its
+   shape. */
+#board td.demoted {
+  color: red;
+}

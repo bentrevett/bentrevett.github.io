@@ -1,0 +1,151 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+/* --- the grid --- */
+
+#grid td {
+  text-align: center;
+  padding: 6px 8px;
+}
+
+/* The row's score, to the right of the grid, and the total beneath them. */
+#grid td.rowscore,
+#grid th.rowscore {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Sits next to the total, so keep it beside the number rather than adrift at
+   the far left of the row. */
+#grid th.totallabel {
+  text-align: right;
+}
+
+/* Cells whose letter counts double. Bold as well as shaded, so the marking
+   does not rely on colour alone. */
+#grid td.bonus {
+  background-color: #ffd;
+  font-weight: bold;
+}
+
+#grid td.empty {
+  color: gray;
+}
+
+/* A wildcard, shown as whatever letter it turned into. Italic so it is never
+   mistaken for a letter you actually placed. Colour is left to the row, so
+   the two markings do not fight. */
+.wild {
+  font-style: italic;
+}
+
+/* A completed row: green when it spells a valid word, red when it does not. */
+#grid td.good {
+  color: green;
+}
+
+#grid td.bad {
+  color: red;
+}
+
+/* An empty cell you can place the selected letter into. */
+#grid td.open {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+#grid td.open.bonus {
+  background-color: #ffb;
+}
+
+#grid td.open:hover {
+  background-color: blue;
+  color: white;
+}
+
+/* A placed letter, click to send it back to the tray. */
+#grid td.filled {
+  cursor: pointer;
+}
+
+/* --- the letter tray --- */
+
+/* Only for alignment, so it needs no grid lines. */
+#trayTable td {
+  border: none;
+  padding: 2px 4px 2px 0;
+}
+
+#trayTable button {
+  padding: 4px 6px;
+}
+
+/* Fixed width, so the selection arrow appearing cannot shift the tray. The
+   margin keeps it off the tile rather than crowding it. */
+.marker {
+  display: inline-block;
+  width: 1ch;
+  margin-right: 0.5ch;
+}
+
+/* Placed letters grey out in place instead of disappearing. */
+#trayTable button.used {
+  opacity: 0.4;
+}
+
+/* A tile's letter and value are both fixed width, so the tray never reflows
+   when a 10 point letter sits next to a 1 point one. */
+.face {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+.value {
+  display: inline-block;
+  width: 2ch;
+  text-align: right;
+  font-size: small;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* Holds its height with a non-breaking space when there is nothing to say, so
+   a warning appearing does not shove the page around. */
+#message {
+  color: red;
+  /* Keeps its height so a warning appearing does not shove the page around,
+     but tight margins so it does not open a gap when it is empty. */
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+#message + h2 {
+  margin-top: 0.3em;
+}

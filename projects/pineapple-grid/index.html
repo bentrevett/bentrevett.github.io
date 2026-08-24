@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pineapple Grid 🍍</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Pineapple Grid 🍍</u></h1>
+
+    <p>
+      A daily solo puzzle, a grid variant of
+      <a href="../pineapple-lines/">Pineapple Lines</a>.
+    </p>
+
+    <p>
+      You have a five by five grid, with the four corners dealt face up to
+      start. Over seven turns you are dealt five cards, place three of them
+      into any empty cells and discard the other two. After seven turns all
+      twenty five cells are full.
+    </p>
+
+    <p>
+      Every <b>row</b> and every <b>column</b> is scored as a five card poker
+      hand &mdash; ten hands in all, with no diagonals and no multipliers. Each
+      card therefore counts twice, once in its row and once in its column.
+      Everybody gets the same cards in the same order each day.
+    </p>
+
+    <p>Select a card, then click an empty cell to place it.</p>
+
+    <p>
+      <button id="practice">Practice (random deal)</button>
+      <input id="seed" placeholder="Seed" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <h2>Scoring</h2>
+
+    <table id="scoring"></table>
+
+    <h2>Grid</h2>
+
+    <p id="status"></p>
+
+    <table id="grid"></table>
+
+    <h2>Hand</h2>
+
+    <div id="hand"></div>
+
+    <p id="discards"></p>
+
+    <p>
+      <button id="undo">Undo</button>
+    </p>
+
+    <h2>Lines</h2>
+
+    <table id="lines"></table>
+
+    <script src="index.js"></script>
+  </body>
+</html>

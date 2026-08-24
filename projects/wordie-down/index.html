@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wordie Down ⬇️</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Wordie Down ⬇️</u></h1>
+
+    <p>
+      A daily word puzzle, a downward variant of
+      <a href="../wordie-grid/">Wordie Grid</a>. You are given five words, one
+      per row, and one <b>shaded square</b> in each row.
+    </p>
+
+    <p>
+      Read the shaded squares from top to bottom and they spell a word running
+      <b>downwards</b>. Reorder the five words so that they do. The shaded
+      squares never move &mdash; they belong to the rows, not to the words
+      &mdash; so a word gives up a different letter depending on which row it
+      lands in.
+    </p>
+
+    <p>
+      There is more than one word hiding in there, and you are after
+      <b>all of them</b>. Every word, across and down, comes from the same list
+      of common five letter words, and no down word is ever one of the five
+      words across.
+    </p>
+
+    <p>
+      Click a word to pick it up, then click another to swap the two. Click it
+      again to put it down. The shaded squares turn green when they spell one
+      of the words you are looking for.
+    </p>
+
+    <p>
+      <button id="undo">Undo</button>
+      <button id="reset">Reset</button>
+      <button id="practice">Practice (random words)</button>
+      <input id="seed" placeholder="Seed" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <h2>Words</h2>
+
+    <p id="status"></p>
+
+    <table id="board"></table>
+
+    <p id="down"></p>
+
+    <h2>Down words</h2>
+
+    <p id="targets"></p>
+
+    <p id="message"></p>
+
+    <script src="../wordie-words/answer-words.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

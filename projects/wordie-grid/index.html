@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wordie Grid 📝</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Wordie Grid 📝</u></h1>
+
+    <p>
+      A daily word puzzle. You are given the letters of five hidden words, some
+      wildcards, and a five by five grid. Arrange them so that every
+      <b>row</b> spells a valid five letter word. There are more tiles than
+      cells, so some are left over &mdash; you choose which.
+    </p>
+
+    <p id="counts"></p>
+
+    <p>
+      The letters are taken from five real words, so a solution always exists
+      &mdash; but it is rarely the highest scoring one. Each letter is worth its
+      <a href="https://en.wikipedia.org/wiki/Scrabble_letter_distributions">
+        Scrabble</a> value, and the shaded cells score <b>double</b> for the
+      letter placed on them. A row only scores if it spells a valid five letter word.
+      Everybody gets the same letters each day.
+    </p>
+
+    <p>
+      A <b>wildcard</b> (<b>?</b>) becomes whatever letter its row needs, and
+      is worked out for you &mdash; it shows the letter it became, in
+      <span class="wild">italics</span>. Wildcards are worth no points, so
+      playing one instead of a letter costs you that letter's value. You may
+      use at most <b>one per word</b>.
+    </p>
+
+    <p>
+      The <b>target</b> is the best the day's five words can score, over every
+      way of ordering them in the grid. Beating it means finding better words
+      than the ones the letters came from.
+    </p>
+
+    <p>
+      Select a letter, then click an empty cell to place it. Click a placed
+      letter to send it back. Each cell shows what it contributes, doubled
+      where the cell is shaded, and the row's total is on the right. A finished
+      row turns green if it spells a word and red if it does not.
+    </p>
+
+    <p>
+      <button id="clear">Clear grid</button>
+      <button id="practice">Practice (random letters)</button>
+      <input id="seed" placeholder="Seed" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <h2>Letter values</h2>
+
+    <table id="values"></table>
+
+    <h2>Grid</h2>
+
+    <p id="status"></p>
+
+    <table id="grid"></table>
+
+    <p id="message"></p>
+
+    <h2>Letters</h2>
+
+    <div id="tray"></div>
+
+    <script src="../wordie-words/answer-words.js"></script>
+    <script src="../wordie-words/valid-words.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

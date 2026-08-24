@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wordie Loop 🔗</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Wordie Loop 🔗</u></h1>
+
+    <p>
+      A daily word puzzle, a loop variant of
+      <a href="../wordie-grid/">Wordie Grid</a>. You are given the letters of
+      five hidden words, some wildcards, and a five by five grid.
+    </p>
+
+    <p id="counts"></p>
+
+    <p>
+      Every <b>row</b> must spell a valid five letter word, and the words must
+      form a <b>loop</b>: the last letter of each word is the first letter of
+      the one below it, and the last word joins back round to the first.
+    </p>
+
+    <p>
+      The <b>joins</b> are dealt for you &mdash; the shaded first and last
+      letter of every row &mdash; so the shape of the loop is given and cannot
+      be moved. You fill in the three letters between them. The letters come
+      from a real loop, so a solution always exists, though rarely only one.
+    </p>
+
+    <p>
+      A <b>wildcard</b> (<b>?</b>) stands in for any letter and is worked out
+      for you, showing what it became in <span class="wild">italics</span>. You
+      may use at most <b>one per word</b>.
+    </p>
+
+    <p>
+      Closing the loop scores <b>6</b>, less one for every wildcard you used.
+      So a loop built from real letters alone is worth the full six.
+    </p>
+
+    <p>
+      Select a letter, then click an empty cell to place it. Click a placed
+      letter to send it back. A finished row turns green if it spells a word
+      and red if it does not.
+    </p>
+
+    <p>
+      <button id="clear">Clear grid</button>
+      <button id="practice">Practice (random letters)</button>
+      <input id="seed" placeholder="Seed" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <h2>Loop</h2>
+
+    <p id="status"></p>
+
+    <table id="grid"></table>
+
+    <p id="message"></p>
+
+    <h2>Letters</h2>
+
+    <div id="tray"></div>
+
+    <script src="../wordie-words/answer-words.js"></script>
+    <script src="../wordie-words/valid-words.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

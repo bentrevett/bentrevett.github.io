@@ -1,0 +1,155 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+/* Every character sits in a fixed width box, so letters and marks appearing
+   or changing can never shift the layout. */
+.glyph {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+/* --- the grid --- */
+
+#grid td {
+  text-align: center;
+  padding: 6px 8px;
+}
+
+#grid td.empty {
+  color: gray;
+}
+
+/* An empty cell you can place the selected letter into. */
+#grid td.open {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+#grid td.open:hover {
+  background-color: blue;
+  color: white;
+}
+
+/* A placed letter, click to send it back to the tray. */
+#grid td.filled {
+  cursor: pointer;
+}
+
+/* A join dealt at the start. Shaded and bold, since it is fixed and shows
+   the shape of the loop. */
+#grid td.given {
+  background-color: #ffd;
+  font-weight: bold;
+  cursor: not-allowed;
+}
+
+/* A completed row: green when it spells a valid word, red when it does not.
+   The same pair marks whether a join lines up. */
+#grid td.good,
+#grid th.scorevalue.good,
+#grid th.scorelabel.good {
+  color: green;
+}
+
+#grid td.bad {
+  color: red;
+}
+
+/* A wildcard, shown as whatever letter it became. Italic so it is never
+   mistaken for a letter you actually placed. */
+.wild {
+  font-style: italic;
+}
+
+/* The tick, cross or question mark for a row. Fixed width so the three never
+   shift the column. */
+#grid td.status {
+  width: 2ch;
+  text-align: center;
+}
+
+/* --- the score, under the grid --- */
+
+#grid th.scorelabel {
+  text-align: right;
+}
+
+#grid th.scorevalue {
+  text-align: right;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* --- the letter tray --- */
+
+/* Only for alignment, so it needs no grid lines. */
+#trayTable td {
+  border: none;
+  padding: 2px 4px 2px 0;
+}
+
+#trayTable button {
+  padding: 4px 8px;
+}
+
+/* Placed letters grey out in place instead of disappearing. */
+#trayTable button.used {
+  opacity: 0.4;
+}
+
+/* Fixed width, so the selection arrow appearing cannot shift the tray. The
+   margin keeps it off the tile rather than crowding it. */
+.marker {
+  display: inline-block;
+  width: 1ch;
+  margin-right: 0.5ch;
+}
+
+/* Holds its height with a non-breaking space when there is nothing to say, so
+   a warning appearing does not shove the page around. */
+#message {
+  color: red;
+  /* Keeps its height so a warning appearing does not shove the page around,
+     but tight margins so it does not open a gap when it is empty. */
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+#message + h2 {
+  margin-top: 0.3em;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* Selection is shown by the arrow, not by the browser's focus highlight, so
+   drop the ring for mouse clicks while keeping it for keyboard users. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}

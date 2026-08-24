@@ -1,0 +1,118 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+/* Every character sits in a fixed width box, so letters and marks appearing
+   or changing can never shift the layout. */
+.glyph {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+/* --- the board --- */
+
+#board td {
+  text-align: center;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+/* A row is picked up and put down as a whole, so the whole row lights up. */
+#board tr.row:hover td {
+  background-color: #eee;
+}
+
+/* The fixed column for this row. It belongs to the row rather than to the
+   word, so it stays put while the words move past it. */
+#board td.spot {
+  background-color: #ffd;
+  font-weight: bold;
+}
+
+#board tr.row:hover td.spot {
+  background-color: #eec;
+}
+
+/* The shaded squares spell one of the words being looked for. */
+#board td.spot.good {
+  color: green;
+}
+
+/* Holds the selection arrow. Only for alignment, so it needs no grid line on
+   the side facing the tiles. */
+#board td.marker {
+  border: none;
+  padding: 2px 4px 2px 0;
+  cursor: default;
+}
+
+#board tr.row:hover td.marker {
+  background-color: transparent;
+}
+
+/* --- the word running down, and the ones still to find --- */
+
+#down {
+  white-space: nowrap;
+}
+
+.good {
+  color: green;
+}
+
+.bad {
+  color: red;
+}
+
+/* A down word not found yet, held open as dots so finding one shifts nothing
+   along the line. */
+.slot {
+  color: gray;
+}
+
+#targets {
+  white-space: nowrap;
+}
+
+/* Holds its height with nothing to say, so the finishing line appearing does
+   not shove the page around. */
+#message {
+  color: green;
+  font-weight: bold;
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* Selection is shown by the arrow, not by the browser's focus highlight, so
+   drop the ring for mouse clicks while keeping it for keyboard users. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}
