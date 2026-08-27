@@ -116,6 +116,12 @@ function getDateString(date) {
   return `${year}-${month}-${day}`;
 }
 
+// The daily puzzle's name. Worked out afresh each time rather than cached,
+// so a page left open past midnight stops calling yesterday's puzzle today's.
+function todaysSeed() {
+  return getDateString(new Date());
+}
+
 // --- hand evaluation ------------------------------------------------------
 
 // Names the best five card poker hand. Expects exactly ROW_SIZE cards.
@@ -451,6 +457,10 @@ function renderHand() {
 
 function render() {
   document.getElementById("puzzle").textContent = `Puzzle: ${state.label}`;
+  // Greyed out while today's puzzle is the one on screen. That is what says
+  // you are on it, now the heading no longer singles it out, and it stops a
+  // stray click wiping a board you are part way through.
+  document.getElementById("today").disabled = state.label === todaysSeed();
 
   // Holds at the last turn when finished, so the line never changes length.
   const status = document.getElementById("status");
@@ -485,9 +495,9 @@ function main() {
     render();
   }
 
-  // Puts an explicitly chosen seed in the address bar so the puzzle can be
-  // linked to. Deliberately not called for the daily puzzle, so the bare URL
-  // keeps meaning "today" rather than being pinned to one date.
+  // Puts a chosen seed in the address bar so the puzzle can be linked to.
+  // Not called for the puzzle the page opens on, so a bare URL keeps meaning
+  // "today" until you actually pick something.
   function setUrlSeed(seed) {
     try {
       history.replaceState(null, "", `?seed=${encodeURIComponent(seed)}`);
@@ -505,6 +515,12 @@ function main() {
 
   document.getElementById("undo").addEventListener("click", undo);
 
+  document.getElementById("today").addEventListener("click", () => {
+    // Pinned in the URL just like any other puzzle you pick, so today's can
+    // be linked to and shared as well.
+    loadAndLink(todaysSeed());
+  });
+
   document.getElementById("practice").addEventListener("click", () => {
     loadAndLink(String(Math.floor(Math.random() * 1e9)));
   });
@@ -520,7 +536,7 @@ function main() {
 
   // ?seed=... in the URL wins, otherwise today's puzzle is the date itself.
   const urlSeed = new URLSearchParams(location.search).get("seed");
-  load((urlSeed || "").trim() || getDateString(new Date()));
+  load((urlSeed || "").trim() || todaysSeed());
 }
 
 main();

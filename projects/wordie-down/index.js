@@ -114,6 +114,12 @@ function getDateString(date) {
   return `${year}-${month}-${day}`;
 }
 
+// The daily puzzle's name. Worked out afresh each time rather than cached,
+// so a page left open past midnight stops calling yesterday's puzzle today's.
+function todaysSeed() {
+  return getDateString(new Date());
+}
+
 // --- solving --------------------------------------------------------------
 
 // Every answer word the five across words can spell downwards, given the
@@ -260,7 +266,6 @@ function newGame(seedString, label) {
     found: new Set(),
     order: words.map((_, index) => index),
     selected: null,
-    history: [],
     moves: 0,
   };
 
@@ -299,30 +304,10 @@ function selectRow(row) {
     state.selected = null;
   } else {
     swapRows(state.selected, row);
-    state.history.push([state.selected, row]);
     state.moves += 1;
     state.selected = null;
     collect();
   }
-  render();
-}
-
-function undo() {
-  const last = state.history.pop();
-  if (!last) return;
-  swapRows(last[0], last[1]);
-  state.moves -= 1;
-  state.selected = null;
-  render();
-}
-
-// Back to the deal, keeping whatever has already been found.
-function reset() {
-  state.order = state.words.map((_, index) => index);
-  state.selected = null;
-  state.history = [];
-  state.moves = 0;
-  collect();
   render();
 }
 
@@ -398,6 +383,10 @@ function renderTargets() {
 
 function render() {
   document.getElementById("puzzle").textContent = `Puzzle: ${state.label}`;
+  // Greyed out while today's puzzle is the one on screen. That is what says
+  // you are on it, now the heading no longer singles it out, and it stops a
+  // stray click wiping a board you are part way through.
+  document.getElementById("today").disabled = state.label === todaysSeed();
 
   const status = document.getElementById("status");
   status.replaceChildren(
@@ -417,9 +406,6 @@ function render() {
   message.textContent = isSolved()
     ? `All ${state.targets.length} down words found.`
     : "";
-
-  document.getElementById("undo").disabled = state.history.length === 0;
-  document.getElementById("reset").disabled = state.history.length === 0;
 }
 
 // --- setup ----------------------------------------------------------------
@@ -435,9 +421,9 @@ function main() {
     render();
   }
 
-  // Puts an explicitly chosen seed in the address bar so the puzzle can be
-  // linked to. Deliberately not called for the daily puzzle, so the bare URL
-  // keeps meaning "today" rather than being pinned to one date.
+  // Puts a chosen seed in the address bar so the puzzle can be linked to.
+  // Not called for the puzzle the page opens on, so a bare URL keeps meaning
+  // "today" until you actually pick something.
   function setUrlSeed(seed) {
     try {
       history.replaceState(null, "", `?seed=${encodeURIComponent(seed)}`);
@@ -451,8 +437,11 @@ function main() {
     setUrlSeed(seed);
   }
 
-  document.getElementById("undo").addEventListener("click", undo);
-  document.getElementById("reset").addEventListener("click", reset);
+  document.getElementById("today").addEventListener("click", () => {
+    // Pinned in the URL just like any other puzzle you pick, so today's can
+    // be linked to and shared as well.
+    loadAndLink(todaysSeed());
+  });
 
   document.getElementById("practice").addEventListener("click", () => {
     loadAndLink(String(Math.floor(Math.random() * 1e9)));
@@ -469,7 +458,7 @@ function main() {
 
   // ?seed=... in the URL wins, otherwise today's puzzle is the date itself.
   const urlSeed = new URLSearchParams(location.search).get("seed");
-  load((urlSeed || "").trim() || getDateString(new Date()));
+  load((urlSeed || "").trim() || todaysSeed());
 }
 
 main();

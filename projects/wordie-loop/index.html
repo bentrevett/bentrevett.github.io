@@ -48,9 +48,18 @@
     </p>
 
     <p>
-      <button id="clear">Clear grid</button>
-      <button id="practice">Practice (random letters)</button>
-      <input id="seed" placeholder="Seed" size="12" autocorrect="off"
+      <button id="today">Today's Puzzle</button>
+      <button id="practice">Random Puzzle</button>
+    </p>
+
+    <p>
+      Every puzzle has a name, shown in the heading below: today's is the
+      date, and a random puzzle gets a number. Type a name in to play that
+      exact puzzle, which is also how you set a friend the same one.
+    </p>
+
+    <p>
+      <input id="seed" placeholder="Puzzle name" size="12" autocorrect="off"
         autocapitalize="none" autocomplete="off" spellcheck="false">
       <button id="load">Load</button>
     </p>
@@ -62,6 +71,10 @@
     <p id="status"></p>
 
     <table id="grid"></table>
+
+    <p id="clearRow">
+      <button id="clear">Clear grid</button>
+    </p>
 
     <p id="message"></p>
 

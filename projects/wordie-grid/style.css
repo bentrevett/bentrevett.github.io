@@ -138,6 +138,12 @@ button:disabled {
 
 /* Holds its height with a non-breaking space when there is nothing to say, so
    a warning appearing does not shove the page around. */
+/* Clearing the grid belongs with the grid, not up with the puzzle controls.
+   Tight margins so it does not reopen the gap above the letters. */
+#clearRow {
+  margin: 0.5em 0 0;
+}
+
 #message {
   color: red;
   /* Keeps its height so a warning appearing does not shove the page around,
