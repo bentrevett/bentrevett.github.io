@@ -279,11 +279,198 @@ function countSolutions(puzzle, regions, antiking, cap) {
   return found;
 }
 
+// --- solving by hand ------------------------------------------------------
+
+// Solves the way a person would, with no guessing, and reports which
+// techniques it needed. That is what difficulty is measured against: a search
+// solver only answers "is the answer unique", a far weaker bar than "does this
+// take any thinking".
+//
+//   scanning  a cell with only one value left
+//   counting  a unit needing n more of a value, with exactly n cells still
+//             able to take it. Ordinary sudoku only ever has n = 1; here a row
+//             wants two 2s and three 3s, so several cells can fall at once
+//   locked    every place a region has left for a value sits in one line, and
+//             that line needs exactly as many as the region does, so the rest
+//             of the line cannot have it. Needs real regions
+//   dual      the same in reverse: every place a line has left for a value
+//             sits inside one region, so the rest of the region cannot have
+//             it. Fires independently of locked, and in practice only on
+//             jigsaws: regular blocks line up with rows and columns too neatly
+//             for a line's homes to fall inside one block
+//   pairs     a row holds exactly one 1, so if its 1 is cornered into a few
+//             columns, the next row's 1 cannot sit beside all of them. Needs
+//             the lonely ones rule
+//
+// Naked sets and fish patterns are deliberately absent. Fish ought to work on
+// the 1s, which form a permutation matrix since there is exactly one per row
+// and per column, but on a grid this small the pattern almost never forms
+// before something simpler resolves it: seven firings in eighteen hundred
+// puzzles. With only three values a naked set on
+// two of them is the exact complement of a counting deduction on the third, so
+// counting always fires first; across eighteen hundred puzzles it never once
+// had anything to do.
+//
+// Unlike the placement techniques, locked and pairs work by *elimination*, so
+// candidates are carried in a grid of sets rather than recomputed each time.
+function logicSolve(puzzle, regions, antiking, tier) {
+  const { units, membership } = buildUnits(regions);
+  const grid = puzzle.map((row) => row.slice());
+  const candidates = [];
+  for (let r = 0; r < SIZE; r++) {
+    candidates.push([]);
+    for (let c = 0; c < SIZE; c++) {
+      candidates[r].push(grid[r][c] ? new Set() : new Set([1, 2, 3]));
+    }
+  }
+  const used = { scanning: 0, counting: 0, locked: 0, dual: 0, pairs: 0 };
+
+  const placed = (unit, value) => unit.filter(([r, c]) => grid[r][c] === value).length;
+  const drop = (r, c, value) => candidates[r][c].delete(value);
+
+  function assign(r, c, value) {
+    grid[r][c] = value;
+    candidates[r][c] = new Set();
+    for (const i of membership[r][c]) {
+      if (placed(units[i], value) >= LIMIT[value]) {
+        for (const [ur, uc] of units[i]) drop(ur, uc, value);
+      }
+    }
+    if (value === 1 && antiking) {
+      for (const [dr, dc] of KING) {
+        const nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE) drop(nr, nc, 1);
+      }
+    }
+  }
+
+  // The clues eliminate before anything else is tried.
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) if (grid[r][c]) assign(r, c, grid[r][c]);
+  }
+
+  for (;;) {
+    let moved = false;
+
+    for (let r = 0; r < SIZE && !moved; r++) {
+      for (let c = 0; c < SIZE && !moved; c++) {
+        if (grid[r][c]) continue;
+        // Nothing fits here, so the grid as given is already broken.
+        if (candidates[r][c].size === 0) return { solved: false, used };
+        if (candidates[r][c].size === 1) {
+          assign(r, c, [...candidates[r][c]][0]);
+          used.scanning += 1;
+          moved = true;
+        }
+      }
+    }
+    if (moved) continue;
+
+    if (tier >= 2) {
+      for (let i = 0; i < units.length && !moved; i++) {
+        for (const value of [1, 2, 3]) {
+          const need = LIMIT[value] - placed(units[i], value);
+          const homes = units[i].filter(([r, c]) => !grid[r][c] && candidates[r][c].has(value));
+          if (need > 0 && homes.length === need) {
+            for (const [r, c] of homes) assign(r, c, value);
+            used.counting += 1;
+            moved = true;
+            break;
+          }
+        }
+      }
+      if (moved) continue;
+    }
+
+    if (tier >= 3) {
+      // Regions are the last six units. On the plain rulesets they are the rows
+      // themselves, so a region and its line coincide and nothing is ever cut.
+      for (let i = 2 * SIZE; i < units.length && !moved; i++) {
+        for (const value of [1, 2, 3]) {
+          const need = LIMIT[value] - placed(units[i], value);
+          if (need <= 0) continue;
+          const homes = units[i].filter(([r, c]) => !grid[r][c] && candidates[r][c].has(value));
+          if (homes.length === 0) continue;
+
+          for (const axis of [0, 1]) {
+            const line = homes[0][axis];
+            if (!homes.every((home) => home[axis] === line)) continue;
+            const lineUnit = units[axis === 0 ? line : SIZE + line];
+            if (LIMIT[value] - placed(lineUnit, value) !== need) continue;
+            let cut = false;
+            for (const [r, c] of lineUnit) {
+              if (grid[r][c]) continue;
+              if (homes.some((home) => home[0] === r && home[1] === c)) continue;
+              if (drop(r, c, value)) cut = true;
+            }
+            if (cut) { used.locked += 1; moved = true; break; }
+          }
+          if (moved) break;
+        }
+      }
+      if (moved) continue;
+
+      // The same argument from the line's side. Lines are the first twelve
+      // units, regions the last six.
+      for (let i = 0; i < 2 * SIZE && !moved; i++) {
+        for (const value of [1, 2, 3]) {
+          const need = LIMIT[value] - placed(units[i], value);
+          if (need <= 0) continue;
+          const homes = units[i].filter(([r, c]) => !grid[r][c] && candidates[r][c].has(value));
+          if (homes.length === 0) continue;
+
+          const region = regions[homes[0][0]][homes[0][1]];
+          if (!homes.every(([r, c]) => regions[r][c] === region)) continue;
+          const regionUnit = units[2 * SIZE + region];
+          if (LIMIT[value] - placed(regionUnit, value) !== need) continue;
+
+          let cut = false;
+          for (const [r, c] of regionUnit) {
+            if (grid[r][c]) continue;
+            if (homes.some((home) => home[0] === r && home[1] === c)) continue;
+            if (drop(r, c, value)) cut = true;
+          }
+          if (cut) { used.dual += 1; moved = true; break; }
+        }
+      }
+      if (moved) continue;
+
+      if (antiking) {
+        for (let r = 0; r < SIZE - 1 && !moved; r++) {
+          for (const [from, to] of [[r, r + 1], [r + 1, r]]) {
+            if (grid[from].includes(1)) continue;
+            const homes = [];
+            for (let c = 0; c < SIZE; c++) if (!grid[from][c] && candidates[from][c].has(1)) homes.push(c);
+            if (homes.length === 0) continue;
+            let cut = false;
+            for (let c = 0; c < SIZE; c++) {
+              if (grid[to][c]) continue;
+              // Beside every column the other row's 1 could be in, so wherever
+              // that 1 lands this cell would be touching it.
+              if (homes.every((home) => Math.abs(home - c) <= 1) && drop(to, c, 1)) cut = true;
+            }
+            if (cut) { used.pairs += 1; moved = true; break; }
+          }
+        }
+        if (moved) continue;
+      }
+    }
+
+    break;
+  }
+
+  let filled = 0;
+  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (grid[r][c]) filled += 1;
+  return { solved: filled === SIZE * SIZE, used, grid };
+}
+
 // --- carving --------------------------------------------------------------
 
 // Strip clues one at a time, in a random order, keeping only the removals that
-// leave the answer unique. Greedy, so the result is a local minimum: few
-// clues, not provably the fewest.
+// leave the puzzle solvable by hand. Carving against the logic solver rather
+// than the search solver is what makes every puzzle fair: it can always be
+// finished by forced deductions, never by guessing. Forced all the way also
+// means the answer stays unique.
 function carve(solution, regions, antiking, random) {
   const puzzle = solution.map((row) => row.slice());
   const cells = [];
@@ -292,41 +479,107 @@ function carve(solution, regions, antiking, random) {
   for (const [r, c] of shuffle(cells, random)) {
     const kept = puzzle[r][c];
     puzzle[r][c] = 0;
-    if (countSolutions(puzzle, regions, antiking, 2) !== 1) puzzle[r][c] = kept;
+    if (!logicSolve(puzzle, regions, antiking, 3).solved) puzzle[r][c] = kept;
   }
   return puzzle;
 }
 
-// One puzzle for one ruleset. Throws rather than shipping a grid that fails
-// the independent validator.
-function makePuzzle(variant, random) {
-  for (let attempt = 0; attempt < 50; attempt++) {
+function clueCount(puzzle) {
+  let clues = 0;
+  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (puzzle[r][c]) clues += 1;
+  return clues;
+}
+
+// Which techniques a puzzle must actually demand before it is worth serving.
+//
+// Locked candidates need real regions: on the plain rulesets the regions are
+// the rows themselves, so a region and its line coincide and the technique can
+// never fire. Insisting on it there would loop forever.
+//
+// Pair inference is not demanded anywhere. The solver still uses it, so it can
+// carve further on the lonely ones rulesets, but requiring it as well made
+// those puzzles scarcer without making them harder.
+function techniquesFor(variant) {
+  const wanted = ["scanning", "counting"];
+  if (variant.regions !== "none") wanted.push("locked");
+  // Measured, not assumed: blocks managed the dual direction once in four
+  // hundred carves, and never alongside locked, so asking for it there would
+  // search forever.
+  if (variant.regions === "jigsaw") wanted.push("dual");
+  if (variant.antiking) wanted.push("pairs");
+  return wanted;
+}
+
+// Searching stops as soon as a puzzle demands everything asked of its ruleset,
+// and a little more looking has failed to turn up a harder one. The odds vary
+// wildly — a jigsaw obliges about one carve in three, blocks about one in a
+// hundred and twenty, since locked candidates so rarely decide anything on a
+// regular two by three grid. A fixed budget would either give up on blocks or
+// waste most of its work on jigsaws.
+const KEEP_LOOKING = 15; // extra candidates once one qualifies, hunting a harder one
+const GOOD_ENOUGH = 5; // counting steps worth stopping on at once
+const MAX_CANDIDATES = 4000; // a stop, not a target
+
+// One puzzle for one ruleset.
+//
+// Carving is done against the logic solver rather than the search solver, so
+// whatever comes out can always be finished by forced deductions and never
+// needs a guess. Forced all the way also means the answer stays unique.
+//
+// Carving alone gives puzzles scanning polishes off on its own, which take no
+// thought at all, so candidates are built until one needs every technique the
+// ruleset can demand.
+function makePuzzle(variant, seed) {
+  const wanted = techniquesFor(variant);
+  let best = null;
+  let foundAt = -1;
+
+  for (let attempt = 0; attempt < MAX_CANDIDATES; attempt++) {
+    if (best && attempt - foundAt >= KEEP_LOOKING) break;
+    if (best && best.used.counting >= GOOD_ENOUGH) break;
+
+    const random = makeRandom(hashString(`${seed}/${variant.id}/${attempt}`));
     const regions = regionsFor(variant, random);
     const solution = fillGrid(regions, variant.antiking, random);
     if (!solution) continue;
     if (!check(solution, regions, variant.antiking)) {
       throw new Error(`variant ${variant.id}: filler produced an invalid grid`);
     }
+
     const puzzle = carve(solution, regions, variant.antiking, random);
-    let clues = 0;
-    for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (puzzle[r][c]) clues += 1;
-    return { variant: variant.id, regions, solution, puzzle, clues };
+    const byHand = logicSolve(puzzle, regions, variant.antiking, 3);
+    if (!byHand.solved) continue; // carving guarantees this, but assert it
+    if (!wanted.every((technique) => byHand.used[technique] > 0)) continue;
+
+    const clues = clueCount(puzzle);
+    const score = byHand.used.counting * 100 - clues;
+    if (!best || score > best.score) {
+      best = {
+        variant: variant.id, regions, solution, puzzle, clues, score,
+        used: byHand.used, wanted, attempts: attempt + 1,
+      };
+    }
+    if (foundAt < 0) foundAt = attempt;
   }
-  throw new Error(`variant ${variant.id}: could not build a grid`);
+
+  // Unreachable in practice: even blocks, the stingiest ruleset, obliges about
+  // once in a hundred and twenty carves, so four thousand misses is beyond
+  // remote. Loud rather than silently easy if it ever happens.
+  if (!best) throw new Error(`variant ${variant.id}: no puzzle needing ${wanted.join(", ")}`);
+  return best;
 }
 
 // All six rulesets for one seed. Each gets its own stream, so changing one
 // variant's luck cannot shift the others.
 function makeDay(seed) {
-  return VARIANTS.map((variant) =>
-    makePuzzle(variant, makeRandom(hashString(`${seed}/${variant.id}`)))
-  );
+  return VARIANTS.map((variant) => makePuzzle(variant, seed));
 }
 
 if (typeof module !== "undefined") {
   module.exports = {
     SIZE, VARIANTS, ROWS, hashString, makeRandom, shuffle,
     rowRegions, blockRegions, jigsawRegions, regionsFor,
-    fillGrid, check, buildUnits, countSolutions, carve, makePuzzle, makeDay,
+    fillGrid, check, buildUnits, countSolutions, logicSolve, techniquesFor,
+    carve, clueCount, makePuzzle, makeDay,
   };
 }

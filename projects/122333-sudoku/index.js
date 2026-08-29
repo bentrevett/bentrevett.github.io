@@ -27,19 +27,31 @@ function currentVariant() {
 }
 
 function currentPuzzle() {
-  return state.day[state.variant - 1];
+  return puzzleFor(state.variant);
+}
+
+// Puzzles are built when they are first looked at, not all six up front.
+// Picking a hard one means building dozens of candidates, so paying for all
+// six on load would be most of a second for five you may never open.
+function puzzleFor(variant) {
+  if (!state.day[variant - 1]) {
+    state.day[variant - 1] = makePuzzle(VARIANTS[variant - 1], state.seed);
+    state.boards[variant - 1] = state.day[variant - 1].puzzle.map((row) => row.slice());
+  }
+  return state.day[variant - 1];
 }
 
 function newGame(seed, variant) {
-  const day = makeDay(seed);
   state = {
     seed: seed,
     variant: variant,
-    day: day,
+    // Filled in as each ruleset is opened.
+    day: VARIANTS.map(() => null),
     // One board per ruleset, so switching between them does not throw away
     // what you have already filled in.
-    boards: day.map((puzzle) => puzzle.puzzle.map((row) => row.slice())),
+    boards: VARIANTS.map(() => null),
   };
+  puzzleFor(variant);
 }
 
 // --- rules ----------------------------------------------------------------
@@ -246,6 +258,7 @@ function main() {
   function chooseVariant(regions, antiking) {
     const found = VARIANTS.find((v) => v.regions === regions && v.antiking === antiking);
     state.variant = found.id;
+    puzzleFor(found.id);
     render();
   }
 
