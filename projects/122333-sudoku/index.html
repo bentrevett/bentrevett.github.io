@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>122333 Sudoku 🔢</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>122333 Sudoku 🔢</u></h1>
+
+    <p>
+      A daily logic puzzle on a six by six grid. Fill every cell with a
+      <b>1</b>, <b>2</b> or <b>3</b> so that every row and every column holds
+      exactly <b>one 1, two 2s and three 3s</b>.
+    </p>
+
+    <p>
+      Click a cell to cycle it through blank, 1, 2 and 3. The clues you were
+      given are shaded and cannot be changed. A cell turns <b>red</b> when it
+      breaks a rule &mdash; too many of a value in a row, column or region.
+    </p>
+
+    <p>
+      Every puzzle has exactly one answer, and there is a fresh set of six
+      every day.
+    </p>
+
+    <h2>Rules</h2>
+
+    <p>
+      <button id="plain">Plain</button>
+      <button id="blocks">Blocks</button>
+      <button id="jigsaw">Jigsaw</button>
+      <label><input type="checkbox" id="lonely"> <b>Lonely ones</b></label>
+    </p>
+
+    <p id="rules"></p>
+
+    <p>
+      <button id="today">Today's Puzzle</button>
+      <button id="practice">Random Puzzle</button>
+    </p>
+
+    <p>
+      Every puzzle has a name, shown in the heading below: today's is the
+      date, and a random puzzle gets a number. Type a name in to play that
+      exact puzzle, which is also how you set a friend the same one.
+    </p>
+
+    <p>
+      <input id="seed" placeholder="Puzzle name" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <p id="status"></p>
+
+    <table id="grid"></table>
+
+    <p id="clearRow">
+      <button id="clear">Clear grid</button>
+    </p>
+
+    <p id="message"></p>
+
+    <script src="sudoku.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* Every character sits in a fixed width box, so a letter appearing where a
+   blank was cannot shift what is beside it. */
+.glyph {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+/* Wide enough for the largest puzzle's count, so the tally does not jog the
+   line along as it climbs past nine. */
+.count {
+  display: inline-block;
+  width: 2ch;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* --- the clues --- */
+
+#clues {
+  padding-left: 4ch;
+  margin-top: 0;
+}
+
+#clues li {
+  margin-bottom: 0.9em;
+}
+
+/* Italic, so the clue reads as the quoted definition it is rather than as the
+   page talking to you. */
+.definition {
+  margin-bottom: 0.15em;
+  font-style: italic;
+}
+
+/* The letter count. Upright, since it is the page talking rather than part of
+   the definition, and kept on one line so it never dangles by itself. */
+.length {
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.answer {
+  white-space: nowrap;
+}
+
+/* The blanks, and the answer once it is uncovered. */
+.blanks {
+  letter-spacing: 0.15ch;
+  margin-right: 0.5ch;
+}
+
+.blanks.solved {
+  color: green;
+  font-weight: bold;
+}
+
+.blanks.wrong {
+  color: red;
+}
+
+#clues input {
+  font-family: monospace;
+  font-size: large;
+  text-transform: uppercase;
+}
+
+/* Greyed in place rather than removed, so a solved clue keeps its shape. */
+#clues input:disabled {
+  color: gray;
+  background-color: #f4f4f4;
+}
+
+/* Tight above, so the tally sits under the heading it belongs to. */
+#status {
+  margin: 0.3em 0 0;
+}
+
+/* Clear below, so the two summary lines are not mistaken for part of the
+   first clue. */
+#letters {
+  margin: 0.6em 0 1.2em;
+  letter-spacing: 0.15ch;
+}
+
+/* The letter every single answer contains. */
+#letters .middle {
+  text-decoration: underline;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* Nothing here is selected by clicking a button, so drop the focus ring for
+   mouse clicks while keeping it for keyboard users. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}

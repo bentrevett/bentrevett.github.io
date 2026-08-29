@@ -1,0 +1,102 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* --- the grid --- */
+
+#grid {
+  border-collapse: collapse;
+}
+
+#grid td {
+  width: 2ch;
+  height: 2ch;
+  text-align: center;
+  padding: 6px 8px;
+  cursor: pointer;
+  /* Thin lines between cells, thickened below where a region ends. */
+  border: 1px solid #bbb;
+}
+
+/* A clue, which cannot be changed. */
+#grid td.given {
+  background-color: #ffd;
+  font-weight: bold;
+  cursor: not-allowed;
+}
+
+/* A cell you have filled in that breaks a rule. */
+#grid td.wrong {
+  color: red;
+  font-weight: bold;
+}
+
+#grid td.empty {
+  color: gray;
+}
+
+#grid td:not(.given):hover {
+  background-color: #eee;
+}
+
+/* Solved: dimmed, and nothing left to click. */
+#grid.solved td {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#grid.solved td:hover {
+  background-color: inherit;
+}
+
+/* Region edges, and the outside of the grid. */
+#grid td.edgeTop { border-top: 3px solid black; }
+#grid td.edgeBottom { border-bottom: 3px solid black; }
+#grid td.edgeLeft { border-left: 3px solid black; }
+#grid td.edgeRight { border-right: 3px solid black; }
+
+/* --- everything else --- */
+
+#rules {
+  margin: 0.4em 0 0;
+}
+
+#status {
+  margin: 0.3em 0 0.6em;
+}
+
+/* Clearing the grid belongs with the grid, not up with the puzzle controls. */
+#clearRow {
+  margin: 0.5em 0 0;
+}
+
+/* Holds its height with nothing to say, so finishing does not shove the page
+   around. */
+#message {
+  color: green;
+  font-weight: bold;
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* The chosen ruleset is shown by its button greying out, not by the browser's
+   focus highlight, so drop the ring for mouse clicks. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}

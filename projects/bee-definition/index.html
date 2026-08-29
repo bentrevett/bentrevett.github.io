@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bee Definition 🐝</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Bee Definition 🐝</u></h1>
+
+    <p>
+      A daily word puzzle built from the
+      <a href="https://www.nytimes.com/puzzles/spelling-bee">New York Times
+      Spelling Bee</a>. Every answer from one day's Spelling Bee is here, but
+      you are given only its <b>definition</b> and its <b>length</b>.
+    </p>
+
+    <p>
+      Type an answer and press <b>Enter</b>. It turns green if you have it and
+      red if you have not. <b>Hint</b> uncovers the first letter, then the
+      second, and so on.
+    </p>
+
+    <p>
+      The trick is that every answer is spelled from the same seven letters,
+      and one of those letters appears in every single answer. So each one you
+      get narrows down the letters the rest can possibly be using.
+    </p>
+
+    <p>
+      <button id="today">Today's Puzzle</button>
+      <button id="practice">Random Puzzle</button>
+    </p>
+
+    <p>
+      Every puzzle has a name, shown in the heading below: today's is the
+      date, and a random puzzle gets a number. Type a name in to play that
+      exact puzzle, which is also how you set a friend the same one.
+    </p>
+
+    <p>
+      <input id="seed" placeholder="Puzzle name" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <p id="status"></p>
+
+    <p id="letters"></p>
+
+    <ol id="clues"></ol>
+
+    <script src="../bee-data/puzzle-data.js"></script>
+    <script src="../bee-data/word-definitions.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

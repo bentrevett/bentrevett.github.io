@@ -15,7 +15,7 @@ const BUILD_ATTEMPTS = 2000;
 
 // --- the word list --------------------------------------------------------
 
-// ANSWER_WORDS comes from ../wordie-words/, loaded by a plain script tag.
+// ANSWER_WORDS comes from ../wordie-data/, loaded by a plain script tag.
 
 const ALPHABET_START = "a".charCodeAt(0);
 

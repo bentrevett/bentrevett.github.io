@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wordie Place 🧩</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Wordie Place 🧩</u></h1>
+
+    <p>
+      A daily word puzzle, a placing variant of
+      <a href="../wordie-grid/">Wordie Grid</a>. Eight five letter words were
+      chosen, their <b>middle letters</b> kept, and both of their <b>ends</b>
+      snipped off into sixteen two letter tiles.
+    </p>
+
+    <p>
+      Put a tile back on each end of every line, so that all eight lines spell
+      words. A tile can go on either end of any line, so which end it was cut
+      from is part of the puzzle.
+    </p>
+
+    <p>
+      You do not have to find the eight words the puzzle was built from. Any
+      eight words will do, and there is usually more than one way.
+    </p>
+
+    <p>
+      Click a tile, then click the end of a line to put it there. Click a tile
+      already on a line to send it back. A finished line turns green if it
+      spells a word and red if it does not.
+    </p>
+
+    <p>
+      <button id="today">Today's Puzzle</button>
+      <button id="practice">Random Puzzle</button>
+    </p>
+
+    <p>
+      Every puzzle has a name, shown in the heading below: today's is the date,
+      and a random puzzle gets a number. Type a name in to play that exact
+      puzzle, which is also how you set a friend the same one.
+    </p>
+
+    <p>
+      <input id="seed" placeholder="Puzzle name" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <p id="status"></p>
+
+    <table id="lines"></table>
+
+    <p id="clearRow">
+      <button id="clear">Clear grid</button>
+    </p>
+
+    <p id="message"></p>
+
+    <h2>Tiles</h2>
+
+    <p>
+      <label><input type="checkbox" id="easy"> <b>Easy mode</b></label>
+      &mdash; mark each tile with the end it was cut from, so
+      <b>GR-</b> started a word and <b>-IN</b> finished one. That is one
+      solution, mind, not the only one.
+    </p>
+
+    <div id="tray"></div>
+
+    <script src="../wordie-data/answer-words.js"></script>
+    <script src="../wordie-data/valid-words.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bee Switch 🐝</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Bee Switch 🐝</u></h1>
+
+    <p>
+      A daily word puzzle built from the
+      <a href="https://www.nytimes.com/puzzles/spelling-bee">New York Times
+      Spelling Bee</a>, and a sister to
+      <a href="../bee-definition/">Bee Definition</a>. You are given a stack of
+      words from one day's Spelling Bee, one for every letter of that day's
+      <b>pangram</b> &mdash; the word that uses all seven letters.
+    </p>
+
+    <p>
+      Slide the words left and right, and shuffle them up and down, until the
+      <b>shaded middle column</b> spells a pangram reading top to bottom.
+    </p>
+
+    <p>
+      Click any letter to pull it into the middle column. Use <b>&#9650;</b> and
+      <b>&#9660;</b> to move a word up or down the stack.
+    </p>
+
+    <p>
+      <button id="today">Today's Puzzle</button>
+      <button id="practice">Random Puzzle</button>
+    </p>
+
+    <p>
+      Every puzzle has a name, shown in the heading below: today's is the
+      date, and a random puzzle gets a number. Type a name in to play that
+      exact puzzle, which is also how you set a friend the same one.
+    </p>
+
+    <p>
+      <input id="seed" placeholder="Puzzle name" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <p id="letters"></p>
+
+    <p id="column"></p>
+
+    <table id="board"></table>
+
+    <p id="message"></p>
+
+    <script src="../bee-data/puzzle-data.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

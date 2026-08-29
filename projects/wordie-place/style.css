@@ -1,0 +1,136 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+/* Every character sits in a fixed width box, so letters and marks appearing
+   or changing can never shift the layout. */
+.glyph {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+/* --- the lines --- */
+
+#lines td {
+  text-align: center;
+  padding: 6px 8px;
+}
+
+/* An end of a line, holding one two letter tile. */
+#lines td.slot {
+  width: 2ch;
+  cursor: pointer;
+}
+
+#lines td.slot.empty {
+  color: gray;
+  background-color: #eee;
+}
+
+#lines td.slot.empty:hover {
+  background-color: blue;
+  color: white;
+}
+
+/* The letter given to you, which cannot be moved. */
+#lines td.middle {
+  width: 1ch;
+  background-color: #ffd;
+  font-weight: bold;
+  cursor: not-allowed;
+}
+
+/* A finished line: green when it spells a word, red when it does not. */
+#lines td.good {
+  color: green;
+}
+
+#lines td.bad {
+  color: red;
+}
+
+/* The tick, cross or question mark. Fixed width so the three never shift the
+   column. */
+#lines td.status {
+  width: 2ch;
+  text-align: center;
+}
+
+/* --- the tile grid --- */
+
+/* Only for alignment, so it needs no grid lines. */
+#trayTable td {
+  border: none;
+  padding: 2px 4px 2px 0;
+}
+
+#trayTable button {
+  padding: 4px 8px;
+}
+
+/* Placed tiles grey out in place instead of disappearing. */
+#trayTable button.used {
+  opacity: 0.4;
+}
+
+/* Fixed width, so the selection arrow appearing cannot shift the grid. The
+   margin keeps it off the tile rather than crowding it. */
+.marker {
+  display: inline-block;
+  width: 1ch;
+  margin-right: 0.5ch;
+}
+
+/* Clearing the grid belongs with the grid, not up with the puzzle controls,
+   the same as in Wordie Grid and Wordie Loop. Tight margins so it does not
+   reopen the gap above the tiles. */
+#clearRow {
+  margin: 0.5em 0 0;
+}
+
+/* Holds its height with nothing to say, so finishing does not shove the page
+   around, but tight margins so it does not open a gap when it is empty. */
+#message {
+  color: green;
+  font-weight: bold;
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+#message + h2 {
+  margin-top: 0.3em;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* Selection is shown by the arrow, not by the browser's focus highlight, so
+   drop the ring for mouse clicks while keeping it for keyboard users. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}

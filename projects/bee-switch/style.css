@@ -1,0 +1,110 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* Every character sits in a fixed width box, so a letter changing cannot shift
+   what is beside it. */
+.glyph {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+.good {
+  color: green;
+  font-weight: bold;
+}
+
+.bad {
+  color: red;
+}
+
+#letters,
+#column {
+  margin: 0.3em 0 0;
+  letter-spacing: 0.15ch;
+  white-space: nowrap;
+}
+
+#column {
+  margin-bottom: 0.8em;
+}
+
+/* --- the board --- */
+
+/* No grid lines: the words are meant to read as a stack of sliding strips,
+   with the middle column showing through as a channel behind them. */
+#board {
+  border-collapse: collapse;
+}
+
+#board td {
+  border: none;
+  padding: 2px 0;
+  width: 2ch;
+  text-align: center;
+}
+
+/* The column the pangram has to appear in. Shaded the whole way down, empty
+   cells included, so it reads as one channel rather than a row of marks. */
+#board td.middle {
+  background-color: #ffd;
+}
+
+#board td.middle.solved {
+  background-color: #cfc;
+  color: green;
+  font-weight: bold;
+}
+
+/* A letter you can pull into the middle. */
+#board td.letter {
+  cursor: pointer;
+}
+
+#board td.letter:hover {
+  background-color: blue;
+  color: white;
+}
+
+#board td.controls {
+  width: auto;
+  padding-right: 1ch;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#board td.controls button {
+  padding: 0 0.4ch;
+}
+
+/* Holds its height with nothing to say, so finishing does not shove the page
+   around. */
+#message {
+  color: green;
+  font-weight: bold;
+  min-height: 1.5em;
+  margin: 0.6em 0 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* Nothing is selected by clicking a button, so drop the focus ring for mouse
+   clicks while keeping it for keyboard users. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}

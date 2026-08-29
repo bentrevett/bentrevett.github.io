@@ -76,7 +76,7 @@ function todaysSeed() {
 
 // --- word lists -----------------------------------------------------------
 
-// ANSWER_WORDS and VALID_WORDS come from ../wordie-words/, pulled in by script tags
+// ANSWER_WORDS and VALID_WORDS come from ../wordie-data/, pulled in by script tags
 // so the page works straight from a file:// URL with no server.
 //
 // The two lists do not overlap, so a word is valid if it appears in either.
