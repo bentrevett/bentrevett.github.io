@@ -68,10 +68,6 @@ body {
   margin: 0.4em 0 0;
 }
 
-#status {
-  margin: 0.3em 0 0.6em;
-}
-
 /* Clearing the grid belongs with the grid, not up with the puzzle controls. */
 #clearRow {
   margin: 0.5em 0 0;

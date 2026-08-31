@@ -1,0 +1,169 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* --- the board --- */
+
+#grid {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#grid td {
+  width: 1.6em;
+  height: 1.6em;
+  text-align: center;
+  padding: 0;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+/* Outside the puzzle. */
+#grid td.blocked {
+  background-color: #222;
+  border-color: #222;
+}
+
+/* A cell to fill in. */
+#grid td.open {
+  cursor: pointer;
+  background-color: #fff;
+  font-weight: bold;
+}
+
+#grid td.open:hover {
+  background-color: #eee;
+}
+
+/* The marks sit on the border between two cells, so they need the cell to be
+   a positioning context and must draw over its neighbour's edge. */
+#grid td .mark {
+  position: absolute;
+  font-size: 0.75em;
+  font-weight: bold;
+  line-height: 1;
+  background-color: #fff;
+  padding: 0 1px;
+  z-index: 2;
+  color: #333;
+}
+
+#grid td .mark.right {
+  right: -0.45em;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#grid td .mark.down {
+  bottom: -0.45em;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* A cell that must be covered by a piece holding no other hatched cell.
+   Diagonal hatching rather than a mark in the middle: it reads the same
+   whether the cell is empty or has a letter in it, and never crowds the
+   letter. Drawn as a background image so a finished piece's colour, which is
+   a background colour, still shows through underneath. */
+#grid td.marked {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.28) 0 2px,
+    transparent 2px 7px
+  );
+}
+
+/* A finished piece that has swallowed two circles. */
+#grid td.overDotted {
+  outline: 2px solid red;
+  outline-offset: -2px;
+}
+
+#grid td.overDotted.marked {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 0, 0, 0.45) 0 2px,
+    transparent 2px 7px
+  );
+}
+
+/* A mark the letters either side of it break. */
+#grid td .mark.broken {
+  color: red;
+  background-color: #fee;
+}
+
+/* Solved: dimmed, and nothing left to click. */
+#grid.solved td {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#grid.solved td.open:hover {
+  background-color: #fff;
+}
+
+/* --- the shapes on offer --- */
+
+#shapes {
+  display: flex;
+  gap: 2.5ch;
+  margin: 0.4em 0 0;
+}
+
+.shape {
+  text-align: center;
+}
+
+.shape table {
+  border-collapse: collapse;
+  margin: 0.2em auto 0;
+}
+
+.shape td {
+  width: 0.9em;
+  height: 0.9em;
+  padding: 0;
+  border: 1px solid transparent;
+}
+
+.shape td.on {
+  background-color: #555;
+  border-color: #555;
+}
+
+/* --- everything else --- */
+
+/* Clearing the grid belongs with the grid, not up with the puzzle controls. */
+#clearRow {
+  margin: 0.5em 0 0;
+}
+
+/* Holds its height with nothing to say, so finishing does not shove the page
+   around. */
+#message {
+  color: green;
+  font-weight: bold;
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none;
+}

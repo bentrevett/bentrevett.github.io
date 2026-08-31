@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tetronimo Place 🧱</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Tetronimo Place 🧱</u></h1>
+
+    <p>
+      A daily tiling puzzle. The white cells have been cut into
+      <b>tetronimoes</b> &mdash; four cell pieces &mdash; and your job is to
+      work out where every piece is.
+    </p>
+
+    <p>
+      Click a cell to cycle it through the shapes on offer today, writing in
+      which shape covers it, and <b>right click</b> to wipe it in one go. Every white cell belongs to exactly one piece, and
+      only the shapes listed below were used. Pieces may be turned and mirrored
+      freely, so a shape and its mirror image count as the same one.
+    </p>
+
+    <p>
+      Between some cells there is a mark, and every mark falls on a join
+      between two pieces. <b>&times;</b> means the two pieces either side are
+      <b>different</b> shapes. <b>=</b> means they are two <b>different</b>
+      pieces of the <b>same</b> shape.
+    </p>
+
+    <p>
+      Some cells are <b>hatched</b>. No single piece may cover more than one
+      hatched cell.
+    </p>
+
+    <p>
+      There is exactly one answer. A mark turns <b>red</b> when the letters
+      either side of it break it, and a finished piece is outlined in red if it
+      has swallowed two hatched cells. Finish a piece correctly and it is coloured in,
+      so you can see it as a piece rather than four letters.
+    </p>
+
+    <h2>Board</h2>
+
+    <p>
+      <button id="small">Small</button>
+      <button id="medium">Medium</button>
+      <button id="large">Large</button>
+      &mdash; three a day. The bigger boards need more clues to pin their
+      answer down, which is most of what makes them harder.
+    </p>
+
+    <h2>Today's shapes</h2>
+
+    <div id="shapes"></div>
+
+    <p>
+      <button id="today">Today's Puzzle</button>
+      <button id="practice">Random Puzzle</button>
+    </p>
+
+    <p>
+      Every puzzle has a name, shown in the heading below: today's is the
+      date, and a random puzzle gets a number. Type a name in to play that
+      exact puzzle, which is also how you set a friend the same one.
+    </p>
+
+    <p>
+      <input id="seed" placeholder="Puzzle name" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <table id="grid"></table>
+
+    <p id="clearRow">
+      <button id="clear">Clear grid</button>
+    </p>
+
+    <p id="message"></p>
+
+    <script src="tetronimo.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

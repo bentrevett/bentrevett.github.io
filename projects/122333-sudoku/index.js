@@ -111,15 +111,6 @@ function brokenCells() {
   return broken;
 }
 
-function filledCount() {
-  const board = state.boards[state.variant - 1];
-  let filled = 0;
-  for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) if (board[r][c]) filled += 1;
-  }
-  return filled;
-}
-
 // Full, and matching the one answer the puzzle has.
 function isSolved() {
   const board = state.boards[state.variant - 1];
@@ -128,6 +119,15 @@ function isSolved() {
     for (let c = 0; c < SIZE; c++) if (board[r][c] !== solution[r][c]) return false;
   }
   return true;
+}
+
+// Wipes a cell in one go, rather than clicking round the cycle to reach blank.
+function clearCell(row, column) {
+  if (currentPuzzle().puzzle[row][column]) return; // a clue, not yours to change
+  const board = state.boards[state.variant - 1];
+  if (board[row][column] === 0) return;
+  board[row][column] = 0;
+  render();
 }
 
 // Blank, 1, 2, 3, and back to blank.
@@ -179,8 +179,13 @@ function renderGrid() {
       cell.className = classes.join(" ");
 
       if (!given && !solved) {
-        cell.title = "click to cycle through blank, 1, 2 and 3";
+        cell.title = "click to cycle through blank, 1, 2 and 3, right click to wipe";
         cell.addEventListener("click", () => cycleCell(r, c));
+        cell.addEventListener("contextmenu", (event) => {
+          // The browser's own menu is not wanted here.
+          event.preventDefault();
+          clearCell(r, c);
+        });
       }
     }
   }
@@ -211,12 +216,6 @@ function render() {
 
   renderRules();
   renderGrid();
-
-  const filled = filledCount();
-  const total = SIZE * SIZE;
-  document.getElementById("status").textContent =
-    `Filled ${String(filled).padStart(2, " ")} of ${total}. ` +
-    `Clues: ${currentPuzzle().clues}.`;
 
   document.getElementById("message").textContent = isSolved() ? "Solved." : "";
 
