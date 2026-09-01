@@ -7,7 +7,7 @@
 
 // A cell is one of three things, and clicking walks round them.
 const UNKNOWN = 0;
-const HATCHED = 1;
+const FILLED = 1;
 const BLANK = 2;
 
 let state;
@@ -128,7 +128,7 @@ function setCell(cell, mark) {
   render();
 }
 
-// Unknown, hatched, blank, and back to unknown. Clue cells cycle too: the
+// Unknown, filled, blank, and back to unknown. Clue cells cycle too: the
 // number says nothing about the cell it sits in, so it is yours to fill like
 // any other.
 function cycleCell(cell) {
@@ -148,11 +148,11 @@ function undo() {
 function hint() {
   const { answer, order } = currentPuzzle();
   const next = order.find((cell) => {
-    const want = answer[cell] === 1 ? HATCHED : BLANK;
+    const want = answer[cell] === 1 ? FILLED : BLANK;
     return board()[cell] !== want;
   });
   if (next === undefined) return;
-  setCell(next, answer[next] === 1 ? HATCHED : BLANK);
+  setCell(next, answer[next] === 1 ? FILLED : BLANK);
 }
 
 // --- what the board says --------------------------------------------------
@@ -184,22 +184,22 @@ function groups() {
   return out;
 }
 
-// Cells that break a rule as the board stands: a group with more hatched than
+// Cells that break a rule as the board stands: a group with more filled than
 // it allows, or one blanked off so hard it can no longer reach its count. Only
 // ever flags what is already impossible, so it never points at the answer.
 function brokenCells() {
   const marks = board();
   const broken = new Set();
   for (const { cells, want } of groups()) {
-    const hatched = cells.filter((cell) => marks[cell] === HATCHED);
+    const filled = cells.filter((cell) => marks[cell] === FILLED);
     const blank = cells.filter((cell) => marks[cell] === BLANK);
-    if (hatched.length > want) for (const cell of hatched) broken.add(cell);
+    if (filled.length > want) for (const cell of filled) broken.add(cell);
     if (cells.length - blank.length < want) for (const cell of blank) broken.add(cell);
   }
   return broken;
 }
 
-// The numbers already matched by what you have hatched around them. Only the
+// The numbers already matched by what you have filled around them. Only the
 // count is checked, not whether they are the right cells: it is a tally of
 // your own working, not a verdict on it.
 function metClues() {
@@ -207,20 +207,20 @@ function metClues() {
   const marks = board();
   const met = new Set();
   for (const { cell, value } of clues) {
-    let hatched = 0;
-    for (const other of windowOf(cell, shape)) if (marks[other] === HATCHED) hatched++;
-    if (hatched === value) met.add(cell);
+    let filled = 0;
+    for (const other of windowOf(cell, shape)) if (marks[other] === FILLED) filled++;
+    if (filled === value) met.add(cell);
   }
   return met;
 }
 
-// Solved when the hatched cells are exactly the ones in the answer. Marking
+// Solved when the filled cells are exactly the ones in the answer. Marking
 // the blanks is a working aid, so it is not asked for.
 function isSolved() {
   const { answer, shape } = currentPuzzle();
   const marks = board();
   for (let cell = 0; cell < shape.cells; cell++) {
-    if ((marks[cell] === HATCHED) !== (answer[cell] === 1)) return false;
+    if ((marks[cell] === FILLED) !== (answer[cell] === 1)) return false;
   }
   return true;
 }
@@ -257,7 +257,7 @@ function renderGrid() {
       const clue = clueAt.get(cell);
 
       const classes = ["open"];
-      if (mark === HATCHED) classes.push("hatched");
+      if (mark === FILLED) classes.push("filled");
       else if (mark === BLANK) classes.push("blank");
       if (clue !== undefined) classes.push("clue");
       if (met.has(cell)) classes.push("met");
@@ -269,14 +269,16 @@ function renderGrid() {
       box.className = classes.join(" ");
 
       // A fixed-width span either way, so a cell holding nothing is the same
-      // size as one holding a number and the grid cannot shift.
+      // size as one holding a number and the grid cannot shift. A cell you
+      // have called blank is crossed off unless it has a number to show.
       const face = document.createElement("span");
-      face.className = "face";
-      face.textContent = clue !== undefined ? String(clue) : (mark === BLANK ? "·" : "");
+      const crossed = clue === undefined && mark === BLANK;
+      face.className = crossed ? "face cross" : "face";
+      face.textContent = clue !== undefined ? String(clue) : (crossed ? "\u00d7" : "");
       box.append(face);
 
       if (!solved) {
-        box.title = "click to cycle through unknown, hatched and blank, right click to wipe";
+        box.title = "click to cycle through unknown, filled and blank, right click to wipe";
         box.addEventListener("click", () => cycleCell(cell));
         box.addEventListener("contextmenu", (event) => {
           // The browser's own menu is not wanted here.
@@ -293,7 +295,7 @@ function renderGrid() {
 function renderRules() {
   const { shape, regions } = currentPuzzle();
   const rules = [
-    `Every row holds ${shape.half} hatched cells and ${shape.half} blank, and so does every column.`,
+    `Every row holds ${shape.half} filled cells and ${shape.half} blank, and so does every column.`,
   ];
   if (state.regions === 1) {
     rules.push(`Every ${shape.blockRows} by ${shape.blockColumns} block holds the same.`);
@@ -301,7 +303,7 @@ function renderRules() {
     rules.push("Every outlined shape holds the same.");
   }
   rules.push(
-    "A number says how many of the nine cells around it are hatched — the " +
+    "A number says how many of the nine cells around it are filled — the " +
     "eight touching it and the cell it sits in, minus any that fall off the " +
     "edge of the grid."
   );

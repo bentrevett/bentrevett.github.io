@@ -10,7 +10,7 @@
     <h1><u>Minesweeper Sudoku 💣</u></h1>
 
     <p>
-      A daily logic puzzle. Every cell of the grid is either <b>hatched</b> or
+      A daily logic puzzle. Every cell of the grid is either <b>filled</b> or
       <b>blank</b>, and your job is to work out which is which. Pick a size,
       and pick how the grid is carved up &mdash; into nothing at all, into
       rectangular blocks, or into jigsaw shapes.
@@ -39,23 +39,26 @@
 
     <p>
       A number tells you nothing about the cell it sits in, so a numbered cell
-      may be hatched itself &mdash; and often is. You have to work it out like
+      may be filled itself &mdash; and often is. You have to work it out like
       any other.
     </p>
 
     <p>
-      A number turns <b>green</b> once you have hatched as many cells around it
-      as it asks for. It only counts them: hatch the wrong ones and it still
-      goes green, so it is a tally of your working rather than a verdict on it.
+      A number <b>fades</b> once you have filled as many cells around it as it
+      asks for, so what is left to work out stands out from what is done. It
+      only counts them: fill the wrong ones and it still fades, so it is a
+      tally of your working rather than a verdict on it.
     </p>
 
     <p>
-      Click a cell to cycle it through unknown, hatched and blank, and
-      <b>right click</b> to wipe it in one go. Marking the blanks is not asked
-      for, only the hatched cells, but it is the easiest way to keep track. A
-      cell turns <b>red</b> when it is already impossible &mdash; too many
-      hatched in a row, column, block or number, or so many blanks that one of
-      them can no longer be satisfied.
+      Click a cell to cycle it through unknown, filled and blank, and
+      <b>right click</b> to wipe it in one go. A cell you have filled goes
+      <b>blue</b>, one you have called blank goes <b>grey</b> and is crossed
+      off, and one you have not decided stays <b>white</b>. Marking the blanks
+      is not asked for, only the filled cells, but it is the easiest way to
+      keep track. A cell turns <b>red</b> when it is already impossible
+      &mdash; too many filled in a row, column, block or number, or so many
+      blanks that one of them can no longer be satisfied.
     </p>
 
     <p>

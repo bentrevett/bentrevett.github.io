@@ -26,68 +26,69 @@ body {
   background-color: #fff;
 }
 
-/* The number, or the dot on a cell you have called blank. A span of its own,
-   always present, so a cell holding nothing is exactly as big as one holding a
-   number and filling the grid in cannot shift the page. */
+/* The number, or the cross on a cell you have called blank. A span of its
+   own, always present, so a cell holding nothing is exactly as big as one
+   holding a number and filling the grid in cannot shift the page. */
 #grid td .face {
   display: inline-block;
   min-width: 1ch;
   font-weight: bold;
   color: #222;
-  /* The hatching is a background, and this rides over it. */
-  position: relative;
 }
 
-/* A cell you have called blank: its dot is a mark of yours, not a clue. */
-#grid td.blank .face {
-  color: #999;
+/* Filled: a pale blue wash. Pale enough to keep the number black and the
+   lines around the cell visible, strong enough to read as a filled cell from
+   across the grid. */
+#grid td.filled {
+  background-color: #c3daf2;
 }
 
-/* Hatched. Diagonal lines rather than a solid fill, so a number sitting on a
-   hatched cell stays readable. */
-#grid td.hatched {
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(0, 0, 0, 0.42) 0 2px,
-    transparent 2px 7px
-  );
-}
-
-/* A cell you have called blank. Pale rather than white, so the three states
-   read apart at a glance. */
+/* Called blank: a pale grey, and crossed off where there is no number to
+   show. The cross is lighter still than the number it stands in for: it is a
+   note to yourself, not something to read. */
 #grid td.blank {
-  background-color: #f2f2f2;
+  background-color: #ececec;
 }
 
-/* A number with as many hatched cells around it as it asks for. It counts
-   what you have marked and nothing else — hatch the wrong ones and it still
-   goes green, so it is a tally of your working rather than a verdict on it. */
+#grid td.blank .face {
+  color: #444;
+}
+
+#grid td .face.cross {
+  color: #b4b4b4;
+}
+
+/* A number that has as many filled cells around it as it asks for fades into
+   the background: it is finished with, and there is nothing left to read in
+   it. Fading rather than colouring keeps it legible on all three cell
+   grounds, where a green would have had to fight the blue.
+   It counts what you have marked and nothing else — fill the wrong ones and
+   it still fades, so it is a tally of your working rather than a verdict. */
 #grid td.clue.met .face {
-  color: #178017;
+  color: #8b95a1;
+  font-weight: normal;
 }
 
-/* A cell caught in something already impossible. Listed after the green so it
-   wins on a cell that is somehow both, and named with .clue so it outweighs
-   the green on numbered cells. */
+/* A cell caught in something already impossible: the wash goes red, and so
+   does the number. */
 #grid td.wrong .face,
 #grid td.clue.wrong .face {
   color: red;
+  /* Weight as well as colour, so a number that had faded comes back when its
+     cell turns out to be impossible. */
+  font-weight: bold;
 }
 
-#grid td.wrong.hatched {
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255, 0, 0, 0.45) 0 2px,
-    transparent 2px 7px
-  );
+#grid td.filled.wrong {
+  background-color: #f6cdc8;
 }
 
-#grid td.wrong.blank {
-  background-color: #fee;
+#grid td.blank.wrong {
+  background-color: #ecc6c2;
 }
 
 #grid td:hover {
-  outline: 2px solid #99f;
+  outline: 2px solid #111;
   outline-offset: -2px;
 }
 

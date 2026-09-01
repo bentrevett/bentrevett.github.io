@@ -1,18 +1,18 @@
 // Puzzle logic for Minesweeper Sudoku. No DOM in here, so the same file runs
 // in the page and under Node for testing.
 //
-// Every row, column and region is half hatched. Half is the only share that
-// works: the rows fix how many hatched cells the grid holds, and the regions
+// Every row, column and region is half filled. Half is the only share that
+// works: the rows fix how many filled cells the grid holds, and the regions
 // have to add up to the same number. Regions hold as many cells as the grid is
 // wide, so every group on the board — row, column or region — asks for exactly
 // the same count, which is half the width.
 //
 // A clue says how many of the nine cells around it, itself included, are
-// hatched, clipped at the edges. A clue cell can be hatched like any other:
+// filled, clipped at the edges. A clue cell can be filled like any other:
 // the number tells you nothing about the cell it sits in.
 //
 // Everything here is one kind of statement — "exactly N of these cells are
-// hatched". Rows, columns, regions and clues all say that, so a single solver
+// filled". Rows, columns, regions and clues all say that, so a single solver
 // serves them all, and what it settles without ever guessing is exactly what a
 // player can settle by reasoning.
 
@@ -157,7 +157,7 @@ function regionsFor(shape, kind, random) {
 // One full grid, laid down a row at a time.
 //
 // Rows rather than single cells, and whole balanced rows at that: a row that
-// is already half hatched cannot break its own rule, so every step is a step
+// is already half filled cannot break its own rule, so every step is a step
 // the columns and regions can immediately judge. Filling cell by cell in a
 // shuffled order looks more natural and is far worse — the counts only bite
 // near the end, and an awkward jigsaw can send it into half a minute of
@@ -258,20 +258,20 @@ function cluesOf(grid, shape) {
 // A finished grid, checked against the rules from scratch rather than against
 // the way it was built.
 function isValid(grid, clues, shape, regions) {
-  const hatched = {
+  const filled = {
     row: new Int8Array(shape.side),
     column: new Int8Array(shape.side),
     region: new Int8Array(regions ? shape.side : 0),
   };
   for (let cell = 0; cell < shape.cells; cell++) {
     if (grid[cell] !== 1) continue;
-    hatched.row[rowOf(cell, shape)]++;
-    hatched.column[columnOf(cell, shape)]++;
-    if (regions) hatched.region[regions[cell]]++;
+    filled.row[rowOf(cell, shape)]++;
+    filled.column[columnOf(cell, shape)]++;
+    if (regions) filled.region[regions[cell]]++;
   }
   for (let i = 0; i < shape.side; i++) {
-    if (hatched.row[i] !== shape.half || hatched.column[i] !== shape.half) return false;
-    if (regions && hatched.region[i] !== shape.half) return false;
+    if (filled.row[i] !== shape.half || filled.column[i] !== shape.half) return false;
+    if (regions && filled.region[i] !== shape.half) return false;
   }
   for (const { cell, value } of clues || []) if (clueValue(grid, cell, shape) !== value) return false;
   return true;
@@ -309,7 +309,7 @@ function groupsFor(clues, shape, regions) {
 // Reason as far as these clues allow, using two rules and nothing else:
 //
 //   full     a group whose count is already met has blanks for the rest, and
-//            one that needs everything it has left hatches all of it.
+//            one that needs everything it has left fills all of it.
 //   overlap  where one group's unsettled cells sit wholly inside another's,
 //            the cells outside hold exactly the difference between the two
 //            counts. This is what lets two clues a cell apart say something
@@ -333,7 +333,7 @@ function reason(clues, shape, regions, useOverlap = true) {
   const order = [];
 
   // Per group: the cells still unsettled, how many there are, and how many of
-  // them are hatched.
+  // them are filled.
   const open = new Int32Array(count * words);
   const room = new Int16Array(count);
   const need = new Int16Array(count);
@@ -351,30 +351,30 @@ function reason(clues, shape, regions, useOverlap = true) {
 
   let broken = false;
 
-  const settle = (cell, hatched) => {
+  const settle = (cell, filled) => {
     if (value[cell] !== -1) {
-      if (value[cell] !== hatched) broken = true;
+      if (value[cell] !== filled) broken = true;
       return;
     }
-    value[cell] = hatched;
+    value[cell] = filled;
     order.push(cell);
     const word = cell >> 5, mask = ~(1 << (cell & 31));
     for (const i of holding[cell]) {
       open[i * words + word] &= mask;
       room[i]--;
-      if (hatched) need[i]--;
+      if (filled) need[i]--;
       if (need[i] < 0 || need[i] > room[i]) broken = true;
     }
   };
 
   // Fill a group's remaining cells, or the part of one group that lies outside
   // another, all the same way.
-  const fillOpen = (i, hatched, skip) => {
+  const fillOpen = (i, filled, skip) => {
     let moved = false;
     for (const cell of groups[i].cells) {
       if (value[cell] !== -1) continue;
       if (skip >= 0 && (open[skip * words + (cell >> 5)] & (1 << (cell & 31)))) continue;
-      settle(cell, hatched);
+      settle(cell, filled);
       moved = true;
     }
     return moved;
