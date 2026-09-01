@@ -7,6 +7,10 @@
 // Nothing is precomputed. A puzzle takes a few milliseconds to build, so it is
 // built when you load it.
 
+// Light enough to read a mark through, and distinct from each other. None of
+// them is red, which is reserved for showing a mistake.
+const SHAPE_COLOURS = ["#bcd9ff", "#c6ecc0", "#f3ebae", "#dcd2f2", "#b9e8e2", "#ffd9b0"];
+
 let state;
 
 // Local date as YYYY-MM-DD, this is the daily seed.
@@ -30,15 +34,25 @@ function todaysSeed() {
 function boardFor(size) {
   if (!state.day[size]) {
     const puzzle = makePuzzle(state.seed, size);
+    // One colour per shape, drawn from the same pool every day but paired at
+    // random. Red is not among them: it is what a mistake looks like.
+    const random = makeRandom(hashString(`${state.seed}/colours/${size}`));
+    const palette = shuffle(SHAPE_COLOURS, random);
+
     state.day[size] = {
       names: puzzle.names,
       side: puzzle.side,
       region: new Set(puzzle.region),
       answer: new Map(puzzle.labels),
+      pieces: puzzle.pieces,
       marks: puzzle.marks,
       dots: new Set(puzzle.dots),
-      // What you have written in each cell, by cell id. Absent means blank.
-      filled: new Map(),
+      colours: new Map(puzzle.names.map((name, i) => [name, palette[i]])),
+      // The cuts you have drawn, as "lower:higher" cell pairs.
+      walls: new Set(),
+      // The cuts you have touched, newest last. Toggling is its own reverse,
+      // so a step back is just doing the same thing again.
+      history: [],
     };
   }
   return state.day[size];
@@ -58,146 +72,179 @@ function newGame(seed, size) {
   boardFor(size);
 }
 
-// Wipes a cell in one go, rather than clicking round the cycle to reach blank.
-function clearCell(id) {
-  if (board().filled.delete(id)) render();
+// Draws one cut the puzzle's own tiling has and the drawing is missing. More
+// than one cut can give the right answer, so this points at the one the board
+// was built from rather than the only one that could work.
+function hint() {
+  const b = board();
+  const inPiece = new Map();
+  b.pieces.forEach((cells, index) => { for (const id of cells) inPiece.set(id, index); });
+
+  for (const id of [...b.region].sort((x, y) => x - y)) {
+    for (const step of [1, BIGGEST]) {
+      const other = id + step;
+      if (!b.region.has(other)) continue;
+      if (step === 1 && (id % BIGGEST) + 1 >= b.side) continue;
+      // A join between two pieces should be cut; anything else should not.
+      const wanted = inPiece.get(id) !== inPiece.get(other);
+      if (wanted && !hasWall(id, other)) { toggleWall(id, other); return; }
+    }
+  }
+  // Nothing missing, so take out a cut that should not be there.
+  for (const key of b.walls) {
+    const [a, c] = key.split(":").map(Number);
+    if (inPiece.get(a) === inPiece.get(c)) { toggleWall(a, c); return; }
+  }
 }
 
-// Blank, then each of today's shapes in turn, then blank again.
-function cycleCell(id) {
-  const here = board().filled.get(id);
-  const at = here === undefined ? -1 : board().names.indexOf(here);
-  const next = at + 1;
-  if (next >= board().names.length) board().filled.delete(id);
-  else board().filled.set(id, board().names[next]);
+// --- drawing ---------------------------------------------------------------
+
+// You draw the cuts, not the letters. A wall is stored against the lower of
+// the two cells it separates, so each one is named once however it is reached.
+function wallKey(a, b) {
+  return a < b ? `${a}:${b}` : `${b}:${a}`;
+}
+
+function hasWall(a, b) {
+  return board().walls.has(wallKey(a, b));
+}
+
+function toggleWall(a, b, remember = true) {
+  const key = wallKey(a, b);
+  const walls = board().walls;
+  if (walls.has(key)) walls.delete(key);
+  else walls.add(key);
+  if (remember) board().history.push(key);
   render();
 }
 
-// Marks whose two letters are both written in and break the rule. A mark
-// waiting on a blank cell is not broken, just unanswered.
-function brokenMarks() {
-  const broken = new Set();
-  board().marks.forEach(([pair, kind], index) => {
-    const a = board().filled.get(pair[0]);
-    const b = board().filled.get(pair[1]);
-    if (a === undefined || b === undefined) return;
-    const same = a === b;
-    if (kind === "=" ? !same : same) broken.add(index);
-  });
-  return broken;
+// Steps back one cut, whether you drew it, took it out, or asked for a hint.
+function undo() {
+  const key = board().history.pop();
+  if (key === undefined) return;
+  const [a, b] = key.split(":").map(Number);
+  toggleWall(a, b, false);
 }
 
-// A colour per piece, from the piece's first cell by the golden angle.
-//
-// Hashing looked fine but let two neighbouring pieces land on the same hue,
-// and then they read as one blob, which is the very thing the colours are for.
-// Stepping by 137 is one-to-one over any run shorter than 360 cells, since 137
-// and 360 share no factor, so on a board of at most a hundred cells no two
-// pieces can ever collide. Pale enough to read the letter through, and fixed
-// by position, so a piece keeps its colour as the board fills in.
-function colourFor(cells) {
-  return `hsl(${(Math.min(...cells) * 137) % 360}, 70%, 85%)`;
-}
-
-// Groups of touching cells you have given the same letter.
-function letterGroups() {
+// The shapes you have cut out: runs of cells that walls do not separate. The
+// region's own edge counts as a wall, so this is just a flood fill that
+// refuses to cross one.
+function drawnPieces() {
+  const b = board();
   const seen = new Set();
-  const groups = [];
-  for (const id of board().region) {
-    const letter = board().filled.get(id);
-    if (letter === undefined || seen.has(id)) continue;
-    const group = [id];
+  const pieces = [];
+  for (const id of b.region) {
+    if (seen.has(id)) continue;
+    const piece = [id];
     seen.add(id);
-    for (let at = 0; at < group.length; at++) {
-      const r = Math.floor(group[at] / BIGGEST);
-      const c = group[at] % BIGGEST;
+    for (let at = 0; at < piece.length; at++) {
+      const r = Math.floor(piece[at] / BIGGEST);
+      const c = piece[at] % BIGGEST;
       for (const [dr, dc] of STEPS) {
         const nr = r + dr, nc = c + dc;
-        if (nr < 0 || nr >= board().side || nc < 0 || nc >= board().side) continue;
+        if (nr < 0 || nr >= b.side || nc < 0 || nc >= b.side) continue;
         const next = nr * BIGGEST + nc;
-        if (seen.has(next) || !board().region.has(next)) continue;
-        if (board().filled.get(next) !== letter) continue;
+        if (!b.region.has(next) || seen.has(next)) continue;
+        if (hasWall(piece[at], next)) continue;
         seen.add(next);
-        group.push(next);
+        piece.push(next);
       }
     }
-    groups.push({ letter, cells: group });
+    pieces.push(piece);
   }
-  return groups;
+  return pieces;
 }
 
-// Cuts a run of same-lettered cells into pieces of that shape, with no piece
-// covering two dots. Returns the pieces, or null if it cannot be done.
+// Which of today's two shapes a run of four cells is, or null if it is not one.
+function shapeOf(cells) {
+  if (cells.length !== PIECE) return null;
+  const rows = cells.map((id) => Math.floor(id / BIGGEST));
+  const cols = cells.map((id) => id % BIGGEST);
+  const top = Math.min(...rows), left = Math.min(...cols);
+  const norm = JSON.stringify(cells
+    .map((id) => [Math.floor(id / BIGGEST) - top, (id % BIGGEST) - left])
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]));
+  for (const name of board().names) {
+    if (SHAPES[name].some((option) => JSON.stringify(option) === norm)) return name;
+  }
+  return null;
+}
+
+// The shape a finished run makes, or null if it is not a piece yet.
 //
-// Whole groups are cut rather than pieces recognised one at a time, because
-// two pieces of the same shape sitting side by side read as one blob of
-// letters and there is no telling from the letters alone where the join is.
-// Where more than one cut works, the first found is used: any of them agrees
-// with the letters, so any of them is a fair thing to draw.
-function splitGroup(cells, letter, respectDots) {
-  const left = new Set(cells);
-  const pieces = [];
-
-  const walk = () => {
-    if (left.size === 0) return true;
-    const first = Math.min(...left);
-    const r = Math.floor(first / BIGGEST);
-    const c = first % BIGGEST;
-    for (const shape of SHAPES[letter]) {
-      // Line the shape up so one of its cells sits on the first free cell.
-      for (const [ar, ac] of shape) {
-        const ids = shape.map(([sr, sc]) => (r + sr - ar) * BIGGEST + (c + sc - ac));
-        if (ids.some((id) => !left.has(id))) continue;
-        if (respectDots && ids.filter((id) => board().dots.has(id)).length > 1) continue;
-        for (const id of ids) left.delete(id);
-        pieces.push(ids);
-        if (walk()) return true;
-        pieces.pop();
-        for (const id of ids) left.add(id);
-      }
-    }
-    return false;
-  };
-  return walk() ? pieces : null;
+// A cut running through the run disqualifies it, even though the cells can
+// still walk around it: a cut says its two cells are in different pieces, so a
+// run with one inside it is a contradiction rather than a finished piece. Only
+// the square loops back on itself, so it is the only shape this can happen to.
+function pieceShape(cells) {
+  const inside = new Set(cells);
+  const cut = cells.some((id) =>
+    [1, BIGGEST].some((step) => inside.has(id + step) && hasWall(id, id + step)));
+  return cut ? null : shapeOf(cells);
 }
 
-// Groups you have finished correctly get coloured in, a colour per piece, so
-// they stop being a row of letters and start looking like pieces.
-function finishedPieces() {
-  const painted = new Map();
-  const broken = new Set();
+// How the drawing stands: what it gets wrong, and what it has already got
+// right.
+//
+// Mistakes are called out in place: the hatched cells a single piece has
+// swallowed, and marks you have broken. A run that is not a piece needs
+// nothing — it stays white while every real piece takes a colour, which says
+// it plainly enough.
+function survey() {
+  const b = board();
+  const pieces = drawnPieces();
+  const shapeAt = new Map();   // cell -> the shape it belongs to
+  const pieceAt = new Map();   // cell -> which run it is part of
+  const badDots = new Set();
+  const markState = new Map(); // mark -> "kept" or "broken", once it can be told
 
-  for (const group of letterGroups()) {
-    if (group.cells.length % PIECE !== 0) continue;
+  pieces.forEach((piece, index) => {
+    for (const id of piece) pieceAt.set(id, index);
+  });
 
-    const pieces = splitGroup(group.cells, group.letter, true);
-    if (pieces) {
-      for (const piece of pieces) {
-        const colour = colourFor(piece);
-        for (const id of piece) painted.set(id, colour);
-      }
-      continue;
-    }
-    // Cuttable, but only by putting two dots in one piece.
-    if (splitGroup(group.cells, group.letter, false)) {
-      for (const id of group.cells) broken.add(id);
-    }
+  for (const piece of pieces) {
+    const shape = pieceShape(piece);
+    if (!shape) continue; // not a piece yet, and staying white already says so
+    for (const id of piece) shapeAt.set(id, shape);
+    // No piece may cover more than one hatched cell. Only the hatched cells
+    // go red, not the whole piece: they are what the rule is about.
+    const dots = piece.filter((id) => b.dots.has(id));
+    if (dots.length > 1) for (const id of dots) badDots.add(id);
   }
-  return { painted, broken };
+
+  b.marks.forEach(([[a, c], kind], index) => {
+    const one = shapeAt.get(a), other = shapeAt.get(c);
+    // Nothing to say while either side is still an unfinished run: more cuts
+    // could send it either way.
+    if (one === undefined || other === undefined) return;
+    // Every mark sits on a join between two pieces, so both its cells landing
+    // in one piece breaks it whatever shape that piece is.
+    //
+    // Testing for a cut on that edge is not enough: a cut the cells can walk
+    // around separates nothing, and a single piece could then satisfy an "="
+    // on its own, which is exactly what an "=" says cannot happen.
+    const apart = pieceAt.get(a) !== pieceAt.get(c);
+    const same = one === other;
+    const kept = apart && (kind === "=" ? same : !same);
+    markState.set(index, kept ? "kept" : "broken");
+  });
+
+  const broken = [...markState.values()].filter((how) => how === "broken").length;
+  const done = pieces.length > 0 && pieces.every((piece) => pieceShape(piece) !== null);
+  return { pieces, shapeAt, badDots, markState, solved: done && badDots.size === 0 && broken === 0 };
 }
 
-// There is exactly one labelling that works, so matching it is the whole test.
+// Solved when every cell sits in a proper piece and nothing is broken. The
+// answer's letters are unique, so any drawing that gets this far is right,
+// even if it cuts the board differently from the way it was built.
 function isSolved() {
-  if (board().filled.size !== board().region.size) return false;
-  for (const [id, letter] of board().answer) {
-    if (board().filled.get(id) !== letter) return false;
-  }
-  return true;
+  return survey().solved;
 }
 
 // --- rendering ------------------------------------------------------------
 
-// A little picture of a piece, so the letters mean something.
+// A little picture of a piece, in the colour it will take on the board, so
+// the letters mean something.
 function renderShapes() {
   const box = document.getElementById("shapes");
   box.replaceChildren();
@@ -216,7 +263,10 @@ function renderShapes() {
       const line = table.insertRow();
       for (let c = 0; c < columns; c++) {
         const cell = line.insertCell();
-        if (cells.some(([cr, cc]) => cr === r && cc === c)) cell.className = "on";
+        if (cells.some(([cr, cc]) => cr === r && cc === c)) {
+          cell.className = "on";
+          cell.style.backgroundColor = board().colours.get(name);
+        }
       }
     }
     holder.append(table);
@@ -228,67 +278,74 @@ function renderGrid() {
   const table = document.getElementById("grid");
   table.replaceChildren();
 
-  const broken = brokenMarks();
-  const { painted, broken: overDotted } = finishedPieces();
+  const b = board();
+  const { shapeAt, badDots, markState } = survey();
   const solved = isSolved();
   table.className = solved ? "solved" : "";
 
   // Marks filed by the cell they hang off, and which side they hang on.
   const marksAt = new Map();
-  board().marks.forEach(([pair, kind], index) => {
-    const [a, b] = pair;
-    const side = b === a + 1 ? "right" : "down";
+  b.marks.forEach(([pair, kind], index) => {
+    const [a, c] = pair;
+    const side = c === a + 1 ? "right" : "down";
     if (!marksAt.has(a)) marksAt.set(a, []);
-    marksAt.get(a).push({ kind, side, index });
+    marksAt.get(a).push({ kind, side, index, other: c });
   });
 
-  for (let r = 0; r < board().side; r++) {
+  for (let r = 0; r < b.side; r++) {
     const line = table.insertRow();
-    for (let c = 0; c < board().side; c++) {
+    for (let c = 0; c < b.side; c++) {
       const id = r * BIGGEST + c;
       const cell = line.insertCell();
 
-      if (!board().region.has(id)) {
+      if (!b.region.has(id)) {
         cell.className = "blocked";
         continue;
       }
 
-      const letter = board().filled.get(id);
-      // Empty cells are left truly empty. A placeholder in the middle reads as
-      // a dot, which is the one thing in the middle that means something.
-      cell.textContent = letter === undefined ? "" : letter;
+      const shape = shapeAt.get(id);
       cell.className = "open"
-        + (board().dots.has(id) ? " marked" : "")
-        + (overDotted.has(id) ? " overDotted" : "");
-      if (painted.has(id)) cell.style.backgroundColor = painted.get(id);
+        + (b.dots.has(id) ? " marked" : "")
+        + (badDots.has(id) ? " wrong" : "");
+      if (shape) cell.style.backgroundColor = b.colours.get(shape);
+      if (b.dots.has(id)) cell.title = "no piece may cover more than one hatched cell";
 
-      // Hatching rather than anything drawn in the middle, so the mark reads
-      // the same empty or lettered and never crowds the letter. It is a
-      // background image, so a finished piece's colour still shows through it.
-      if (board().dots.has(id)) {
-        cell.title = "no piece may cover more than one hatched cell";
+      // A cut is drawn on the near cell of the pair, so each is drawn once.
+      // The region's own edge is always a cut and needs no drawing.
+      for (const [step, side] of [[1, "right"], [BIGGEST, "down"]]) {
+        const other = id + step;
+        const along = step === 1 ? c + 1 < b.side : r + 1 < b.side;
+        if (!along || !b.region.has(other)) continue;
+
+        if (hasWall(id, other)) {
+          const wall = document.createElement("span");
+          wall.className = `wall ${side}`;
+          cell.append(wall);
+        }
+        if (!solved) {
+          // A strip along the edge, wide enough to hit but narrow enough not
+          // to swallow clicks meant for the cell.
+          const grab = document.createElement("span");
+          grab.className = `grab ${side}`;
+          grab.title = "click to cut, or to join back up";
+          grab.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggleWall(id, other);
+          });
+          cell.append(grab);
+        }
       }
 
       for (const mark of marksAt.get(id) || []) {
         const span = document.createElement("span");
-        span.className = `mark ${mark.side}` + (broken.has(mark.index) ? " broken" : "");
-        span.textContent = mark.kind === "X" ? "×" : "=";
+        // Grey while it cannot be told either way, then red or green.
+        const how = markState.get(mark.index);
+        span.className = `mark ${mark.side}` + (how ? ` ${how}` : "");
+        span.textContent = mark.kind === "X" ? "\u00d7" : "=";
         span.title = mark.kind === "X"
-          ? "these two cells are covered by different shapes"
-          : "these two cells are covered by the same shape";
+          ? "a cut, with different shapes either side"
+          : "a cut, with the same shape either side";
         cell.append(span);
-      }
-
-      if (!solved) {
-        if (!board().dots.has(id)) {
-          cell.title = `click to cycle through ${board().names.join(", ")}, right click to wipe`;
-        }
-        cell.addEventListener("click", () => cycleCell(id));
-        cell.addEventListener("contextmenu", (event) => {
-          // The browser's own menu is not wanted here.
-          event.preventDefault();
-          clearCell(id);
-        });
       }
     }
   }
@@ -307,7 +364,9 @@ function render() {
   renderGrid();
 
   document.getElementById("message").textContent = isSolved() ? "Solved." : "";
-  document.getElementById("clear").disabled = board().filled.size === 0;
+  document.getElementById("clear").disabled = board().walls.size === 0;
+  document.getElementById("undo").disabled = board().history.length === 0;
+  document.getElementById("hint").disabled = isSolved();
 }
 
 // --- setup ----------------------------------------------------------------
@@ -345,8 +404,14 @@ function main() {
     });
   });
 
+  document.getElementById("hint").addEventListener("click", hint);
+
+  document.getElementById("undo").addEventListener("click", undo);
+
   document.getElementById("clear").addEventListener("click", () => {
-    board().filled.clear();
+    board().walls.clear();
+    // The trail describes cuts that are no longer there, so it goes with them.
+    board().history = [];
     render();
   });
 

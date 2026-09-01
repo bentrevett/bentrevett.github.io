@@ -16,10 +16,13 @@
     </p>
 
     <p>
-      Click a cell to cycle it through the shapes on offer today, writing in
-      which shape covers it, and <b>right click</b> to wipe it in one go. Every white cell belongs to exactly one piece, and
-      only the shapes listed below were used. Pieces may be turned and mirrored
-      freely, so a shape and its mirror image count as the same one.
+      Cut the board up by clicking the <b>lines between cells</b>, and click a
+      line again to join the cells back together. Every white cell belongs to
+      exactly one piece, and only the shapes listed below were used. Pieces may
+      be turned and mirrored freely, so a shape and its mirror image count as
+      the same one. A cut says the two cells either side of it are in different
+      pieces, so a piece with a cut inside it is not finished, even where the
+      cells could still be walked around it.
     </p>
 
     <p>
@@ -35,10 +38,18 @@
     </p>
 
     <p>
-      There is exactly one answer. A mark turns <b>red</b> when the letters
-      either side of it break it, and a finished piece is outlined in red if it
-      has swallowed two hatched cells. Finish a piece correctly and it is coloured in,
-      so you can see it as a piece rather than four letters.
+      There is exactly one answer, and it can always be reached by reasoning:
+      every board is built so that a solver who never guesses can finish it.
+      <b>Hint</b> draws one cut for you.
+    </p>
+
+    <p>
+      Cut out one of today's shapes and it fills with that shape's colour, so
+      the two are told apart at a glance. Anything still white is not a piece
+      yet. Each mark keeps score of itself: <b>grey</b> while there is not
+      enough drawn around it to tell, <b>green</b> once it is satisfied, and
+      <b>red</b> once you have broken it. Hatched cells that end up sharing a
+      piece turn <b>red hatched</b>.
     </p>
 
     <h2>Board</h2>
@@ -47,11 +58,9 @@
       <button id="small">Small</button>
       <button id="medium">Medium</button>
       <button id="large">Large</button>
-      &mdash; three a day. The bigger boards need more clues to pin their
-      answer down, which is most of what makes them harder.
     </p>
 
-    <h2>Today's shapes</h2>
+    <h2>Today's Shapes</h2>
 
     <div id="shapes"></div>
 
@@ -77,6 +86,8 @@
     <table id="grid"></table>
 
     <p id="clearRow">
+      <button id="hint">Hint</button>
+      <button id="undo">Undo</button>
       <button id="clear">Clear Grid</button>
     </p>
 

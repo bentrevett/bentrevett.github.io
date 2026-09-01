@@ -2,8 +2,8 @@
 // file runs in the page and under Node for testing.
 //
 // The object is a frequency square F(6; 1,2,3): every row and column holds
-// exactly one 1, two 2s and three 3s. Ported from the verified Python in
-// fixed.py, including its validator, which every grid is asserted against.
+// exactly one 1, two 2s and three 3s. Every grid built here is asserted
+// against a validator that checks those counts from scratch.
 
 const SIZE = 6;
 const LIMIT = [0, 1, 2, 3]; // how many of each value a unit may hold
@@ -135,7 +135,7 @@ function regionsFor(variant, random) {
 //
 // The region tallies accumulate per row rather than per cell: a row can cross
 // the same jigsaw region more than once, and testing each cell against a +1
-// budget silently let those through. That bug is what HANDOFF.md warns about.
+// budget silently let those grids through.
 function fillGrid(regions, antiking, random) {
   const colCount = Array.from({ length: SIZE }, () => [0, 0, 0, 0]);
   const regionCount = Array.from({ length: SIZE }, () => [0, 0, 0, 0]);

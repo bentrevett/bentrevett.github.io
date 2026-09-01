@@ -14,6 +14,8 @@ body {
 #grid {
   border-collapse: separate;
   border-spacing: 0;
+  /* The board's own edge is a cut like any other, so it is drawn like one. */
+  border: 3px solid #000;
 }
 
 #grid td {
@@ -33,13 +35,7 @@ body {
 
 /* A cell to fill in. */
 #grid td.open {
-  cursor: pointer;
   background-color: #fff;
-  font-weight: bold;
-}
-
-#grid td.open:hover {
-  background-color: #eee;
 }
 
 /* The marks sit on the border between two cells, so they need the cell to be
@@ -50,28 +46,50 @@ body {
   font-weight: bold;
   line-height: 1;
   background-color: #fff;
-  padding: 0 1px;
-  z-index: 2;
-  color: #333;
+  padding: 0 2px;
+  /* Above the cuts: a mark sits exactly where a cut goes, and it is the mark
+     that has to stay readable. */
+  z-index: 5;
+  /* Grey by default: until both sides are finished pieces there is nothing to
+     say about the mark yet. */
+  color: #888;
+  pointer-events: none;
 }
 
+/* Centred on the line between the two cells, not on the cell's own edge: each
+   of the two cells contributes a 1px border, so the middle of the line is 1px
+   past the far side of this one. Placing that middle and pulling back by half
+   the mark keeps it centred whatever glyph it is. */
 #grid td .mark.right {
-  right: -0.45em;
+  left: calc(100% + 1px);
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
 }
 
 #grid td .mark.down {
-  bottom: -0.45em;
+  top: calc(100% + 1px);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+}
+
+/* A mark you have broken: the two cells are in one piece, or the shapes either
+   side are not what it asks for. */
+#grid td .mark.broken {
+  color: red;
+  background-color: #fee;
+}
+
+/* A mark you have satisfied: pieces either side, of the shapes it asks for. */
+#grid td .mark.kept {
+  color: #178017;
+  background-color: #eafae6;
 }
 
 /* A cell that must be covered by a piece holding no other hatched cell.
    Diagonal hatching rather than a mark in the middle: it reads the same
-   whether the cell is empty or has a letter in it, and never crowds the
-   letter. Drawn as a background image so a finished piece's colour, which is
-   a background colour, still shows through underneath. */
+   whether the cell is empty or filled, and never crowds anything. Drawn as a
+   background image so a finished piece's colour, which is a background
+   colour, still shows through underneath. */
 #grid td.marked {
   background-image: repeating-linear-gradient(
     45deg,
@@ -80,24 +98,65 @@ body {
   );
 }
 
-/* A finished piece that has swallowed two circles. */
-#grid td.overDotted {
-  outline: 2px solid red;
-  outline-offset: -2px;
+/* A cut you have drawn. Sits over the thin grid line rather than replacing it,
+   so it reads as something you put there. */
+#grid td .wall {
+  position: absolute;
+  background-color: #000;
+  z-index: 3;
+  pointer-events: none;
 }
 
-#grid td.overDotted.marked {
+#grid td .wall.right {
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+}
+
+#grid td .wall.down {
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+/* The strip you actually click to cut. Wide enough to hit, narrow enough that
+   it does not swallow the middle of the cell. */
+#grid td .grab {
+  position: absolute;
+  z-index: 4;
+  cursor: pointer;
+}
+
+#grid td .grab.right {
+  left: calc(100% + 1px);
+  transform: translateX(-50%);
+  top: 15%;
+  bottom: 15%;
+  width: 7px;
+}
+
+#grid td .grab.down {
+  top: calc(100% + 1px);
+  transform: translateY(-50%);
+  left: 15%;
+  right: 15%;
+  height: 7px;
+}
+
+#grid td .grab:hover {
+  background-color: rgba(0, 0, 255, 0.35);
+}
+
+/* A hatched cell sharing its piece with another hatched cell: the hatching
+   itself goes red, in place, rather than anything being drawn around it. */
+#grid td.wrong.marked {
   background-image: repeating-linear-gradient(
     45deg,
     rgba(255, 0, 0, 0.45) 0 2px,
     transparent 2px 7px
   );
-}
-
-/* A mark the letters either side of it break. */
-#grid td .mark.broken {
-  color: red;
-  background-color: #fee;
 }
 
 /* Solved: dimmed, and nothing left to click. */
@@ -106,9 +165,7 @@ body {
   cursor: default;
 }
 
-#grid.solved td.open:hover {
-  background-color: #fff;
-}
+
 
 /* --- the shapes on offer --- */
 
@@ -123,7 +180,10 @@ body {
 }
 
 .shape table {
-  border-collapse: collapse;
+  /* Each cell keeps its own edges rather than sharing them with its
+     neighbours, so every cell of a piece is outlined in full. */
+  border-collapse: separate;
+  border-spacing: 0;
   margin: 0.2em auto 0;
 }
 
@@ -134,8 +194,10 @@ body {
   border: 1px solid transparent;
 }
 
+/* Filled in with the colour the shape takes on the board, and outlined cell
+   by cell: the lines say how many cells long a piece is, which a plain block
+   of colour hides. */
 .shape td.on {
-  background-color: #555;
   border-color: #555;
 }
 

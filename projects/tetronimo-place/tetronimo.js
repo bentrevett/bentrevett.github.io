@@ -183,6 +183,299 @@ function countLabellings(region, names, marks, dots, side, cap) {
   return found.size;
 }
 
+// --- solving by logic -----------------------------------------------------
+
+// A rule engine over *placements*: every way an allowed shape could sit in the
+// region. Rules only ever kill placements or assign one, and nothing guesses.
+//
+// This is what decides when a puzzle is finished being built. Asking "is the
+// answer unique" was the wrong question: a unique answer can still be one that
+// nobody could reason their way to, and stripping clues down to the minimum
+// that preserves uniqueness actively optimises a board into being unsolvable.
+// Asking instead "does a no-guessing solver finish, using only the rules I am
+// willing to ask a player for" is strictly stronger, since propagation pinning
+// every letter is itself the proof that no second labelling exists.
+
+const rowOf = (id) => Math.floor(id / BIGGEST);
+const colOf = (id) => id % BIGGEST;
+const neighbours = (id) => {
+  const r = rowOf(id), c = colOf(id), out = [];
+  if (r > 0) out.push(id - BIGGEST);
+  out.push(id + BIGGEST);
+  if (c > 0) out.push(id - 1);
+  if (c < BIGGEST - 1) out.push(id + 1);
+  return out;
+};
+
+// --- state ----------------------------------------------------------------
+
+// Every legal placement, with the two-dots rule applied up front since it can
+// never stop being true.
+function buildPlacements(region, names, dots, side) {
+  const out = [];
+  for (const name of names) {
+    for (const shape of SHAPES[name]) {
+      for (let r = 0; r < side; r++) {
+        for (let c = 0; c < side; c++) {
+          const ids = [];
+          let fits = true;
+          for (const [dr, dc] of shape) {
+            const rr = r + dr, cc = c + dc;
+            if (rr < 0 || rr >= side || cc < 0 || cc >= side) { fits = false; break; }
+            const id = rr * BIGGEST + cc;
+            if (!region.has(id)) { fits = false; break; }
+            ids.push(id);
+          }
+          if (!fits) continue;
+          if (ids.filter((id) => dots.has(id)).length > 1) continue;
+          out.push({ ids: ids.sort((a, b) => a - b), name });
+        }
+      }
+    }
+  }
+  return out;
+}
+
+function makeState(region, names, marks, dots, side) {
+  const cells = [...region].sort((a, b) => a - b);
+  const placements = buildPlacements(region, names, dots, side);
+  const live = placements.map(() => true);
+  const byCell = new Map(cells.map((id) => [id, []]));
+  placements.forEach((p, i) => p.ids.forEach((id) => byCell.get(id).push(i)));
+  return {
+    cells, placements, live, byCell, marks, dots, side,
+    assigned: new Map(), // cell -> placement index
+    dead: false,
+    used: new Set(),     // rule ids that actually changed something
+    covering(id) { return this.byCell.get(id).filter((i) => this.live[i]); },
+    kill(i, ruleId) {
+      if (!this.live[i]) return false;
+      this.live[i] = false;
+      this.used.add(ruleId);
+      return true;
+    },
+    assign(i, ruleId) {
+      const p = this.placements[i];
+      for (const id of p.ids) this.assigned.set(id, i);
+      let changed = false;
+      for (const j of this.placements.keys()) {
+        if (j === i || !this.live[j]) continue;
+        if (this.placements[j].ids.some((id) => p.ids.includes(id))) {
+          this.live[j] = false;
+          changed = true;
+        }
+      }
+      this.used.add(ruleId);
+      return changed;
+    },
+    freeCells() { return this.cells.filter((id) => !this.assigned.has(id)); },
+    snapshot() { return this.live.slice(); },
+    restore(snap) { this.live = snap; },
+  };
+}
+
+// --- rules ----------------------------------------------------------------
+// Each returns true if it changed anything. Ordered cheapest first.
+
+const forcedCell = {
+  id: "forced-cell", tier: "basic",
+  run(s) {
+    let changed = false;
+    for (const id of s.cells) {
+      if (s.assigned.has(id)) continue;
+      const cand = s.covering(id);
+      if (cand.length === 0) { s.dead = true; return true; }
+      if (cand.length === 1) changed = s.assign(cand[0], this.id) || true;
+    }
+    return changed;
+  },
+};
+
+// A mark always sits on a join, so nothing may span it.
+const markSpan = {
+  id: "mark-span", tier: "basic",
+  run(s) {
+    let changed = false;
+    for (const [[a, b]] of s.marks) {
+      for (const i of s.byCell.get(a)) {
+        if (!s.live[i]) continue;
+        if (s.placements[i].ids.includes(b)) changed = s.kill(i, this.id) || changed;
+      }
+    }
+    return changed;
+  },
+};
+
+// A placement only survives if the cell across the mark can still be covered by
+// something with the right shape relation. This does most of the work.
+const markPartner = {
+  id: "mark-partner", tier: "basic",
+  run(s) {
+    let changed = false;
+    for (const [[a, b], kind] of s.marks) {
+      for (const [self, other] of [[a, b], [b, a]]) {
+        for (const i of s.byCell.get(self)) {
+          if (!s.live[i]) continue;
+          const name = s.placements[i].name;
+          const ok = s.covering(other).some((j) => {
+            if (j === i) return false;
+            const q = s.placements[j].name;
+            return kind === "=" ? q === name : q !== name;
+          });
+          if (!ok) changed = s.kill(i, this.id) || changed;
+        }
+      }
+    }
+    return changed;
+  },
+};
+
+// Split what is left into connected pieces of open cells.
+function components(free) {
+  const rest = new Set(free), seen = new Set(), out = [];
+  for (const start of rest) {
+    if (seen.has(start)) continue;
+    const stack = [start], comp = [];
+    seen.add(start);
+    while (stack.length) {
+      const id = stack.pop();
+      comp.push(id);
+      for (const n of neighbours(id)) {
+        if (rest.has(n) && !seen.has(n)) { seen.add(n); stack.push(n); }
+      }
+    }
+    out.push(comp);
+  }
+  return out;
+}
+
+// Laying this piece would cut off a pocket that no whole number of pieces fits.
+const strandedRegion = {
+  id: "stranded-region", tier: "intermediate",
+  run(s) {
+    let changed = false;
+    const free = s.freeCells();
+    const freeSet = new Set(free);
+    for (let i = 0; i < s.placements.length; i++) {
+      if (!s.live[i]) continue;
+      const p = s.placements[i];
+      if (p.ids.some((id) => !freeSet.has(id))) continue;
+      const rest = free.filter((id) => !p.ids.includes(id));
+      if (components(rest).some((c) => c.length % 4 !== 0)) changed = s.kill(i, this.id) || changed;
+    }
+    return changed;
+  },
+};
+
+// Stronger than the size check: after laying this piece, some open cell has no
+// surviving placement that fits inside its own pocket. Subsumes the 1-wide
+// corridor case, so there is no separate corridor rule.
+const unreachableCell = {
+  id: "unreachable-cell", tier: "intermediate",
+  run(s) {
+    let changed = false;
+    const free = s.freeCells();
+    const freeSet = new Set(free);
+    for (let i = 0; i < s.placements.length; i++) {
+      if (!s.live[i]) continue;
+      const p = s.placements[i];
+      if (p.ids.some((id) => !freeSet.has(id))) continue;
+      const rest = new Set(free.filter((id) => !p.ids.includes(id)));
+      let bad = false;
+      for (const id of rest) {
+        const any = s.byCell.get(id).some((j) =>
+          s.live[j] && j !== i && s.placements[j].ids.every((c) => rest.has(c)));
+        if (!any) { bad = true; break; }
+      }
+      if (bad) changed = s.kill(i, this.id) || changed;
+    }
+    return changed;
+  },
+};
+
+// Assume a placement, run the cheap rules, and drop it if they contradict.
+// This is the "if this, then that breaks" step. Expensive — run it last.
+const depthOne = {
+  id: "depth-one", tier: "advanced",
+  run(s) {
+    let changed = false;
+    for (let i = 0; i < s.placements.length; i++) {
+      if (!s.live[i]) continue;
+      const p = s.placements[i];
+      if (p.ids.some((id) => s.assigned.has(id))) continue;
+      const snap = s.snapshot();
+      const assignedSnap = new Map(s.assigned);
+      const usedSnap = new Set(s.used);
+      s.assign(i, this.id);
+      runToFixpoint(s, [forcedCell, markSpan, markPartner]);
+      const broke = s.dead;
+      s.restore(snap);
+      s.assigned = assignedSnap;
+      s.used = usedSnap;
+      s.dead = false;
+      if (broke) changed = s.kill(i, this.id) || changed;
+    }
+    return changed;
+  },
+};
+
+const RULES = [forcedCell, markSpan, markPartner, strandedRegion, unreachableCell, depthOne];
+const TIERS = {
+  easy: ["forced-cell", "mark-span", "mark-partner"],
+  medium: ["forced-cell", "mark-span", "mark-partner", "stranded-region", "unreachable-cell"],
+  hard: RULES.map((r) => r.id),
+};
+
+function runToFixpoint(s, rules) {
+  let rounds = 0;
+  for (;;) {
+    let changed = false;
+    for (const rule of rules) {
+      changed = rule.run(s) || changed;
+      if (s.dead) return rounds;
+      if (changed) break; // restart from the cheapest rule
+    }
+    if (!changed) return rounds;
+    rounds++;
+    if (rounds > 5000) return rounds; // paranoia
+  }
+}
+
+// --- entry point ----------------------------------------------------------
+
+// Returns { solved, dead, forced, total, rounds, used, letters }.
+// solved means every cell's letter is pinned, which is also the uniqueness proof.
+function solve(region, names, marks, dots, side, ruleIds = TIERS.medium) {
+  const rules = RULES.filter((r) => ruleIds.includes(r.id));
+  const s = makeState(region, names, marks, dots, side);
+  const rounds = runToFixpoint(s, rules);
+  if (s.dead) return { solved: false, dead: true, forced: 0, total: s.cells.length, rounds, used: s.used };
+
+  const letters = new Map();
+  let forced = 0;
+  for (const id of s.cells) {
+    const cand = s.covering(id);
+    if (!cand.length) return { solved: false, dead: true, forced, total: s.cells.length, rounds, used: s.used };
+    const first = s.placements[cand[0]].name;
+    if (cand.every((i) => s.placements[i].name === first)) { letters.set(id, first); forced++; }
+  }
+  return {
+    solved: forced === s.cells.length,
+    dead: false, forced, total: s.cells.length, rounds, used: s.used, letters,
+  };
+}
+
+// The next thing a player could work out from where they are. Powers a hint
+// button: run the solver on the givens and report a cell they have not filled.
+function nextStep(region, names, marks, dots, side, filled, ruleIds = TIERS.medium) {
+  const out = solve(region, names, marks, dots, side, ruleIds);
+  if (!out.letters) return null;
+  for (const [id, name] of out.letters) {
+    if (filled.get(id) !== name) return { id, name, rules: [...out.used] };
+  }
+  return null;
+}
+
 // --- building -------------------------------------------------------------
 
 // Grows a region and a tiling of it together, dropping pieces one at a time so
@@ -259,67 +552,130 @@ function dotUp(built, random, share) {
   return dots;
 }
 
-// Adds clues until only one labelling survives, then drops the ones that were
-// not pulling their weight. The same shape as carving clues out of a sudoku.
+// Clues, chosen for what they let a solver work out rather than for what they
+// disambiguate.
 //
-// Dots go on first and are pruned last, so the edge marks that remain are the
-// ones the dots could not account for on their own.
-function clueUp(built, names, random, dots, side) {
-  const marks = [];
-  const count = (m, d) => countLabellings(built.region, names, m, d, side, 2);
+// Every board must show all three kinds. Extra true clues can only ever help a
+// solver and never hinder it, so one of each is seeded up front and held back
+// from pruning: under the old minimise-for-uniqueness rule that felt like
+// padding, and now it costs nothing at all.
+//
+// This always terminates on a tileable region. Marking every join kills any
+// placement that crosses one, leaving each cell a single survivor, so
+// forced-cell alone would finish. The search below is only ever finding a
+// smaller set on the way to that floor.
+// How many candidate joins are weighed each round. All of them was correct but
+// slow; this trades a rare extra mark for a far shorter tail.
+const SCAN_WIDTH = 16;
 
-  if (count(marks, dots) !== 1) {
-    for (const edge of shuffle(edgesOf(built.region, built.owner, built.labels, side), random)) {
-      marks.push(edge);
-      if (count(marks, dots) === 1) break;
+function cluesFor(built, names, random, side, ruleIds) {
+  const region = built.region;
+  const joins = edgesOf(region, built.owner, built.labels, side);
+  const crosses = joins.filter(([, kind]) => kind === "X");
+  const sames = joins.filter(([, kind]) => kind === "=");
+
+  // A tiling with no same-shape join, or no different-shape join, cannot show
+  // all three kinds. Rebuild rather than ship it short.
+  if (!crosses.length || !sames.length) return null;
+  const dots = dotUp(built, random, DOT_SHARE);
+  if (!dots.size) return null;
+
+  const required = [
+    crosses[Math.floor(random() * crosses.length)],
+    sames[Math.floor(random() * sames.length)],
+  ];
+  const requiredDot = [...dots][Math.floor(random() * dots.size)];
+
+  const marks = [...required];
+  const pool = shuffle(joins, random).filter((edge) => !marks.includes(edge));
+  const run = (m, d) => solve(region, names, m, d, side, ruleIds);
+
+  // Grow: add the mark that carries the solver furthest.
+  //
+  // Weighing every join each round is what made the big boards slow: a large
+  // region offers around forty of them and a solve costs a good few
+  // milliseconds, so a round ran into the hundreds. Only a window of them is
+  // weighed, rotated each round so nothing is permanently ignored, and the
+  // scan stops the moment a candidate finishes the puzzle outright, since
+  // nothing can beat that.
+  let guard = 0;
+  while (!run(marks, dots).solved && guard++ < 500) {
+    const available = pool.filter((edge) => !marks.includes(edge));
+    if (!available.length) return null;
+    const from = (guard - 1) * SCAN_WIDTH % available.length;
+    const window = available
+      .slice(from, from + SCAN_WIDTH)
+      .concat(available.slice(0, Math.max(0, from + SCAN_WIDTH - available.length)));
+
+    let best = null;
+    let bestScore = run(marks, dots).forced;
+    for (const edge of window) {
+      const got = run([...marks, edge], dots);
+      if (got.solved) { best = edge; break; }
+      if (got.forced > bestScore) {
+        bestScore = got.forced;
+        best = edge;
+      }
     }
-    if (count(marks, dots) !== 1) return null;
+    // On a plateau no single mark helps, so take any and let the next round
+    // find one that now does.
+    if (!best) best = available[0];
+    marks.push(best);
   }
+  if (!run(marks, dots).solved) return null;
 
+  // Prune against the solver rather than against uniqueness, and never touch
+  // the three seeded clues.
   for (let i = marks.length - 1; i >= 0; i--) {
+    if (required.includes(marks[i])) continue;
     const kept = marks[i];
     marks.splice(i, 1);
-    if (count(marks, dots) !== 1) marks.splice(i, 0, kept);
+    if (!run(marks, dots).solved) marks.splice(i, 0, kept);
   }
   for (const dot of [...dots]) {
+    if (dot === requiredDot) continue;
     dots.delete(dot);
-    if (count(marks, dots) !== 1) dots.add(dot);
+    if (!run(marks, dots).solved) dots.add(dot);
   }
-  return { marks, dots };
+
+  const final = run(marks, dots);
+  return { marks, dots, used: [...final.used] };
+}
+
+// The cells of each piece in the tiling, as it was built.
+function piecesOf(built) {
+  const byPiece = new Map();
+  for (const [id, piece] of built.owner) {
+    if (!byPiece.has(piece)) byPiece.set(piece, []);
+    byPiece.get(piece).push(id);
+  }
+  return [...byPiece.values()].map((cells) => cells.sort((a, b) => a - b));
+}
+
+// How hard the answer actually is: the cheapest set of rules that still
+// finishes it. Board size is a separate axis entirely — a big board with
+// generous clues can be easier than a small mean one.
+function gradeOf(region, names, marks, dots, side) {
+  for (const tier of ["easy", "medium", "hard"]) {
+    if (solve(region, names, marks, dots, side, TIERS[tier]).solved) return tier;
+  }
+  return null;
 }
 
 // --- a day's puzzle -------------------------------------------------------
 
 const SHAPE_COUNT = 2;
-// Nearly every piece starts dotted, and dots doing nothing are pruned away.
-// Dots and marks compete for the same work, and starting generous is what
-// leaves any dots standing at all once the marks have gone on.
+// Nearly every piece starts dotted; the ones doing nothing are pruned away.
 const DOT_SHARE = 0.9;
-const ATTEMPTS = 400;
-
-// Every grid must show all three kinds of clue: a dot, an X and an =. Only
-// about one candidate in fifty manages it on its own, so a good many are built
-// and the busiest of the qualifying ones kept.
-//
-// Nothing is ever added just to satisfy this. A clue that could be removed
-// without letting a second answer in would be a lie about the puzzle, so a
-// grid that does not need one of each is thrown away rather than padded.
-function hasEveryKind(clues) {
-  return (
-    clues.dots.size > 0 &&
-    clues.marks.some(([, kind]) => kind === "X") &&
-    clues.marks.some(([, kind]) => kind === "=")
-  );
-}
-
-// Puzzles with more clues in them are the interesting ones, so the busiest of
-// the qualifying candidates is kept.
-const WANT_CLUES = 7;
+// Rebuilds allowed when a tiling cannot supply all three kinds of clue.
+const ATTEMPTS = 60;
+// The rules a player is expected to bring. Everything is built to be solvable
+// with exactly these and no guessing.
+const TIER = "medium";
 
 function makePuzzle(seed, sizeIndex) {
   const board = SIZES[sizeIndex];
-  let best = null;
-  let fallback = null;
+  const ruleIds = TIERS[TIER];
 
   for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
     const random = makeRandom(hashString(`${seed}/${board.name}/${attempt}`));
@@ -330,34 +686,42 @@ function makePuzzle(seed, sizeIndex) {
 
     const built = buildTiled(random, names, pieces, board.side);
     if (!built) continue;
-    const clues = clueUp(built, names, random, dotUp(built, random, DOT_SHARE), board.side);
+    const clues = cluesFor(built, names, random, board.side, ruleIds);
     if (!clues) continue;
 
-    const made = {
+    // It has to *need* the rules it is built for, not merely survive them.
+    // Pruning already drops every clue it can while the target rules still
+    // finish, so a board the easier rules can also polish off is simply an
+    // easier board: there is nothing to take away to toughen it, only another
+    // tiling to try. About one in five comes out this way.
+    const grade = gradeOf(built.region, names, clues.marks, clues.dots, board.side);
+    if (grade !== TIER) continue;
+
+    return {
       seed, names, pieces, side: board.side, size: board.name,
-      total: clues.marks.length + clues.dots.size,
       region: [...built.region].sort((a, b) => a - b),
       labels: [...built.labels.entries()],
+      // The pieces as they were cut. The answer's letters are unique, but more
+      // than one cut can produce them, so this is *a* correct tiling rather
+      // than the only one.
+      pieces: piecesOf(built),
       marks: clues.marks,
       dots: [...clues.dots].sort((a, b) => a - b),
+      // Which rules the answer really needed, which is the honest difficulty.
+      grade: grade,
+      rulesUsed: clues.used,
     };
-    if (!fallback) fallback = made;
-    if (!hasEveryKind(clues)) continue;
-
-    if (!best || made.total > best.total) best = made;
-    if (best.total >= WANT_CLUES) break;
   }
-
-  // Only if four hundred candidates all came up short of one kind, which the
-  // measured odds put out of reach. A playable puzzle beats none.
-  const chosen = best || fallback;
-  if (!chosen) throw new Error(`could not build a ${board.name} puzzle for ${seed}`);
-  return chosen;
+  throw new Error(`could not build a ${TIER} ${board.name} puzzle for ${seed}`);
 }
 
 if (typeof module !== "undefined") {
   module.exports = {
     BIGGEST, SIZES, PIECE, BASE, SHAPES, SHAPE_NAMES, STEPS, hashString, makeRandom, shuffle,
-    orientations, placementsFor, countLabellings, buildTiled, edgesOf, dotUp, clueUp, makePuzzle,
+    orientations, placementsFor, buildTiled, edgesOf, dotUp,
+    // Kept for tests: an independent count of the answers, which the solver
+    // path no longer needs but which can still check its work.
+    countLabellings,
+    solve, nextStep, RULES, TIERS, cluesFor, gradeOf, piecesOf, makePuzzle,
   };
 }

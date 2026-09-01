@@ -1,0 +1,146 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* --- the grid --- */
+
+#grid {
+  border-collapse: collapse;
+}
+
+#grid td {
+  width: 2ch;
+  height: 2ch;
+  text-align: center;
+  padding: 6px 8px;
+  cursor: pointer;
+  /* Thin lines between cells, thickened below where a block ends. */
+  border: 1px solid #bbb;
+  background-color: #fff;
+}
+
+/* The number, or the dot on a cell you have called blank. A span of its own,
+   always present, so a cell holding nothing is exactly as big as one holding a
+   number and filling the grid in cannot shift the page. */
+#grid td .face {
+  display: inline-block;
+  min-width: 1ch;
+  font-weight: bold;
+  color: #222;
+  /* The hatching is a background, and this rides over it. */
+  position: relative;
+}
+
+/* A cell you have called blank: its dot is a mark of yours, not a clue. */
+#grid td.blank .face {
+  color: #999;
+}
+
+/* Hatched. Diagonal lines rather than a solid fill, so a number sitting on a
+   hatched cell stays readable. */
+#grid td.hatched {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.42) 0 2px,
+    transparent 2px 7px
+  );
+}
+
+/* A cell you have called blank. Pale rather than white, so the three states
+   read apart at a glance. */
+#grid td.blank {
+  background-color: #f2f2f2;
+}
+
+/* A number with as many hatched cells around it as it asks for. It counts
+   what you have marked and nothing else — hatch the wrong ones and it still
+   goes green, so it is a tally of your working rather than a verdict on it. */
+#grid td.clue.met .face {
+  color: #178017;
+}
+
+/* A cell caught in something already impossible. Listed after the green so it
+   wins on a cell that is somehow both, and named with .clue so it outweighs
+   the green on numbered cells. */
+#grid td.wrong .face,
+#grid td.clue.wrong .face {
+  color: red;
+}
+
+#grid td.wrong.hatched {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 0, 0, 0.45) 0 2px,
+    transparent 2px 7px
+  );
+}
+
+#grid td.wrong.blank {
+  background-color: #fee;
+}
+
+#grid td:hover {
+  outline: 2px solid #99f;
+  outline-offset: -2px;
+}
+
+/* Solved: dimmed, and nothing left to click. */
+#grid.solved td {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#grid.solved td:hover {
+  outline: none;
+}
+
+/* Region edges, and the outside of the grid. */
+#grid td.edgeTop { border-top: 3px solid black; }
+#grid td.edgeBottom { border-bottom: 3px solid black; }
+#grid td.edgeLeft { border-left: 3px solid black; }
+#grid td.edgeRight { border-right: 3px solid black; }
+
+
+/* --- everything else --- */
+
+/* Fixed width digits, so the seconds ticking over cannot shift the page. */
+#timer {
+  margin: 0.3em 0 0.6em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Clearing the grid belongs with the grid, not up with the puzzle controls. */
+#clearRow {
+  margin: 0.5em 0 0;
+}
+
+/* Holds its height with nothing to say, so finishing does not shove the page
+   around. */
+#message {
+  color: green;
+  font-weight: bold;
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* Today's puzzle is shown by its button greying out, not by the browser's
+   focus highlight, so drop the ring for mouse clicks. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}

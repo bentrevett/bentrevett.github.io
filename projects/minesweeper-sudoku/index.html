@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minesweeper Sudoku 💣</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Minesweeper Sudoku 💣</u></h1>
+
+    <p>
+      A daily logic puzzle. Every cell of the grid is either <b>hatched</b> or
+      <b>blank</b>, and your job is to work out which is which. Pick a size,
+      and pick how the grid is carved up &mdash; into nothing at all, into
+      rectangular blocks, or into jigsaw shapes.
+    </p>
+
+    <h2>Board</h2>
+
+    <p>
+      <button id="small">Small</button>
+      <button id="medium">Medium</button>
+    </p>
+
+    <h2>Regions</h2>
+
+    <p>
+      <button id="plain">Plain</button>
+      <button id="blocks">Blocks</button>
+      <button id="jigsaw">Jigsaw</button>
+    </p>
+
+    <h2>Rules</h2>
+
+    <ul id="rules"></ul>
+
+    <p id="regionNote"></p>
+
+    <p>
+      A number tells you nothing about the cell it sits in, so a numbered cell
+      may be hatched itself &mdash; and often is. You have to work it out like
+      any other.
+    </p>
+
+    <p>
+      A number turns <b>green</b> once you have hatched as many cells around it
+      as it asks for. It only counts them: hatch the wrong ones and it still
+      goes green, so it is a tally of your working rather than a verdict on it.
+    </p>
+
+    <p>
+      Click a cell to cycle it through unknown, hatched and blank, and
+      <b>right click</b> to wipe it in one go. Marking the blanks is not asked
+      for, only the hatched cells, but it is the easiest way to keep track. A
+      cell turns <b>red</b> when it is already impossible &mdash; too many
+      hatched in a row, column, block or number, or so many blanks that one of
+      them can no longer be satisfied.
+    </p>
+
+    <p>
+      There are six boards a day &mdash; two sizes crossed with three sets of
+      regions &mdash; and each has exactly one answer that can always be
+      reached by reasoning: no board is shipped unless a solver that never
+      guesses can finish it, and unless it genuinely needs the numbers to
+      overlap and talk to each other. <b>Hint</b> fills in one cell you could already have
+      worked out. The clock starts when you first touch a cell and stops when
+      the puzzle is complete.
+    </p>
+
+    <p>
+      <button id="today">Today's Puzzle</button>
+      <button id="practice">Random Puzzle</button>
+    </p>
+
+    <p>
+      Every puzzle has a name, shown in the heading below: today's is the
+      date, and a random puzzle gets a number. Type a name in to play that
+      exact puzzle, which is also how you set a friend the same one.
+    </p>
+
+    <p>
+      <input id="seed" placeholder="Puzzle name" size="12" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="load">Load</button>
+    </p>
+
+    <h2 id="puzzle"></h2>
+
+    <p id="timer"></p>
+
+    <table id="grid"></table>
+
+    <p id="clearRow">
+      <button id="hint">Hint</button>
+      <button id="undo">Undo</button>
+      <button id="clear">Clear Grid</button>
+    </p>
+
+    <p id="message"></p>
+
+    <script src="minesweeper.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
