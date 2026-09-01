@@ -266,7 +266,6 @@ function newGame(seedString, label) {
     found: new Set(),
     order: words.map((_, index) => index),
     selected: null,
-    moves: 0,
   };
 
   collect();
@@ -304,11 +303,47 @@ function selectRow(row) {
     state.selected = null;
   } else {
     swapRows(state.selected, row);
-    state.moves += 1;
+    startClock();
     state.selected = null;
     collect();
   }
   render();
+}
+
+// --- the clock ------------------------------------------------------------
+
+// Starts on the first move you make and stops when the puzzle comes out.
+let clock = { elapsed: 0, since: null };
+
+function elapsedMs() {
+  return clock.elapsed + (clock.since === null ? 0 : Date.now() - clock.since);
+}
+
+function startClock() {
+  if (clock.since === null && !isSolved()) clock.since = Date.now();
+}
+
+function pauseClock() {
+  if (clock.since !== null) {
+    clock.elapsed += Date.now() - clock.since;
+    clock.since = null;
+  }
+}
+
+function resetClock() {
+  clock = { elapsed: 0, since: null };
+}
+
+function formatTime(ms) {
+  const whole = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(whole / 60)).padStart(2, "0");
+  const seconds = String(whole % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+// Only the clock, so it can tick without rebuilding the page every second.
+function renderClock() {
+  document.getElementById("timer").textContent = formatTime(elapsedMs());
 }
 
 // --- rendering ------------------------------------------------------------
@@ -388,19 +423,11 @@ function render() {
   // stray click wiping a board you are part way through.
   document.getElementById("today").disabled = state.label === todaysSeed();
 
-  const status = document.getElementById("status");
-  status.replaceChildren(
-    "Found ",
-    glyphElement(String(state.found.size)),
-    " of ",
-    glyphElement(String(state.targets.length)),
-    ". Swaps: ",
-    glyphElement(String(state.moves))
-  );
-
   renderBoard();
   renderDown();
   renderTargets();
+  if (isSolved()) pauseClock();
+  renderClock();
 
   const message = document.getElementById("message");
   message.textContent = isSolved()
@@ -417,6 +444,7 @@ function main() {
   // shows a stale seed for a puzzle that is no longer on screen.
   function load(seed) {
     newGame(seed, seed);
+    resetClock();
     seedInput.value = seed;
     render();
   }
@@ -451,6 +479,11 @@ function main() {
     const seed = seedInput.value.trim();
     if (seed) loadAndLink(seed);
   });
+
+  // Ticks the clock without touching the rest of the page.
+  setInterval(() => {
+    if (state && clock.since !== null) renderClock();
+  }, 250);
 
   seedInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") document.getElementById("load").click();

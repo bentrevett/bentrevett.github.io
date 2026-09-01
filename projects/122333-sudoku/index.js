@@ -50,8 +50,59 @@ function newGame(seed, variant) {
     // One board per ruleset, so switching between them does not throw away
     // what you have already filled in.
     boards: VARIANTS.map(() => null),
+    // And one undo trail and one clock each, for the same reason.
+    history: VARIANTS.map(() => []),
+    clocks: VARIANTS.map(() => ({ started: false, elapsed: 0, since: null })),
   };
   puzzleFor(variant);
+}
+
+// --- the clock ------------------------------------------------------------
+
+// A clock per ruleset. It starts on the first cell you touch, stops when the
+// puzzle comes out, and only ticks while its own ruleset is the one on screen,
+// so time spent on another board is not charged to this one.
+function clock() {
+  return state.clocks[state.variant - 1];
+}
+
+function elapsed() {
+  const running = clock();
+  return running.elapsed + (running.since === null ? 0 : Date.now() - running.since);
+}
+
+function startClock() {
+  const running = clock();
+  running.started = true;
+  if (running.since === null && !isSolved()) running.since = Date.now();
+}
+
+function pauseClock() {
+  const running = clock();
+  if (running.since !== null) {
+    running.elapsed += Date.now() - running.since;
+    running.since = null;
+  }
+}
+
+function formatTime(ms) {
+  const whole = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(whole / 60)).padStart(2, "0");
+  const seconds = String(whole % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+// --- undo -----------------------------------------------------------------
+
+function trail() {
+  return state.history[state.variant - 1];
+}
+
+function undo() {
+  const last = trail().pop();
+  if (!last) return;
+  state.boards[state.variant - 1][last.row][last.column] = last.was;
+  render();
 }
 
 // --- rules ----------------------------------------------------------------
@@ -126,7 +177,9 @@ function clearCell(row, column) {
   if (currentPuzzle().puzzle[row][column]) return; // a clue, not yours to change
   const board = state.boards[state.variant - 1];
   if (board[row][column] === 0) return;
+  trail().push({ row: row, column: column, was: board[row][column] });
   board[row][column] = 0;
+  startClock();
   render();
 }
 
@@ -134,7 +187,9 @@ function clearCell(row, column) {
 function cycleCell(row, column) {
   if (currentPuzzle().puzzle[row][column]) return; // a clue, not yours to change
   const board = state.boards[state.variant - 1];
+  trail().push({ row: row, column: column, was: board[row][column] });
   board[row][column] = (board[row][column] + 1) % 4;
+  startClock();
   render();
 }
 
@@ -193,14 +248,23 @@ function renderGrid() {
 
 function renderRules() {
   const variant = currentVariant();
-  const parts = ["Every row and column: one 1, two 2s, three 3s."];
+  // One line per rule, so picking a ruleset visibly adds a rule to the list
+  // or takes one away.
+  const rules = ["Every row and every column holds one 1, two 2s and three 3s."];
   if (variant.regions === "blocks") {
-    parts.push("Every two by three block the same.");
+    rules.push("Every two by three block holds the same.");
   } else if (variant.regions === "jigsaw") {
-    parts.push("Every outlined shape the same.");
+    rules.push("Every outlined shape holds the same.");
   }
-  if (variant.antiking) parts.push("No two 1s may touch, diagonals included.");
-  document.getElementById("rules").textContent = parts.join(" ");
+  if (variant.antiking) rules.push("No two 1s may touch, not even diagonally.");
+
+  const list = document.getElementById("rules");
+  list.replaceChildren();
+  for (const rule of rules) {
+    const item = document.createElement("li");
+    item.textContent = rule;
+    list.append(item);
+  }
 
   for (const [id, kind] of [["plain", "none"], ["blocks", "blocks"], ["jigsaw", "jigsaw"]]) {
     // Greyed out while it is the ruleset on screen, which is what says which
@@ -210,6 +274,11 @@ function renderRules() {
   document.getElementById("lonely").checked = variant.antiking;
 }
 
+// Only the clock, so it can tick without rebuilding the grid every second.
+function renderClock() {
+  document.getElementById("timer").textContent = formatTime(elapsed());
+}
+
 function render() {
   document.getElementById("puzzle").textContent = `Puzzle: ${state.seed}`;
   document.getElementById("today").disabled = state.seed === todaysSeed();
@@ -217,12 +286,18 @@ function render() {
   renderRules();
   renderGrid();
 
-  document.getElementById("message").textContent = isSolved() ? "Solved." : "";
+  const solved = isSolved();
+  // The clock stops the moment the puzzle comes out.
+  if (solved) pauseClock();
+  renderClock();
+
+  document.getElementById("message").textContent = solved ? "Solved." : "";
 
   const puzzle = currentPuzzle();
   document.getElementById("clear").disabled = state.boards[state.variant - 1].every(
     (row, r) => row.every((value, c) => value === puzzle.puzzle[r][c])
   );
+  document.getElementById("undo").disabled = trail().length === 0;
 }
 
 // --- setup ----------------------------------------------------------------
@@ -256,8 +331,14 @@ function main() {
   // rule, so the controls say that rather than listing six names.
   function chooseVariant(regions, antiking) {
     const found = VARIANTS.find((v) => v.regions === regions && v.antiking === antiking);
+    // Park the clock on the board you are leaving, so it is not charged for
+    // time spent elsewhere.
+    pauseClock();
     state.variant = found.id;
     puzzleFor(found.id);
+    // And pick up where the new one left off, if it was ever started.
+    const running = clock();
+    if (running.started && !isSolved()) running.since = Date.now();
     render();
   }
 
@@ -274,8 +355,19 @@ function main() {
   document.getElementById("clear").addEventListener("click", () => {
     const puzzle = currentPuzzle();
     state.boards[state.variant - 1] = puzzle.puzzle.map((row) => row.slice());
+    // The undo trail goes with the grid it describes, so a clear cannot be
+    // stepped back through. The clock is left alone: you are still on the same
+    // puzzle, and wiping the grid is not a fresh start on it.
+    state.history[state.variant - 1] = [];
     render();
   });
+
+  document.getElementById("undo").addEventListener("click", undo);
+
+  // Ticks the clock without touching the rest of the page.
+  setInterval(() => {
+    if (state && clock().since !== null) renderClock();
+  }, 250);
 
   document.getElementById("today").addEventListener("click", () => {
     loadAndLink(todaysSeed());
@@ -296,7 +388,10 @@ function main() {
 
   // ?seed=... in the URL wins, otherwise today's puzzle is the date itself.
   const urlSeed = new URLSearchParams(location.search).get("seed");
-  load((urlSeed || "").trim() || todaysSeed(), 1);
+  // Lonely ones by default: the plain grid is nearly always solvable by
+  // scanning alone, which makes for a duller first impression.
+  const LONELY_PLAIN = VARIANTS.find((v) => v.regions === "none" && v.antiking).id;
+  load((urlSeed || "").trim() || todaysSeed(), LONELY_PLAIN);
 }
 
 main();

@@ -183,6 +183,10 @@ function newGame(seed) {
   };
 }
 
+function isSolved() {
+  return state.clues.every((clue) => clue.solved);
+}
+
 function solvedCount() {
   return state.clues.filter((clue) => clue.solved).length;
 }
@@ -197,6 +201,7 @@ function guess(clue) {
   } else {
     clue.wrong = true;
   }
+  startClock();
   paintClue(clue);
   renderStatus();
 }
@@ -206,7 +211,52 @@ function reveal(clue) {
   clue.revealed += 1;
   // A letter appearing is news, not a rejected answer.
   clue.wrong = false;
+  // Uncovering the last letter answers the clue, so it counts exactly as
+  // typing the word would: green, counted, and the box shut. Leaving it
+  // complete but unmarked was just a loose end.
+  if (clue.revealed >= clue.word.length) {
+    clue.solved = true;
+    clue.elements.input.value = clue.word;
+  }
+  startClock();
   paintClue(clue);
+  renderStatus();
+}
+
+// --- the clock ------------------------------------------------------------
+
+// Starts on the first move you make and stops when the puzzle comes out.
+let clock = { elapsed: 0, since: null };
+
+function elapsedMs() {
+  return clock.elapsed + (clock.since === null ? 0 : Date.now() - clock.since);
+}
+
+function startClock() {
+  if (clock.since === null && !isSolved()) clock.since = Date.now();
+}
+
+function pauseClock() {
+  if (clock.since !== null) {
+    clock.elapsed += Date.now() - clock.since;
+    clock.since = null;
+  }
+}
+
+function resetClock() {
+  clock = { elapsed: 0, since: null };
+}
+
+function formatTime(ms) {
+  const whole = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(whole / 60)).padStart(2, "0");
+  const seconds = String(whole % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+// Only the clock, so it can tick without rebuilding the page every second.
+function renderClock() {
+  document.getElementById("timer").textContent = formatTime(elapsedMs());
 }
 
 // --- rendering ------------------------------------------------------------
@@ -335,6 +385,8 @@ function render() {
   renderStatus();
   renderLetters();
   buildClues();
+  if (isSolved()) pauseClock();
+  renderClock();
 }
 
 // --- setup ----------------------------------------------------------------
@@ -346,6 +398,7 @@ function main() {
   // shows a stale name for a puzzle that is no longer on screen.
   function load(seed) {
     newGame(seed);
+    resetClock();
     seedInput.value = seed;
     render();
   }
@@ -378,6 +431,11 @@ function main() {
     const seed = seedInput.value.trim();
     if (seed) loadAndLink(seed);
   });
+
+  // Ticks the clock without touching the rest of the page.
+  setInterval(() => {
+    if (state && clock.since !== null) renderClock();
+  }, 250);
 
   seedInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") document.getElementById("load").click();

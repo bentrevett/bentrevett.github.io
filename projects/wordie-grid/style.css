@@ -127,6 +127,18 @@ td {
   font-size: small;
 }
 
+/* Fixed width digits, so the seconds ticking over cannot shift the page. */
+#timer {
+  margin: 0.3em 0 0.8em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Neither table carries a margin of its own, so with the headings gone they
+   had nothing between them. */
+#values {
+  margin-bottom: 1em;
+}
+
 button {
   cursor: pointer;
 }
@@ -152,6 +164,7 @@ button:disabled {
   margin: 0.4em 0 0;
 }
 
-#message + h2 {
+/* The tiles follow the message directly now that the heading has gone. */
+#message + #tray {
   margin-top: 0.3em;
 }

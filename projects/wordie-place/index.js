@@ -1,6 +1,5 @@
 // --- tunable values -------------------------------------------------------
 
-const WORD_LENGTH = 5;
 const LINES = 8; // words to build, and middle letters given
 const PAIR = 2; // letters in a tile, taken from each end of a word
 
@@ -126,6 +125,7 @@ function isPlaced(tile) {
 
 function selectTile(tile) {
   if (isPlaced(tile)) return;
+  startClock();
   // Clicking the marked tile again puts it down rather than trapping you.
   state.selected = state.selected === tile ? null : tile;
   render();
@@ -143,7 +143,44 @@ function placeTile(line, end) {
   if (state.selected === null) return;
   state.slots[line][end] = state.selected;
   state.selected = null;
+  startClock();
   render();
+}
+
+// --- the clock ------------------------------------------------------------
+
+// Starts on the first move you make and stops when the puzzle comes out.
+let clock = { elapsed: 0, since: null };
+
+function elapsedMs() {
+  return clock.elapsed + (clock.since === null ? 0 : Date.now() - clock.since);
+}
+
+function startClock() {
+  if (clock.since === null && !isSolved()) clock.since = Date.now();
+}
+
+function pauseClock() {
+  if (clock.since !== null) {
+    clock.elapsed += Date.now() - clock.since;
+    clock.since = null;
+  }
+}
+
+function resetClock() {
+  clock = { elapsed: 0, since: null };
+}
+
+function formatTime(ms) {
+  const whole = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(whole / 60)).padStart(2, "0");
+  const seconds = String(whole % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+// Only the clock, so it can tick without rebuilding the page every second.
+function renderClock() {
+  document.getElementById("timer").textContent = formatTime(elapsedMs());
 }
 
 // --- rendering ------------------------------------------------------------
@@ -252,17 +289,10 @@ function render() {
   // cannot throw away a board you are part way through.
   document.getElementById("today").disabled = state.label === todaysSeed();
 
-  const status = document.getElementById("status");
-  status.replaceChildren(
-    "Words ",
-    glyphElement(String(solvedCount())),
-    " of ",
-    glyphElement(String(LINES)),
-    "."
-  );
-
   renderLines();
   renderTiles();
+  if (isSolved()) pauseClock();
+  renderClock();
 
   document.getElementById("message").textContent = isSolved()
     ? `All ${LINES} words made.`
@@ -281,6 +311,7 @@ function main() {
   // shows a stale name for a puzzle that is no longer on screen.
   function load(seed) {
     newGame(seed, seed);
+    resetClock();
     seedInput.value = seed;
     render();
   }
@@ -321,6 +352,11 @@ function main() {
   });
 
   document.getElementById("easy").addEventListener("change", render);
+
+  // Ticks the clock without touching the rest of the page.
+  setInterval(() => {
+    if (state && clock.since !== null) renderClock();
+  }, 250);
 
   seedInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") document.getElementById("load").click();

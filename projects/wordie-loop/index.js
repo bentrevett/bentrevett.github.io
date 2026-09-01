@@ -223,9 +223,6 @@ function isPlaced(trayIndex) {
   return state.grid.includes(trayIndex);
 }
 
-function placedCount() {
-  return state.grid.filter((cell) => cell !== null).length;
-}
 
 function letterAt(cellIndex) {
   const trayIndex = state.grid[cellIndex];
@@ -252,6 +249,7 @@ function selectLetter(trayIndex) {
 }
 
 function placeSelected(cellIndex) {
+  startClock();
   if (state.selected === null || state.grid[cellIndex] !== null) return;
 
   const row = Math.floor(cellIndex / WORD_LENGTH);
@@ -272,6 +270,7 @@ function placeSelected(cellIndex) {
 
 // Clicking a filled cell sends that letter back to the tray.
 function clearCell(cellIndex) {
+  startClock();
   if (state.grid[cellIndex] === null || state.locked.has(cellIndex)) return;
   state.grid[cellIndex] = null;
   state.message = "";
@@ -377,6 +376,47 @@ function analyse() {
     solved: loop !== null,
     score: loop === null ? 0 : Math.max(0, COMPLETE_SCORE - wildcards),
   };
+}
+
+// Solved when every row is a word and the loop closes.
+function isSolved() {
+  return analyse().solved;
+}
+
+// --- the clock ------------------------------------------------------------
+
+// Starts on the first move you make and stops when the puzzle comes out.
+let clock = { elapsed: 0, since: null };
+
+function elapsedMs() {
+  return clock.elapsed + (clock.since === null ? 0 : Date.now() - clock.since);
+}
+
+function startClock() {
+  if (clock.since === null && !isSolved()) clock.since = Date.now();
+}
+
+function pauseClock() {
+  if (clock.since !== null) {
+    clock.elapsed += Date.now() - clock.since;
+    clock.since = null;
+  }
+}
+
+function resetClock() {
+  clock = { elapsed: 0, since: null };
+}
+
+function formatTime(ms) {
+  const whole = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(whole / 60)).padStart(2, "0");
+  const seconds = String(whole % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+// Only the clock, so it can tick without rebuilding the page every second.
+function renderClock() {
+  document.getElementById("timer").textContent = formatTime(elapsedMs());
 }
 
 // --- rendering ------------------------------------------------------------
@@ -527,13 +567,6 @@ function render() {
 
   const report = analyse();
 
-  // Padded so the count changing cannot alter the line's length.
-  const placed = String(playerPlaced()).padStart(2, " ");
-  document.getElementById("status").textContent =
-    state.selected === null
-      ? `Placed ${placed} of ${PLAYER_CELLS}. Select a letter below.`
-      : `Placed ${placed} of ${PLAYER_CELLS}. Now click an empty cell.`;
-
   renderGrid(report);
   renderTray();
 
@@ -549,6 +582,8 @@ function render() {
     `wildcards, so ${spare} are left over.`;
 
   document.getElementById("clear").disabled = playerPlaced() === 0;
+  if (isSolved()) pauseClock();
+  renderClock();
 }
 
 // --- setup ----------------------------------------------------------------
@@ -560,6 +595,7 @@ function main() {
   // shows a stale seed for a puzzle that is no longer on screen.
   function load(seed) {
     newGame(seed, seed);
+    resetClock();
     seedInput.value = seed;
     render();
   }
@@ -596,6 +632,11 @@ function main() {
     const seed = seedInput.value.trim();
     if (seed) loadAndLink(seed);
   });
+
+  // Ticks the clock without touching the rest of the page.
+  setInterval(() => {
+    if (state && clock.since !== null) renderClock();
+  }, 250);
 
   seedInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") document.getElementById("load").click();

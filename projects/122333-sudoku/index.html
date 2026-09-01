@@ -18,7 +18,8 @@
     <p>
       Click a cell to cycle it through blank, 1, 2 and 3, and <b>right click</b>
       to wipe it in one go. The clues you were given are shaded and cannot be
-      changed. A cell turns <b>red</b> when it
+      changed. The clock starts when you first touch a cell and stops when the
+      puzzle is complete. A cell turns <b>red</b> when it
       breaks a rule &mdash; too many of a value in a row, column or region.
     </p>
 
@@ -27,7 +28,7 @@
       every day.
     </p>
 
-    <h2>Rules</h2>
+    <h2>Variant</h2>
 
     <p>
       <button id="plain">Plain</button>
@@ -36,7 +37,9 @@
       <label><input type="checkbox" id="lonely"> <b>Lonely ones</b></label>
     </p>
 
-    <p id="rules"></p>
+    <h2>Rules</h2>
+
+    <ul id="rules"></ul>
 
     <p>
       <button id="today">Today's Puzzle</button>
@@ -57,10 +60,13 @@
 
     <h2 id="puzzle"></h2>
 
+    <p id="timer"></p>
+
     <table id="grid"></table>
 
     <p id="clearRow">
-      <button id="clear">Clear grid</button>
+      <button id="undo">Undo</button>
+      <button id="clear">Clear Grid</button>
     </p>
 
     <p id="message"></p>

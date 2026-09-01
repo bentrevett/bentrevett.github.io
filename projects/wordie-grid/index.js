@@ -9,7 +9,6 @@ const LETTER_POINTS = {
 
 const GRID_SIZE = 5; // the grid is GRID_SIZE by GRID_SIZE
 const GRID_CELLS = GRID_SIZE * GRID_SIZE;
-const WORD_LENGTH = GRID_SIZE; // each row spells one word
 const SOURCE_WORDS = GRID_SIZE; // words the letters are taken from
 const BONUS_COUNT = GRID_SIZE; // how many cells score double
 const BONUS_MULTIPLIER = 2;
@@ -218,6 +217,7 @@ function placedCount() {
 }
 
 function selectLetter(trayIndex) {
+  startClock();
   if (isPlaced(trayIndex)) return;
   // Clicking the selected letter again clears the selection.
   state.selected = state.selected === trayIndex ? null : trayIndex;
@@ -225,6 +225,7 @@ function selectLetter(trayIndex) {
 }
 
 function placeSelected(cellIndex) {
+  startClock();
   if (state.selected === null || state.grid[cellIndex] !== null) return;
 
   const row = Math.floor(cellIndex / GRID_SIZE);
@@ -245,6 +246,7 @@ function placeSelected(cellIndex) {
 
 // Clicking a filled cell sends that letter back to the tray.
 function clearCell(cellIndex) {
+  startClock();
   if (state.grid[cellIndex] === null) return;
   state.grid[cellIndex] = null;
   state.message = "";
@@ -322,12 +324,54 @@ function totalScore() {
   return total;
 }
 
+// Solved when the grid is full and every row spells a word.
+function isSolved() {
+  if (placedCount() !== GRID_CELLS) return false;
+  return range(GRID_SIZE).every((row) => scoreRow(row).valid);
+}
+
+// --- the clock ------------------------------------------------------------
+
+// Starts on the first move you make and stops when the puzzle comes out.
+let clock = { elapsed: 0, since: null };
+
+function elapsedMs() {
+  return clock.elapsed + (clock.since === null ? 0 : Date.now() - clock.since);
+}
+
+function startClock() {
+  if (clock.since === null && !isSolved()) clock.since = Date.now();
+}
+
+function pauseClock() {
+  if (clock.since !== null) {
+    clock.elapsed += Date.now() - clock.since;
+    clock.since = null;
+  }
+}
+
+function resetClock() {
+  clock = { elapsed: 0, since: null };
+}
+
+function formatTime(ms) {
+  const whole = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(whole / 60)).padStart(2, "0");
+  const seconds = String(whole % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+// Only the clock, so it can tick without rebuilding the page every second.
+function renderClock() {
+  document.getElementById("timer").textContent = formatTime(elapsedMs());
+}
+
 // --- rendering ------------------------------------------------------------
 
 const MAX_LETTER_POINTS = Math.max(...Object.values(LETTER_POINTS));
-// Worst case for any bonus layout, including every bonus cell in one row.
+// Worst case for a single row under any bonus layout, which is what the
+// score column is sized against.
 const MAX_ROW_SCORE = GRID_SIZE * MAX_LETTER_POINTS * BONUS_MULTIPLIER;
-const MAX_TOTAL_SCORE = GRID_CELLS * MAX_LETTER_POINTS * BONUS_MULTIPLIER;
 
 // A letter beside its value, both fixed width so nothing reflows when a 10
 // point letter sits next to a 1 point one. Pass "" as points to leave the
@@ -529,15 +573,10 @@ function render() {
   // stray click wiping a board you are part way through.
   document.getElementById("today").disabled = state.label === todaysSeed();
 
-  // Padded so the count changing cannot alter the line's length.
-  const placed = String(placedCount()).padStart(2, " ");
-  const status = state.selected === null
-    ? `Placed ${placed} of ${GRID_CELLS}. Select a letter below.`
-    : `Placed ${placed} of ${GRID_CELLS}. Now click an empty cell.`;
-  document.getElementById("status").textContent = status;
-
   renderGrid();
   renderTray();
+  if (isSolved()) pauseClock();
+  renderClock();
 
   // A non-breaking space holds the line's height when there is nothing to
   // say, so messages do not shove the page around.
@@ -564,6 +603,7 @@ function main() {
   // shows a stale seed for a puzzle that is no longer on screen.
   function load(seed) {
     newGame(seed, seed);
+    resetClock();
     seedInput.value = seed;
     render();
   }
@@ -600,6 +640,11 @@ function main() {
     const seed = seedInput.value.trim();
     if (seed) loadAndLink(seed);
   });
+
+  // Ticks the clock without touching the rest of the page.
+  setInterval(() => {
+    if (state && clock.since !== null) renderClock();
+  }, 250);
 
   seedInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") document.getElementById("load").click();

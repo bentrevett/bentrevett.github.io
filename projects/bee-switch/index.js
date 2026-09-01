@@ -247,6 +247,7 @@ function moveRow(row, delta) {
   if (target < 0 || target >= state.order.length) return;
   const order = state.order;
   [order[row], order[target]] = [order[target], order[row]];
+  startClock();
   render();
 }
 
@@ -254,7 +255,44 @@ function moveRow(row, delta) {
 // the word left and right amounts to.
 function centreLetter(row, at) {
   state.centres[state.order[row]] = at;
+  startClock();
   render();
+}
+
+// --- the clock ------------------------------------------------------------
+
+// Starts on the first move you make and stops when the puzzle comes out.
+let clock = { elapsed: 0, since: null };
+
+function elapsedMs() {
+  return clock.elapsed + (clock.since === null ? 0 : Date.now() - clock.since);
+}
+
+function startClock() {
+  if (clock.since === null && !isSolved()) clock.since = Date.now();
+}
+
+function pauseClock() {
+  if (clock.since !== null) {
+    clock.elapsed += Date.now() - clock.since;
+    clock.since = null;
+  }
+}
+
+function resetClock() {
+  clock = { elapsed: 0, since: null };
+}
+
+function formatTime(ms) {
+  const whole = Math.floor(ms / 1000);
+  const minutes = String(Math.floor(whole / 60)).padStart(2, "0");
+  const seconds = String(whole % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+// Only the clock, so it can tick without rebuilding the page every second.
+function renderClock() {
+  document.getElementById("timer").textContent = formatTime(elapsedMs());
 }
 
 // --- rendering ------------------------------------------------------------
@@ -337,6 +375,8 @@ function render() {
   document.getElementById("today").disabled = state.seed === todaysSeed();
   renderBoard();
   renderStatus();
+  if (isSolved()) pauseClock();
+  renderClock();
 }
 
 // --- setup ----------------------------------------------------------------
@@ -348,6 +388,7 @@ function main() {
   // shows a stale name for a puzzle that is no longer on screen.
   function load(seed) {
     newGame(seed);
+    resetClock();
     seedInput.value = seed;
     render();
   }
@@ -380,6 +421,11 @@ function main() {
     const seed = seedInput.value.trim();
     if (seed) loadAndLink(seed);
   });
+
+  // Ticks the clock without touching the rest of the page.
+  setInterval(() => {
+    if (state && clock.since !== null) renderClock();
+  }, 250);
 
   seedInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") document.getElementById("load").click();
