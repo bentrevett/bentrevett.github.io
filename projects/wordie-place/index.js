@@ -1,6 +1,16 @@
 // --- tunable values -------------------------------------------------------
 
-const LINES = 8; // words to build, and middle letters given
+// Three boards a day. Everything else scales off how many words there are:
+// that is how many lines there are to fill, and twice that many tiles.
+const SIZES = [
+  { name: "Small", lines: 4 },
+  { name: "Medium", lines: 6 },
+  { name: "Large", lines: 8 },
+];
+// The tray is always four tiles across, so a bigger board grows downwards
+// rather than changing the width of the page under you.
+const TRAY_COLUMNS = 4;
+
 const PAIR = 2; // letters in a tile, taken from each end of a word
 
 // Which end of a word a tile was cut from.
@@ -61,13 +71,40 @@ function todaysSeed() {
 let state;
 
 function newGame(seedString, label) {
-  const random = makeRandom(hashString(seedString));
+  state = {
+    seed: seedString,
+    label: label,
+    // Small to begin with, as the quickest way in; the size you were playing
+    // then carries over to the next puzzle, since it is a taste rather than
+    // something about this particular board.
+    size: state ? state.size : 0,
+    // Built when a size is first looked at, not all three up front.
+    games: SIZES.map(() => null),
+    // One clock each, so time spent on one board is not charged to another.
+    clocks: SIZES.map(() => ({ started: false, elapsed: 0, since: null })),
+  };
+  gameFor(state.size);
+}
 
-  // Eight different words. Their middle letters are handed over, and their
-  // ends are cut off to make the tiles, so a solution always exists. It need
-  // not be these words, and usually there are others.
+function lines() {
+  return SIZES[state.size].lines;
+}
+
+// The board for a size, built the first time it is asked for.
+function gameFor(size) {
+  if (state.games[size]) return state.games[size];
+
+  // Large keeps the bare seed, so the board a given day has always shown stays
+  // the board it shows; the smaller two take a suffix. Seeding them apart also
+  // stops a small board giving away half of the large one.
+  const name = SIZES[size].name;
+  const random = makeRandom(hashString(size === SIZES.length - 1 ? state.seed : `${state.seed}/${name}`));
+
+  // As many different words as the size asks for. Their middle letters are
+  // handed over, and their ends are cut off to make the tiles, so a solution
+  // always exists. It need not be these words, and usually there are others.
   const chosen = [];
-  while (chosen.length < LINES) {
+  while (chosen.length < SIZES[size].lines) {
     const word = ANSWER_WORDS[Math.floor(random() * ANSWER_WORDS.length)];
     if (!chosen.includes(word)) chosen.push(word);
   }
@@ -82,8 +119,7 @@ function newGame(seedString, label) {
     ])
     .sort((a, b) => (a.text < b.text ? -1 : a.text > b.text ? 1 : 0));
 
-  state = {
-    label: label,
+  state.games[size] = {
     // One per line, alphabetical. Which line carries which letter says nothing,
     // since the lines are only told apart by their middle letter anyway.
     middles: chosen.map((word) => word[2]).sort(),
@@ -95,13 +131,19 @@ function newGame(seedString, label) {
     slots: chosen.map(() => [null, null]),
     selected: null,
   };
+  return state.games[size];
+}
+
+function game() {
+  return gameFor(state.size);
 }
 
 // The word a line currently spells, or null while an end is still empty.
 function lineWord(line) {
-  const [head, tail] = state.slots[line];
+  const board = game();
+  const [head, tail] = board.slots[line];
   if (head === null || tail === null) return null;
-  return state.tiles[head] + state.middles[line] + state.tiles[tail];
+  return board.tiles[head] + board.middles[line] + board.tiles[tail];
 }
 
 function isValid(line) {
@@ -111,64 +153,69 @@ function isValid(line) {
 
 function solvedCount() {
   let count = 0;
-  for (let line = 0; line < LINES; line++) if (isValid(line)) count++;
+  for (let line = 0; line < lines(); line++) if (isValid(line)) count++;
   return count;
 }
 
 function isSolved() {
-  return solvedCount() === LINES;
+  return solvedCount() === lines();
 }
 
 function isPlaced(tile) {
-  return state.slots.some(([head, tail]) => head === tile || tail === tile);
+  return game().slots.some(([head, tail]) => head === tile || tail === tile);
 }
 
 function selectTile(tile) {
   if (isPlaced(tile)) return;
   startClock();
   // Clicking the marked tile again puts it down rather than trapping you.
-  state.selected = state.selected === tile ? null : tile;
+  const board = game();
+  board.selected = board.selected === tile ? null : tile;
   render();
 }
 
 function placeTile(line, end) {
-  const held = state.slots[line][end];
+  const board = game();
+  const held = board.slots[line][end];
   // Clicking a tile already on a line sends it back to the grid.
   if (held !== null) {
-    state.slots[line][end] = null;
-    state.selected = null;
+    board.slots[line][end] = null;
+    board.selected = null;
     render();
     return;
   }
-  if (state.selected === null) return;
-  state.slots[line][end] = state.selected;
-  state.selected = null;
+  if (board.selected === null) return;
+  board.slots[line][end] = board.selected;
+  board.selected = null;
   startClock();
   render();
 }
 
 // --- the clock ------------------------------------------------------------
 
-// Starts on the first move you make and stops when the puzzle comes out.
-let clock = { elapsed: 0, since: null };
+// One per size. It starts on the first move you make on that board, stops when
+// that board comes out, and only ticks while it is the board on screen.
+function clock() {
+  return state.clocks[state.size];
+}
 
 function elapsedMs() {
-  return clock.elapsed + (clock.since === null ? 0 : Date.now() - clock.since);
+  const running = clock();
+  return running.elapsed + (running.since === null ? 0 : Date.now() - running.since);
 }
 
 function startClock() {
-  if (clock.since === null && !isSolved()) clock.since = Date.now();
+  const running = clock();
+  running.started = true;
+  if (running.since === null && !isSolved()) running.since = Date.now();
 }
 
 function pauseClock() {
-  if (clock.since !== null) {
-    clock.elapsed += Date.now() - clock.since;
-    clock.since = null;
+  const running = clock();
+  if (running.since !== null) {
+    running.elapsed += Date.now() - running.since;
+    running.since = null;
   }
-}
-
-function resetClock() {
-  clock = { elapsed: 0, since: null };
 }
 
 function formatTime(ms) {
@@ -198,16 +245,17 @@ function renderLines() {
   const table = document.getElementById("lines");
   table.replaceChildren();
 
-  for (let line = 0; line < LINES; line++) {
+  const board = game();
+  for (let line = 0; line < lines(); line++) {
     const row = table.insertRow();
     const word = lineWord(line);
     const good = isValid(line);
 
     for (const end of [0, 1]) {
       const cell = row.insertCell();
-      const tile = state.slots[line][end];
+      const tile = board.slots[line][end];
       cell.textContent =
-        tile === null ? BLANK.repeat(PAIR) : state.tiles[tile].toUpperCase();
+        tile === null ? BLANK.repeat(PAIR) : board.tiles[tile].toUpperCase();
       cell.className =
         "slot" + (tile === null ? " empty" : "") + (word ? (good ? " good" : " bad") : "");
       cell.title =
@@ -219,7 +267,7 @@ function renderLines() {
       // The given middle letter goes between the two ends.
       if (end === 0) {
         const middle = row.insertCell();
-        middle.textContent = state.middles[line].toUpperCase();
+        middle.textContent = board.middles[line].toUpperCase();
         middle.className = "middle" + (word ? (good ? " good" : " bad") : "");
         middle.title = "given, and cannot be moved";
       }
@@ -244,25 +292,27 @@ function renderTiles() {
 
   const table = document.createElement("table");
   table.id = "trayTable";
+  const board = game();
 
-  for (let row = 0; row < PAIR * PAIR; row++) {
+  // Two tiles per word, laid out four to a row.
+  for (let row = 0; row < (lines() * 2) / TRAY_COLUMNS; row++) {
     const line = table.insertRow();
-    for (let column = 0; column < PAIR * PAIR; column++) {
-      const tile = row * PAIR * PAIR + column;
+    for (let column = 0; column < TRAY_COLUMNS; column++) {
+      const tile = row * TRAY_COLUMNS + column;
       const cell = line.insertCell();
 
       // Outside the tile, to the left, so selecting cannot shift the grid.
-      cell.append(glyphElement(state.selected === tile ? "▸" : " ", "marker"));
+      cell.append(glyphElement(board.selected === tile ? "▸" : " ", "marker"));
 
       const button = document.createElement("button");
       // Four fixed width boxes, a dash and the two letters, so switching easy
       // mode on and off cannot change the size of a single tile.
       const dash = easy ? "-" : " ";
-      const head = state.sides[tile] === HEAD;
+      const head = board.sides[tile] === HEAD;
       button.append(
         glyphElement(head ? " " : dash),
-        glyphElement(state.tiles[tile][0].toUpperCase()),
-        glyphElement(state.tiles[tile][1].toUpperCase()),
+        glyphElement(board.tiles[tile][0].toUpperCase()),
+        glyphElement(board.tiles[tile][1].toUpperCase()),
         glyphElement(head ? dash : " ")
       );
       if (easy) {
@@ -283,21 +333,29 @@ function renderTiles() {
   container.append(table);
 }
 
+// The size buttons, with the one in force greyed out to say which it is.
+function renderSizes() {
+  SIZES.forEach((size, index) => {
+    document.getElementById(size.name.toLowerCase()).disabled = state.size === index;
+  });
+}
+
 function render() {
   document.getElementById("puzzle").textContent = `Puzzle: ${state.label}`;
   // Greyed out while today's puzzle is the one on screen, so a stray click
   // cannot throw away a board you are part way through.
   document.getElementById("today").disabled = state.label === todaysSeed();
 
+  renderSizes();
   renderLines();
   renderTiles();
   if (isSolved()) pauseClock();
   renderClock();
 
   document.getElementById("message").textContent = isSolved()
-    ? `All ${LINES} words made.`
+    ? `All ${lines()} words made.`
     : "";
-  document.getElementById("clear").disabled = state.slots.every(
+  document.getElementById("clear").disabled = game().slots.every(
     ([head, tail]) => head === null && tail === null
   );
 }
@@ -311,7 +369,6 @@ function main() {
   // shows a stale name for a puzzle that is no longer on screen.
   function load(seed) {
     newGame(seed, seed);
-    resetClock();
     seedInput.value = seed;
     render();
   }
@@ -332,10 +389,26 @@ function main() {
     setUrlSeed(seed);
   }
 
+  // Only the board on screen, and the clock is left alone: you are still on
+  // the same puzzle, and wiping it is not a fresh start on it.
   document.getElementById("clear").addEventListener("click", () => {
-    state.slots = state.slots.map(() => [null, null]);
-    state.selected = null;
+    const board = game();
+    board.slots = board.slots.map(() => [null, null]);
+    board.selected = null;
     render();
+  });
+
+  SIZES.forEach((size, index) => {
+    document.getElementById(size.name.toLowerCase()).addEventListener("click", () => {
+      // Park the clock on the board you are leaving, and pick the new one up
+      // where it left off if it was ever started.
+      pauseClock();
+      state.size = index;
+      gameFor(index);
+      const running = clock();
+      if (running.started && !isSolved()) running.since = Date.now();
+      render();
+    });
   });
 
   document.getElementById("today").addEventListener("click", () => {
@@ -355,7 +428,7 @@ function main() {
 
   // Ticks the clock without touching the rest of the page.
   setInterval(() => {
-    if (state && clock.since !== null) renderClock();
+    if (state && clock().since !== null) renderClock();
   }, 250);
 
   seedInput.addEventListener("keyup", (event) => {
