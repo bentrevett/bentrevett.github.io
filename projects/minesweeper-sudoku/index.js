@@ -295,17 +295,15 @@ function renderGrid() {
 function renderRules() {
   const { shape, regions } = currentPuzzle();
   const rules = [
-    `Every row holds ${shape.half} filled cells and ${shape.half} blank, and so does every column.`,
+    `Every row and every column holds exactly ${shape.half} blue cells and ${shape.half} grey cells.`,
   ];
   if (state.regions === 1) {
-    rules.push(`Every ${shape.blockRows} by ${shape.blockColumns} block holds the same.`);
+    rules.push(`Every outlined block holds exactly ${shape.half} blue cells and ${shape.half} grey cells.`);
   } else if (state.regions === 2) {
-    rules.push("Every outlined shape holds the same.");
+    rules.push(`Every outlined block holds exactly ${shape.half} blue cells and ${shape.half} grey cells.`);
   }
   rules.push(
-    "A number says how many of the nine cells around it are filled — the " +
-    "eight touching it and the cell it sits in, minus any that fall off the " +
-    "edge of the grid."
+    "Each numbered cell indicates how many of the surrounding cells, including itself, are blue."
   );
 
   const list = document.getElementById("rules");
@@ -315,11 +313,6 @@ function renderRules() {
     item.textContent = rule;
     list.append(item);
   }
-  // Nothing is drawn between the cells when there are no regions, so say so
-  // rather than leaving the grid looking unfinished.
-  document.getElementById("regionNote").textContent = regions
-    ? ""
-    : "No regions: only the rows and columns, and the numbers.";
 }
 
 // Only the clock, so it can tick without rebuilding the grid every second.

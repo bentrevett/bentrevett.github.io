@@ -10,49 +10,31 @@
     <h1><u>Tetronimo Place 🧱</u></h1>
 
     <p>
-      A daily tiling puzzle. The white cells have been cut into
-      <b>tetronimoes</b> &mdash; four cell pieces &mdash; and your job is to
-      work out where every piece is.
+      A Tetris variant. Fill the board using only the two tetronimo shapes provided.
     </p>
 
     <p>
-      Cut the board up by clicking the <b>lines between cells</b>, and click a
-      line again to join the cells back together. Every white cell belongs to
-      exactly one piece, and only the shapes listed below were used. Pieces may
-      be turned and mirrored freely, so a shape and its mirror image count as
-      the same one. A cut says the two cells either side of it are in different
-      pieces, so a piece with a cut inside it is not finished, even where the
-      cells could still be walked around it.
+      Click/tap on a cell border to place a line there, click/tap on a line to remove it.
     </p>
 
     <p>
-      Between some cells there is a mark, and every mark falls on a join
-      between two pieces. <b>&times;</b> means the two pieces either side are
-      <b>different</b> shapes. <b>=</b> means they are two <b>different</b>
-      pieces of the <b>same</b> shape.
+      Once lines are placed to divide the board into one of provided tetronimo shapes, the cells within that shape will be colored in.
     </p>
 
     <p>
-      Some cells are <b>hatched</b>. No single piece may cover more than one
-      hatched cell.
-    </p>
-
-    <p>
-      There is exactly one answer, and it can always be reached by reasoning:
-      every board is built so that a solver who never guesses can finish it.
-      <b>Hint</b> draws one cut for you.
-    </p>
-
-    <p>
-      Cut out one of today's shapes and it fills with that shape's colour, so
-      the two are told apart at a glance. Anything still white is not a piece
-      yet. Each mark keeps score of itself: <b>grey</b> while there is not
-      enough drawn around it to tell, <b>green</b> once it is satisfied, and
-      <b>red</b> once you have broken it. Hatched cells that end up sharing a
-      piece turn <b>red hatched</b>.
+      Additionally, the board has <b>&times;</b> and <b>=</b> marks, and hatched cells. 
+    <ul>
+      <li>An <b>&times;</b> indicates this is a border between two different tetronimo pieces, and the two pieces are <b>different</b> shapes.</li>
+      <li>An <b>=</b> indicates this is a border between two different tetronimo pieces, and the two pieces are the <b>same</b> shape.</li>
+      <li>No single tetronimo piece may cover more than one hatched cell.</li>
+    </ul>
     </p>
 
     <h2>Board</h2>
+
+    <p>
+      The board comes in three sizes: small (6x6), medium (8x8), and large (10x10).
+    </p>
 
     <p>
       <button id="small">Small</button>
@@ -70,9 +52,7 @@
     </p>
 
     <p>
-      Every puzzle has a name, shown in the heading below: today's is the
-      date, and a random puzzle gets a number. Type a name in to play that
-      exact puzzle, which is also how you set a friend the same one.
+      Load a specific puzzle or enter a date in YYYY-MM-DD format to play that day's puzzle:
     </p>
 
     <p>
