@@ -10,20 +10,41 @@
     <h1><u>Minesweeper Sudoku 💣</u></h1>
 
     <p>
-      A daily logic puzzle. Every cell of the grid is either <b>filled</b> or
-      <b>blank</b>, and your job is to work out which is which. Pick a size,
-      and pick how the grid is carved up &mdash; into nothing at all, into
-      rectangular blocks, or into jigsaw shapes.
+      A hybrid of Minesweeper and Sudoku. Fill every cell as either blue or grey so that every row, every column, and every block (if there are any) holds the same amount of blue and grey cells.
     </p>
 
-    <h2>Board</h2>
+    <p>
+      Each numbered cell indicates how many of the surrounding cells, <b>including itself</b>, are blue.
+    </p>
+
+    <p>
+      Click/tap on a cell to cycle it through blank, blue, and grey. Right click a cell to clear it.
+    </p>
+
+    <p>
+      Every puzzle has exactly one solution.
+    </p>
+
+    <h2>Variants</h2>
+
+    <p>There are several variants.</p>
+    
+    <ul>
+      <li>The board comes in two sizes, small (6x6) and medium (8x8).</li>
+      <li>The regions can be plain, blocks, or jigsaw.</li>
+      <li><i>Plain</i> has no blocks.</li>
+      <li><i>Blocks</i> has regular sized blocks.</li>
+      <li><i>Jigsaw</i> has irregular sized blocks.</li>
+    </ul>
+
+    <h3>Board</h3>
 
     <p>
       <button id="small">Small</button>
       <button id="medium">Medium</button>
     </p>
 
-    <h2>Regions</h2>
+    <h3>Regions</h3>
 
     <p>
       <button id="plain">Plain</button>
@@ -38,48 +59,12 @@
     <p id="regionNote"></p>
 
     <p>
-      A number tells you nothing about the cell it sits in, so a numbered cell
-      may be filled itself &mdash; and often is. You have to work it out like
-      any other.
-    </p>
-
-    <p>
-      A number <b>fades</b> once you have filled as many cells around it as it
-      asks for, so what is left to work out stands out from what is done. It
-      only counts them: fill the wrong ones and it still fades, so it is a
-      tally of your working rather than a verdict on it.
-    </p>
-
-    <p>
-      Click a cell to cycle it through unknown, filled and blank, and
-      <b>right click</b> to wipe it in one go. A cell you have filled goes
-      <b>blue</b>, one you have called blank goes <b>grey</b> and is crossed
-      off, and one you have not decided stays <b>white</b>. Marking the blanks
-      is not asked for, only the filled cells, but it is the easiest way to
-      keep track. A cell turns <b>red</b> when it is already impossible
-      &mdash; too many filled in a row, column, block or number, or so many
-      blanks that one of them can no longer be satisfied.
-    </p>
-
-    <p>
-      There are six boards a day &mdash; two sizes crossed with three sets of
-      regions &mdash; and each has exactly one answer that can always be
-      reached by reasoning: no board is shipped unless a solver that never
-      guesses can finish it, and unless it genuinely needs the numbers to
-      overlap and talk to each other. <b>Hint</b> fills in one cell you could already have
-      worked out. The clock starts when you first touch a cell and stops when
-      the puzzle is complete.
-    </p>
-
-    <p>
       <button id="today">Today's Puzzle</button>
       <button id="practice">Random Puzzle</button>
     </p>
 
     <p>
-      Every puzzle has a name, shown in the heading below: today's is the
-      date, and a random puzzle gets a number. Type a name in to play that
-      exact puzzle, which is also how you set a friend the same one.
+      Load a specific puzzle or enter a date in YYYY-MM-DD format to play that day's puzzle:
     </p>
 
     <p>

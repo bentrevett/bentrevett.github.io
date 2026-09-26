@@ -250,13 +250,13 @@ function renderRules() {
   const variant = currentVariant();
   // One line per rule, so picking a ruleset visibly adds a rule to the list
   // or takes one away.
-  const rules = ["Every row and every column holds one 1, two 2s and three 3s."];
+  const rules = ["Every row and every column holds exactly one 1, two 2s and three 3s."];
   if (variant.regions === "blocks") {
-    rules.push("Every two by three block holds the same.");
+    rules.push("Every outlined block holds exactly one 1, two 2s and three 3s.");
   } else if (variant.regions === "jigsaw") {
-    rules.push("Every outlined shape holds the same.");
+    rules.push("Every outlined block holds exactly one 1, two 2s and three 3s.");
   }
-  if (variant.antiking) rules.push("No two 1s may touch, not even diagonally.");
+  if (variant.antiking) rules.push("No two 1s can touch, even diagonally.");
 
   const list = document.getElementById("rules");
   list.replaceChildren();

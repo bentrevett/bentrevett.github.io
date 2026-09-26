@@ -10,31 +10,38 @@
     <h1><u>122333 Sudoku 🔢</u></h1>
 
     <p>
-      A daily logic puzzle on a six by six grid. Fill every cell with a
-      <b>1</b>, <b>2</b> or <b>3</b> so that every row and every column holds
-      exactly <b>one 1, two 2s and three 3s</b>.
+      A Sudoku variant. Fill every cell with a <b>1</b>, <b>2</b> or <b>3</b> so that every row, every column, and every block (if there are any) holds exactly <b>one 1, two 2s and three 3s</b>. 
     </p>
 
     <p>
-      Click a cell to cycle it through blank, 1, 2 and 3, and <b>right click</b>
-      to wipe it in one go. The clues you were given are shaded and cannot be
-      changed. The clock starts when you first touch a cell and stops when the
-      puzzle is complete. A cell turns <b>red</b> when it
-      breaks a rule &mdash; too many of a value in a row, column or region.
+      If using the <i>Lonely Ones</i> variant (the default) then no two 1s can touch, even diagonally.
     </p>
 
     <p>
-      Every puzzle has exactly one answer, and there is a fresh set of six
-      every day.
+      Click/tap a cell to cycle it through blank, 1, 2 and 3.
+      Right click a cell to clear it.
     </p>
 
-    <h2>Variant</h2>
+    <p>
+      Every puzzle has exactly one solution.
+    </p>
+
+    <h2>Variants</h2>
+
+    <p>
+      There are several variants:
+      <ul>
+        <li><i>Plain</i> has no blocks.</li>
+        <li><i>Blocks</i> has regular sized blocks.</li>
+        <li><i>Jigsaw</i> has irregular sized blocks.</li>
+      </ul>
+    </p>
 
     <p>
       <button id="plain">Plain</button>
       <button id="blocks">Blocks</button>
       <button id="jigsaw">Jigsaw</button>
-      <label><input type="checkbox" id="lonely"> <b>Lonely ones</b></label>
+      <label><input type="checkbox" id="lonely"> <b>Lonely Ones</b></label>
     </p>
 
     <h2>Rules</h2>
@@ -47,9 +54,7 @@
     </p>
 
     <p>
-      Every puzzle has a name, shown in the heading below: today's is the
-      date, and a random puzzle gets a number. Type a name in to play that
-      exact puzzle, which is also how you set a friend the same one.
+      Load a specific puzzle or enter a date in YYYY-MM-DD format to play that day's puzzle:
     </p>
 
     <p>
