@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cryptic Index 🔍</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Cryptic Index 🔍</u></h1>
+
+    <p>
+      Words that turn up in cryptic crossword clues, and what each of them is
+      telling you to do. Start typing and the list narrows with every letter.
+      Any word of a phrase will do, so <b>front</b> finds <b>in front of</b>,
+      and entries starting with what you typed come first. Many words do more
+      than one job, so an entry can carry several types at once. Entries live in <b>indicators.js</b>; a word listed twice there is
+      merged into one, and the browser console reports that along with anything
+      else amiss in the file.
+    </p>
+
+    <p>
+      <input id="search" placeholder="Type a word" size="20" autocorrect="off"
+        autocapitalize="none" autocomplete="off" spellcheck="false">
+      <button id="clear">Clear</button>
+    </p>
+
+    <p id="types"></p>
+
+    <p id="reminder"></p>
+
+    <p id="count">
+      <span id="countText"></span>
+      <button id="showAll">Show all</button>
+    </p>
+
+    <table id="results"></table>
+
+    <script src="indicators.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

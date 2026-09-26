@@ -14,11 +14,9 @@
             </td>
         </table>
         <hr />
-        <table style="margin-bottom: -20px; margin-top: -10px">
-            <td style="text-align: left"><h1 id="about-me">About Me</h1></td>
-        </table>
+        <h2 id="ben-trevett">Ben Trevett</h2>
         <p>
-            I'm currently working as an NLP Engineer @
+            I'm currently working as a Senior AI Engineer @
             <a href="https://www.aveni.ai">aveni</a>.
         </p>
         <p>
@@ -37,6 +35,8 @@
             In my spare time I enjoy:
             <a href="https://www.goodreads.com/user/show/21559453">reading</a>,
             listening to podcasts,
+            doing crosswords,
+            solving puzzles,
             <a href="https://boardgamegeek.com/user/bentrevett"
                 >playing board games</a
             >, walking my <a href="dog.jpg">dog</a>, and watching sports.
@@ -47,132 +47,24 @@
             <a href="https://www.twitter.com/ben_trevett">twitter</a> or via
             <a href="mailto:bentrevett@gmail.com">e-mail</a>.
         </p>
-        <h2 id="notebooks">Notebooks</h2>
-        <p>Things I've learned, formatted as Python notebooks.</p>
-        <table>
-            <tr>
-                <td class="date">2024-12-15</td>
-                <td>
-                    <a
-                        href="notebooks/making-llms-smarter-with-structured-generation-and-outlines.html"
-                        >Making LLMs smarter with structured generation and
-                        Outlines</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2024-02-17</td>
-                <td>
-                    <a href="notebooks/information-theory.html"
-                        >Introduction to information theory (from a machine
-                        learning perspective)</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2024-02-10</td>
-                <td>
-                    <a href="notebooks/decision-tree-random-forest.html"
-                        >Decision trees and random forests from scratch</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-10-03</td>
-                <td>
-                    <a href="notebooks/bootstrapping-confidence-intervals.html"
-                        >Bootstrapping confidence intervals</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-09-27</td>
-                <td>
-                    <a href="notebooks/parallelism.html"
-                        >Parallelism in Python</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-09-07</td>
-                <td>
-                    <a href="notebooks/walrus-operator-use-cases.html"
-                        >Some practical use cases for the walrus operator</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-08-28</td>
-                <td>
-                    <a href="notebooks/retrieval-augmented-generation.html"
-                        >Retrieval augmented generation</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-08-27</td>
-                <td>
-                    <a href="notebooks/tfidf-from-scratch.html"
-                        >Implementing TF-IDF from scratch</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-08-06</td>
-                <td>
-                    <a href="notebooks/ab-testing-chi-squared.html"
-                        >A/B testing with the chi-squared test</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-08-03</td>
-                <td>
-                    <a href="notebooks/lora-peft.html"
-                        >Fine-tuning a sequence classification model with LoRA
-                        and the peft library</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-07-31</td>
-                <td>
-                    <a href="notebooks/openai-function-calling.html"
-                        >How to use Open AI's "function calling" ability</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-07-30</td>
-                <td>
-                    <a href="notebooks/strip-punctuation.html"
-                        >What's the best way to strip punctuation from a
-                        string?</a
-                    >
-                </td>
-            </tr>
-            <tr>
-                <td class="date">2023-07-29</td>
-                <td>
-                    <a href="notebooks/softmax.html"
-                        >Why is the softmax function "off by one"?</a
-                    >
-                </td>
-            </tr>
-        </table>
         <h2 id="projects">Projects</h2>
         <p>Things that I've worked on.</p>
         <table>
             <tr>
                 <td class="date">2026-09</td>
                 <td>
+                    <a href="projects/cryptic-index/index.html"
+                        >Cryptic Index</a
+                    >: An index of indicators for cryptic crossword clues.
+                    <img src="assets/new.gif" alt="New" />
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2026-09</td>
+                <td>
                     <a href="projects/minesweeper-sudoku/index.html"
                         >Minesweeper Sudoku</a
-                    >: A daily logic puzzle. Hatch half of every row, column
-                    and region, guided by numbers counting the filled cells
-                    around them, across two grid sizes and three sets of
-                    regions.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A puzzle game combining Minesweeper and Sudoku.
                 </td>
             </tr>
             <tr>
@@ -180,8 +72,7 @@
                 <td>
                     <a href="projects/tetronimo-place/index.html"
                         >Tetronimo Place</a
-                    >: A daily tiling puzzle. Fill a board using tetronimoes.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A puzzle game combining Tetris and Shikaru.
                 </td>
             </tr>
             <tr>
@@ -189,10 +80,7 @@
                 <td>
                     <a href="projects/122333-sudoku/index.html"
                         >122333 Sudoku</a
-                    >: A daily logic puzzle. Fill a six by six grid so every row
-                    and column holds one 1, two 2s and three 3s, across six sets
-                    of rules.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A Sudoku variant.
                 </td>
             </tr>
             <tr>
@@ -200,9 +88,7 @@
                 <td>
                     <a href="projects/wordie-place/index.html"
                         >Wordie Place</a
-                    >: A daily word puzzle. Put sixteen two letter tiles back on
-                    the ends of eight lines so that every line spells a word.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A word game. Place tiles to complete words.
                 </td>
             </tr>
             <tr>
@@ -210,10 +96,7 @@
                 <td>
                     <a href="projects/bee-switch/index.html"
                         >Bee Switch</a
-                    >: A daily word puzzle. Slide and stack words from one day's
-                    <a href="https://www.nytimes.com/puzzles/spelling-bee">NYT Spelling Bee</a>
-                    until the middle column spells a pangram.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A word game. Shift words until you spell a pangram.
                 </td>
             </tr>
             <tr>
@@ -221,10 +104,7 @@
                 <td>
                     <a href="projects/bee-definition/index.html"
                         >Bee Definition</a
-                    >: A daily word puzzle. Every answer from one day's
-                    <a href="https://www.nytimes.com/puzzles/spelling-bee">NYT Spelling Bee</a>,
-                    given only by its definition and its length.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A word game. Guess words based on their definitions.
                 </td>
             </tr>
             <tr>
@@ -232,8 +112,7 @@
                 <td>
                     <a href="projects/wordie-down/index.html"
                         >Wordie Down</a
-                    >: A daily word puzzle. Reorder five words so the shaded squares spell words running downwards, and find all of them.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A word game. Shift words to spell hidden words.
                 </td>
             </tr>
             <tr>
@@ -241,8 +120,7 @@
                 <td>
                     <a href="projects/wordie-loop/index.html"
                         >Wordie Loop</a
-                    >: A daily word puzzle. Build five words into a loop, where the last letter of each is the first letter of the next.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A word game. Place words to fill a loop, where the last letter of each is the first letter of the next.
                 </td>
             </tr>
             <tr>
@@ -250,8 +128,7 @@
                 <td>
                     <a href="projects/wordie-grid/index.html"
                         >Wordie Grid</a
-                    >: A daily word puzzle. Fill a five by five grid so every row spells a word, scoring Scrabble letter values with bonus squares.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A word game. Fill a grid so every row spells a word, try and beat the target score.
                 </td>
             </tr>
             <tr>
@@ -259,8 +136,7 @@
                 <td>
                     <a href="projects/pineapple-grid/index.html"
                         >Pineapple Grid</a
-                    >: A daily solo puzzle. Place cards into a five by five grid, scoring every row and column as a poker hand.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A puzzle game. Place cards into a grid, scoring every row and column as a poker hand.
                 </td>
             </tr>
             <tr>
@@ -268,8 +144,7 @@
                 <td>
                     <a href="projects/pineapple-lines/index.html"
                         >Pineapple Lines</a
-                    >: A daily solo puzzle based on <a href="https://en.wikipedia.org/wiki/Chinese_poker#Open-face_Chinese_poker">Pineapple Open Face Chinese Poker</a>.
-                    <img src="assets/new.gif" alt="New" />
+                    >: A solo variant of <a href="https://en.wikipedia.org/wiki/Chinese_poker#Open-face_Chinese_poker">Pineapple Open Face Chinese Poker</a>.
                 </td>
             </tr>
             <tr>
@@ -468,17 +343,130 @@
                 </td>
             </tr>
             <tr>
-                <td class="date">2016</td>
+                <td class="date">2016-??</td>
                 <td>
                     <a href="projects/snake.html">snake</a>: Snake in
                     Javascript.
                 </td>
             </tr>
             <tr>
-                <td class="date">2016</td>
+                <td class="date">2016-??</td>
                 <td>
                     <a href="projects/difference.html">difference</a>: A timed
                     mental maths game in Javascript.
+                </td>
+            </tr>
+        </table>
+        <h2 id="notebooks">Notebooks</h2>
+        <p>Things I've learned, formatted as Python notebooks.</p>
+        <table>
+            <tr>
+                <td class="date">2024-12</td>
+                <td>
+                    <a
+                        href="notebooks/making-llms-smarter-with-structured-generation-and-outlines.html"
+                        >Making LLMs smarter with structured generation and
+                        Outlines</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2024-02</td>
+                <td>
+                    <a href="notebooks/information-theory.html"
+                        >Introduction to information theory (from a machine
+                        learning perspective)</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2024-02</td>
+                <td>
+                    <a href="notebooks/decision-tree-random-forest.html"
+                        >Decision trees and random forests from scratch</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-10</td>
+                <td>
+                    <a href="notebooks/bootstrapping-confidence-intervals.html"
+                        >Bootstrapping confidence intervals</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-09</td>
+                <td>
+                    <a href="notebooks/parallelism.html"
+                        >Parallelism in Python</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-09</td>
+                <td>
+                    <a href="notebooks/walrus-operator-use-cases.html"
+                        >Some practical use cases for the walrus operator</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-08</td>
+                <td>
+                    <a href="notebooks/retrieval-augmented-generation.html"
+                        >Retrieval augmented generation</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-08</td>
+                <td>
+                    <a href="notebooks/tfidf-from-scratch.html"
+                        >Implementing TF-IDF from scratch</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-08</td>
+                <td>
+                    <a href="notebooks/ab-testing-chi-squared.html"
+                        >A/B testing with the chi-squared test</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-08</td>
+                <td>
+                    <a href="notebooks/lora-peft.html"
+                        >Fine-tuning a sequence classification model with LoRA
+                        and the peft library</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-07</td>
+                <td>
+                    <a href="notebooks/openai-function-calling.html"
+                        >How to use Open AI's "function calling" ability</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-07</td>
+                <td>
+                    <a href="notebooks/strip-punctuation.html"
+                        >What's the best way to strip punctuation from a
+                        string?</a
+                    >
+                </td>
+            </tr>
+            <tr>
+                <td class="date">2023-07</td>
+                <td>
+                    <a href="notebooks/softmax.html"
+                        >Why is the softmax function "off by one"?</a
+                    >
                 </td>
             </tr>
         </table>

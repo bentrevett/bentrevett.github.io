@@ -1,0 +1,106 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* --- the controls --- */
+
+#types {
+  margin: 0.6em 0 0;
+  /* Wraps to a second line on a narrow screen rather than running off it. */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* The reminder for the type on show. Holds its height with nothing to say, so
+   picking a type does not shove the list up and down the page. */
+#reminder {
+  margin: 0.6em 0 0;
+  min-height: 3em;
+  color: #444;
+}
+
+#count {
+  margin: 0.2em 0 0.6em;
+  font-weight: bold;
+}
+
+/* --- the list --- */
+
+#results {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#results th,
+#results td {
+  padding: 4px 8px 4px 0;
+  border-top: 1px solid #ddd;
+  vertical-align: top;
+  text-align: left;
+}
+
+#results th {
+  border-top: none;
+  border-bottom: 2px solid #999;
+  text-transform: uppercase;
+}
+
+/* Block capitals, in the table only: the entries themselves stay lowercase, so
+   what you type still matches what is stored. */
+#results td.word {
+  font-weight: bold;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* Tags wrap onto a second line rather than holding the column open: one entry
+   carrying three of them would otherwise squeeze the notes to a ribbon. */
+#results td.types {
+  min-width: 12ch;
+}
+
+#results td.notes {
+  color: #444;
+  /* Takes what is left, so the two narrow columns keep their width whatever
+     the notes say. */
+  width: 100%;
+}
+
+.tag {
+  display: inline-block;
+  text-transform: uppercase;
+  margin-right: 4px;
+  padding: 0 6px;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  font-size: 0.75em;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background-color: #e4e4e4;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+/* The type on show is said by its button greying out, not by the browser's
+   focus highlight, so drop the ring for mouse clicks. */
+button:focus:not(:focus-visible) {
+  outline: none;
+}
