@@ -102,15 +102,37 @@ let state = {
   all: false,
 };
 
-// Entries whose word starts with what has been typed, in the type being shown.
-// Prefix rather than substring: typing F wants words beginning with F, which
-// is how you look something up having just read it in a clue.
+// Where what has been typed starts inside an entry: 0 at the very beginning,
+// 1 at the start of a later word, -1 nowhere.
+//
+// Prefix rather than substring, but per word rather than per entry. Typing
+// "front" should find "in front of", because a phrase is filed under the words
+// it is made of and you will not always have read the first of them. Typing
+// "omewhat" still finds nothing: matching mid-word would turn every short
+// query into a list of accidents.
+function startsAtWord(text, typed) {
+  if (!typed || text.startsWith(typed)) return 0;
+  for (let at = 0; at < text.length; at++) {
+    // A space or a hyphen both start a new word: "about-turn" answers to
+    // "turn" as readily as "in front of" answers to "front".
+    if (text[at] !== " " && text[at] !== "-") continue;
+    if (text.startsWith(typed, at + 1)) return 1;
+  }
+  return -1;
+}
+
+// Entries the typed text reaches, in the type being shown. Those it matches
+// from the beginning come first, so typing the start of a word still brings
+// that word to the top; within each group the order stays alphabetical.
 function matches() {
   const typed = state.typed.trim().toLowerCase();
-  return ENTRIES.filter((entry) => {
-    if (state.type && !entry.types.includes(state.type)) return false;
-    return entry.word.toLowerCase().startsWith(typed);
-  });
+  const found = [];
+  for (const entry of ENTRIES) {
+    if (state.type && !entry.types.includes(state.type)) continue;
+    const at = startsAtWord(entry.word.toLowerCase(), typed);
+    if (at >= 0) found.push({ entry, at });
+  }
+  return found.sort((a, b) => a.at - b.at).map((hit) => hit.entry);
 }
 
 function labelOf(id) {
