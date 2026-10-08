@@ -42,7 +42,7 @@ const PUZZLES = [
     clues: [
       { clue: "December the 25th, with 'day'", answer: "CHRISTMAS" },
       { clue: "Festive song", answer: "CAROL" },
-      { clue: "December the 25th, in French", answer: "NOEL" },
+      { clue: "December the 25th in French, with 'Joyeux'", answer: "NOEL" },
       { clue: "Workshop helpers", answer: "ELVES" },
       { clue: "He comes down the chimney", answer: "SANTA" },
       { clue: "Red-nosed reindeer", answer: "RUDOLPH" },
