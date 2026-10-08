@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Threadwords 🧵</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1><u>Threadwords 🧵</u></h1>
+
+    <p>
+      A hybrid of a crossword and a word search. For each clue, find the answer hidden in the grid using, at most, one letter per column.
+    </p>
+
+    <p>
+       Answers will always span consecutive columns, from left to right, but will not always start from the first column or end in the last column.
+    </p>
+
+    <p>
+      Select tiles to highlight them, once you have the correct number of letters for a clue it will become clickable. Click it to submit your answer.
+    </p>
+
+    <p>
+      <label for="pick">Puzzle:</label>
+      <select id="pick"></select>
+    </p>
+
+    <p id="broken"></p>
+
+    <div id="grid"></div>
+
+    <p id="wordRow">
+      <span id="word"></span>
+      <button id="reset">Reset</button>
+    </p>
+
+    <table id="clues"></table>
+
+    <p id="message"></p>
+
+    <script src="puzzles.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
