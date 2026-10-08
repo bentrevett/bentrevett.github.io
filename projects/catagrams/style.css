@@ -1,0 +1,133 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* --- the clues --- */
+
+#clues {
+  border-collapse: collapse;
+  margin-top: 0.6em;
+}
+
+#clues td {
+  padding: 6px 12px 6px 0;
+  vertical-align: middle;
+}
+
+#clues td.phrase {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+#clues td.answer {
+  white-space: nowrap;
+}
+
+/* Typed in capitals whatever the keyboard sends, so what you type looks like
+   the phrase it came from. */
+input {
+  text-transform: uppercase;
+  padding: 2px 4px;
+}
+
+/* Right is green and locked; wrong is red but stays open to be fixed. */
+input.right {
+  color: green;
+  border-color: green;
+  font-weight: bold;
+}
+
+input.wrong {
+  color: red;
+  border-color: red;
+}
+
+.length {
+  color: #666;
+}
+
+/* Every letter sits in a fixed width box, so a dot turning into a letter can
+   never shift anything beside it. */
+.boxes {
+  display: inline-block;
+  margin-right: 0.5ch;
+}
+
+.box {
+  display: inline-block;
+  width: 1.4em;
+  text-align: center;
+  color: #aaa;
+}
+
+.box.known {
+  color: #222;
+  font-weight: bold;
+}
+
+/* Solved: the clues dim, and there is nothing left to type. */
+#clues.done {
+  opacity: 0.55;
+}
+
+/* --- everything else --- */
+
+.label {
+  margin: 0.8em 0 0.2em;
+  font-weight: bold;
+}
+
+/* One even run of letters: every box the same width, with no gap between
+   the letters one clue gave and the next. */
+#pool {
+  margin: 0;
+  min-height: 1.5em;
+}
+
+#solutionCell {
+  margin: 0;
+}
+
+/* Says what is wrong with a puzzle as written. Holds no height when there is
+   nothing to say, which on a finished puzzle is always. */
+#broken {
+  color: #b00;
+  margin: 0;
+}
+
+#broken:empty {
+  display: none;
+}
+
+#clearRow {
+  margin: 0.8em 0 0;
+}
+
+/* Holds its height with nothing to say, so finishing does not shove the page
+   around. */
+#message {
+  color: green;
+  font-weight: bold;
+  min-height: 1.5em;
+  margin: 0.4em 0 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none;
+}
