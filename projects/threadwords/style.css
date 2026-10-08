@@ -1,0 +1,193 @@
+* {
+  font-family: monospace;
+  font-size: large;
+}
+
+body {
+  max-width: 80ch;
+  margin: auto;
+  padding: 10px;
+}
+
+/* --- the grid --- */
+
+/* The columns sit side by side, each centred on the same middle line: a
+   shorter column has as much space above it as below, half a letter at a time
+   if need be, which a table's whole rows could not do.
+
+   The gap between columns is where the string runs up and down, so it is wide
+   enough to show it clearly. It matches the spacing of the word boxes
+   underneath (half of it either side of each box), so each box sits under its
+   column. */
+#grid {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 7px;
+  /* The string is laid over the grid's own box. */
+  position: relative;
+}
+
+/* Above the string, so it disappears behind each tile and shows only in the
+   gaps between them. */
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* The string: the picked blue, a little darker, with round ends so the pieces
+   meet cleanly behind each tile. It never takes a click. */
+svg.strings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+svg.strings path {
+  fill: none;
+  stroke: #3a6ea5;
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+
+.letter {
+  width: 2.2em;
+  height: 2.2em;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #f6f6f6;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+}
+
+.letter:hover:not(:disabled) {
+  border-color: #333;
+}
+
+.letter.picked {
+  background-color: #c3daf2;
+  border-color: #3a6ea5;
+}
+
+/* Solved: the grid dims and stops taking clicks. */
+#grid.over {
+  opacity: 0.5;
+}
+
+#grid.over .letter {
+  cursor: default;
+}
+
+/* --- the word being built --- */
+
+/* One fixed width box per column, so a dot turning into a letter never shifts
+   anything. */
+#wordRow {
+  margin: 0.8em 0;
+}
+
+/* Beside the word it clears, with a little room so it is not taken for one
+   more letter box. */
+#reset {
+  margin-left: 1ch;
+}
+
+.box {
+  display: inline-block;
+  width: 2.2em;
+  margin: 0 7px;
+  text-align: center;
+  color: #aaa;
+  border-bottom: 2px solid #ccc;
+}
+
+.box.known {
+  color: #222;
+  font-weight: bold;
+  border-bottom-color: #3a6ea5;
+}
+
+/* --- the clues --- */
+
+#clues {
+  border-collapse: collapse;
+}
+
+#clues td {
+  padding: 4px 12px 4px 4px;
+  border-top: 1px solid #eee;
+}
+
+/* Clues sit quietly until the word is complete, then each open one becomes
+   something to click: underlined, with a pointer and a highlight on hover. */
+#clues td.clue {
+  cursor: default;
+}
+
+#clues td.clue.ready {
+  cursor: pointer;
+  text-decoration: underline dotted #3a6ea5;
+}
+
+#clues td.clue.ready:hover {
+  background-color: #c3daf2;
+}
+
+#clues td.solved {
+  color: green;
+  cursor: default;
+}
+
+#clues td.answer {
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+
+/* --- everything else --- */
+
+#broken {
+  color: #b00;
+  margin: 0;
+}
+
+#broken:empty {
+  display: none;
+}
+
+/* Holds its height with nothing to say, so a verdict arriving does not shove
+   the page around. */
+#message {
+  min-height: 1.5em;
+  margin: 0.8em 0 0;
+  font-weight: bold;
+}
+
+#message.good {
+  color: green;
+}
+
+#message.bad {
+  color: #c00;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none;
+}
