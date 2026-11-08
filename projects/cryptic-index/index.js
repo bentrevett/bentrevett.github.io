@@ -23,36 +23,67 @@ if (typeof INDICATORS === "undefined" || typeof TYPES === "undefined") {
   throw new Error("cryptic-index: indicators.js did not load");
 }
 
+const TYPE_IDS = TYPES.map((type) => type.id);
+
+// "O (cricket), NIL" into [{ letters: "O", gloss: "cricket" }, { letters: "NIL", gloss: "" }].
+// Split on commas outside brackets only, so a gloss is free to hold one.
+function readLetters(text) {
+  return (text || "")
+    .split(/,(?![^()]*\))/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => {
+      const bracketed = item.match(/^(.*?)\s*\((.*)\)$/);
+      return bracketed ? { letters: bracketed[1], gloss: bracketed[2] } : { letters: item, gloss: "" };
+    });
+}
+
+// One sentence onto another, unless it is already there.
+function addSentence(held, more) {
+  more = (more || "").trim();
+  if (!more || held.includes(more)) return held;
+  return held ? `${held} ${more}` : more;
+}
+
+// The file's shape — a key per type — into the one the page works with:
+//
+//   { word, types: ["anagram", ...], notes: { container: "..." }, letters: [{ letters, gloss }], note }
+//
+// with `types` in the order TYPES declares, whatever order the keys came in.
+//
 // Two entries for the same word are one entry: the types are pooled and both
 // notes kept. Adding "about" a second time to give it a type it was missing is
 // a reasonable way to edit the file by hand, so it works, and it is reported
 // below rather than silently swallowed.
 function mergeEntries(list) {
   const byWord = new Map();
-  for (const entry of list) {
-    const key = (entry.word || "").trim().toLowerCase();
+  for (const raw of list) {
+    const key = (raw.word || "").trim().toLowerCase();
+    if (!byWord.has(key)) byWord.set(key, { word: raw.word, types: [], notes: {}, letters: [], note: "" });
     const held = byWord.get(key);
-    if (!held) {
-      byWord.set(key, { word: entry.word, types: [...entry.types], notes: entry.notes || "" });
-      continue;
+    for (const id of TYPE_IDS) {
+      if (!(id in raw)) continue;
+      if (!held.types.includes(id)) held.types.push(id);
+      if (id === "abbreviation") {
+        for (const item of readLetters(raw[id])) {
+          const same = held.letters.find((had) => had.letters === item.letters);
+          if (!same) held.letters.push(item);
+          else if (!same.gloss) same.gloss = item.gloss;
+        }
+      } else {
+        held.notes[id] = addSentence(held.notes[id] || "", raw[id]);
+      }
     }
-    for (const type of entry.types) if (!held.types.includes(type)) held.types.push(type);
-    const note = (entry.notes || "").trim();
-    if (note && !held.notes.includes(note)) held.notes = (held.notes + " " + note).trim();
+    held.note = addSentence(held.note, raw.note);
   }
-  // Back into the order TYPES declares, so a merged entry's tags read the same
-  // as everything else. A type TYPES does not define goes last rather than
-  // first, which is where findIndex would otherwise put it.
-  const rank = (id) => {
-    const at = TYPES.findIndex((type) => type.id === id);
-    return at === -1 ? TYPES.length : at;
-  };
-  for (const entry of byWord.values()) entry.types.sort((a, b) => rank(a) - rank(b));
+  for (const entry of byWord.values()) {
+    entry.types.sort((a, b) => TYPE_IDS.indexOf(a) - TYPE_IDS.indexOf(b));
+  }
   return [...byWord.values()].sort((a, b) => (a.word < b.word ? -1 : a.word > b.word ? 1 : 0));
 }
 
 // Everything worth knowing about the file after you have edited it, in two
-// two. A word listed twice is a `merge` — worth mentioning, not wrong, since
+// piles. A word listed twice is a `merge` — worth mentioning, not wrong, since
 // adding a second entry is a fair way to give an existing word another type.
 // Everything else is a `problem`: it will cost you a lookup.
 function checkEntries(list) {
@@ -70,17 +101,24 @@ function checkEntries(list) {
     if (!word) problems.push("an entry has no word");
     if (word !== entry.word) problems.push(`"${entry.word}" has a space at one end`);
     if (word !== word.toLowerCase()) problems.push(`"${word}" has a capital letter, so it will not be found`);
-    if (!Array.isArray(entry.types) || entry.types.length === 0) {
-      problems.push(`"${word}" has no types`);
-    } else {
-      for (const type of entry.types) {
-        if (!TYPES.some((known) => known.id === type)) problems.push(`"${word}" has an unknown type: ${type}`);
+
+    const keys = Object.keys(entry).filter((k) => k !== "word" && k !== "note");
+    if (!keys.some((k) => TYPE_IDS.includes(k))) problems.push(`"${word}" has no types`);
+    for (const k of keys) {
+      if (!TYPE_IDS.includes(k)) problems.push(`"${word}" has an unknown key: ${k}`);
+      else if (typeof entry[k] !== "string") problems.push(`"${word}" has a ${k} that is not text`);
+    }
+    if ("note" in entry && typeof entry.note !== "string") problems.push(`"${word}" has a note that is not text`);
+    for (const item of readLetters(entry.abbreviation)) {
+      if (!/^[A-Z0-9][A-Z0-9 ']*$/.test(item.letters)) {
+        problems.push(`"${word}" has abbreviation "${item.letters}" — letters should be capitals, with any explanation in brackets`);
       }
     }
-    if (typeof entry.notes !== "string") problems.push(`"${word}" has notes that are not text`);
+
     // The things that make a word unsearchable, all of which were cleaned out
     // of the file once and are easy to reintroduce by pasting from a list.
-    if (/\b[xy]('s)?\b/i.test(word)) {
+    // A lone x or y, that is: "x-ray" is a word in its own right.
+    if (/(^|\s)[xy]('s)?(\s|$)/i.test(word)) {
       problems.push(`"${word}" holds an x or y standing in for the fodder — use the indicator on its own`);
     }
     if (word.includes("/")) problems.push(`"${word}" holds a slash — make it two entries`);
@@ -163,6 +201,76 @@ function renderTypes() {
   for (const type of TYPES) button(type.label, type.id);
 }
 
+function element(tag, className, text) {
+  const made = document.createElement(tag);
+  if (className) made.className = className;
+  if (text !== undefined) made.textContent = text;
+  return made;
+}
+
+// A type's tag. It is also the quickest way to see the rest of its type, and
+// the type being shown is picked out, so you can see at a glance which of a
+// word's several readings you are looking at.
+function tagFor(id) {
+  const tag = element("span", id === state.type ? "tag on" : "tag", labelOf(id));
+  tag.title = `show every ${labelOf(id).toLowerCase()} entry`;
+  tag.addEventListener("click", () => {
+    state.type = id;
+    state.all = false;
+    render();
+  });
+  return tag;
+}
+
+// One line of an entry: a tag (or a few) on the left, what it means on the
+// right. The tag column is the same width everywhere, so the notes line up
+// down the whole table rather than only within one entry.
+function lineOf(tags, body, className) {
+  const line = element("div", className ? `line ${className}` : "line");
+  const left = element("span", "tags");
+  left.append(...tags);
+  const right = element("span", "body");
+  if (body !== undefined) right.append(body);
+  line.append(left, right);
+  return line;
+}
+
+// Abbreviation letters as tiles, each with its gloss in small type after it.
+function lettersOf(entry) {
+  const list = element("span", "letters");
+  for (const { letters, gloss } of entry.letters) {
+    const item = element("span", "item");
+    item.append(element("span", "tile", letters));
+    if (gloss) item.append(element("span", "gloss", gloss));
+    list.append(item);
+  }
+  return list;
+}
+
+// Everything an entry means, one type to a line:
+//
+//   ANAGRAM REVERSAL
+//   CONTAINER      Wraps around: what follows goes inside it.
+//   ABBREVIATION   [A] [C] [CA] [RE] [ON]
+//
+// Types with nothing to say share the first line, since a line each would
+// only be a column of tags. Then a line for each type that does have a note,
+// then the abbreviation letters, then anything said of the word as a whole.
+function meaningOf(entry) {
+  const cell = element("td", "meaning");
+  const plain = entry.types.filter((id) => id !== "abbreviation" && !entry.notes[id]);
+  if (plain.length) cell.append(lineOf(plain.map(tagFor), undefined, "plain"));
+  for (const id of entry.types) {
+    if (id === "abbreviation" || !entry.notes[id]) continue;
+    cell.append(lineOf([tagFor(id)], entry.notes[id]));
+  }
+  if (entry.types.includes("abbreviation")) {
+    cell.append(lineOf([tagFor("abbreviation")], entry.letters.length ? lettersOf(entry) : undefined));
+  }
+  if (entry.note) cell.append(lineOf([], entry.note, "note"));
+  return cell;
+}
+
 function renderResults() {
   const table = document.getElementById("results");
   table.replaceChildren();
@@ -170,40 +278,13 @@ function renderResults() {
   // Redrawn with the rows rather than left in the HTML, since replaceChildren
   // takes the whole table down every time.
   const head = table.createTHead().insertRow();
-  for (const [name, className] of [["Word", "word"], ["Types", "types"], ["Notes", "notes"]]) {
-    const cell = document.createElement("th");
-    cell.textContent = name;
-    cell.className = className;
-    head.append(cell);
-  }
+  head.append(element("th", "word", "Word"), element("th", "meaning", "Wordplay"));
 
+  const body = table.createTBody();
   const showing = state.all ? matches() : matches().slice(0, MOST);
   for (const entry of showing) {
-    const line = table.insertRow();
-
-    const word = line.insertCell();
-    word.className = "word";
-    word.textContent = entry.word;
-
-    const types = line.insertCell();
-    types.className = "types";
-    for (const id of entry.types) {
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = labelOf(id);
-      // A tag is also the quickest way to see the rest of its type.
-      tag.title = `show every ${labelOf(id).toLowerCase()} indicator`;
-      tag.addEventListener("click", () => {
-        state.type = id;
-        state.all = false;
-        render();
-      });
-      types.append(tag);
-    }
-
-    const notes = line.insertCell();
-    notes.className = "notes";
-    notes.textContent = entry.notes;
+    const row = body.insertRow();
+    row.append(element("td", "word", entry.word), meaningOf(entry));
   }
 }
 
