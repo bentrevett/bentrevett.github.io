@@ -320,7 +320,7 @@ function lettersOf(entry) {
 // Everything an entry means, one type to a line:
 //
 //   ANAGRAM REVERSAL
-//   CONTAINER      Wraps around: what follows goes inside it.
+//   CONTAINER      What follows goes inside it.
 //   ABBREVIATION   [A] [C] [CA] [RE] [ON]
 //
 // Types with nothing to say share the first line, since a line each would
