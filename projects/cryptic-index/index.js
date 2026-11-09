@@ -131,6 +131,8 @@ function checkEntries(list) {
 const ENTRIES = mergeEntries(INDICATORS);
 
 let state = {
+  // "index" or "analyze": which half of the page is on show.
+  mode: "index",
   typed: "",
   // A type id, or null for all of them.
   type: null,
@@ -138,6 +140,9 @@ let state = {
   // changes: it answers "let me see the rest of these", not "always show
   // everything".
   all: false,
+  // The clue last analyzed: what was in the box when Analyze was pressed, so
+  // editing the clue does not change the answer until you ask again.
+  clue: "",
 };
 
 // Where what has been typed starts inside an entry: 0 at the very beginning,
@@ -171,6 +176,68 @@ function matches() {
     if (at >= 0) found.push({ entry, at });
   }
   return found.sort((a, b) => a.at - b.at).map((hit) => hit.entry);
+}
+
+// --- the clue analyzer ---------------------------------------------------
+
+// Every entry by the form it is looked up in, and the longest phrase in words,
+// which is as far ahead as the analyzer ever needs to look.
+const BY_WORD = new Map(ENTRIES.map((entry) => [lookupForm(entry.word), entry]));
+const LONGEST = Math.max(...ENTRIES.map((entry) => entry.word.split(" ").length));
+
+// What a word is filed under: lowercase, accents off, straight apostrophes.
+// "Preëminent" and "editor’s" find "preeminent" and "editor's".
+function lookupForm(text) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[\u2018\u2019]/g, "'");
+}
+
+// The clue's words, each with where it sits in the clue as typed and whether a
+// hyphen joins it to the next. A hyphenated word is split into its parts but
+// remembers the hyphen, so "about-turn" can be looked up whole or as two words.
+//
+// The enumeration at the end, "(6)" or "(3,4)" or "(5-3)", is the answer's
+// length rather than part of the wordplay, so its numbers are not words: left
+// in, "(6)" would be looked up and found as VI.
+function wordsOf(clue) {
+  const words = [];
+  const enumeration = clue.match(/\(\s*\d+(?:\s*[,\-\s]\s*\d+)*\s*\)\s*$/);
+  const stop = enumeration ? enumeration.index : clue.length;
+  for (const found of clue.matchAll(/[\p{L}\p{N}]+(?:['\u2019][\p{L}\p{N}]+)*/gu)) {
+    const start = found.index;
+    if (start >= stop) break;
+    const end = start + found[0].length;
+    words.push({ text: lookupForm(found[0]), start, end, hyphen: clue[end] === "-" });
+  }
+  return words;
+}
+
+// Every run of the clue's words that is an entry in the index, in the order
+// they come in the clue, the longer first where two start together: "in front
+// of" and then "in". Overlaps are all kept, because the clue's setter only
+// meant one of them and the analyzer cannot know which.
+//
+// A run is tried as written, with any hyphens, and then with spaces; then, if
+// it ends in a possessive, without it, so "editor's" finds "editor".
+function analyze(clue) {
+  const words = wordsOf(clue);
+  const found = [];
+  for (let first = 0; first < words.length; first++) {
+    for (let count = Math.min(LONGEST, words.length - first); count >= 1; count--) {
+      const run = words.slice(first, first + count);
+      const spaced = run.map((word) => word.text).join(" ");
+      const written = run.map((word, at) => word.text + (at < count - 1 && word.hyphen ? "-" : " ")).join("").trim();
+      const tries = [written, spaced];
+      for (const form of [written, spaced]) if (form.endsWith("'s")) tries.push(form.slice(0, -2));
+      const entry = tries.map((form) => BY_WORD.get(form)).find(Boolean);
+      if (!entry) continue;
+      found.push({ entry, first, count, start: run[0].start, end: run[count - 1].end });
+    }
+  }
+  return { words, found };
 }
 
 function labelOf(id) {
@@ -212,12 +279,15 @@ function element(tag, className, text) {
 // the type being shown is picked out, so you can see at a glance which of a
 // word's several readings you are looking at.
 function tagFor(id) {
-  const tag = element("span", id === state.type ? "tag on" : "tag", labelOf(id));
+  const on = state.mode === "index" && id === state.type;
+  const tag = element("span", on ? "tag on" : "tag", labelOf(id));
   tag.title = `show every ${labelOf(id).toLowerCase()} entry`;
   tag.addEventListener("click", () => {
+    state.mode = "index";
     state.type = id;
     state.all = false;
     render();
+    window.scrollTo(0, 0);
   });
   return tag;
 }
@@ -271,24 +341,79 @@ function meaningOf(entry) {
   return cell;
 }
 
-function renderResults() {
-  const table = document.getElementById("results");
+// A table of entries, each as the word on the left and its meanings on the
+// right. The header is redrawn with the rows rather than left in the HTML,
+// since replaceChildren takes the whole table down every time.
+function fillTable(table, entries) {
   table.replaceChildren();
-
-  // Redrawn with the rows rather than left in the HTML, since replaceChildren
-  // takes the whole table down every time.
   const head = table.createTHead().insertRow();
   head.append(element("th", "word", "Word"), element("th", "meaning", "Wordplay"));
-
   const body = table.createTBody();
-  const showing = state.all ? matches() : matches().slice(0, MOST);
-  for (const entry of showing) {
+  for (const entry of entries) {
     const row = body.insertRow();
     row.append(element("td", "word", entry.word), meaningOf(entry));
   }
 }
 
+function renderResults() {
+  const showing = state.all ? matches() : matches().slice(0, MOST);
+  fillTable(document.getElementById("results"), showing);
+}
+
+// The clue as typed, with every word the index knows marked, and below it a
+// row for each entry found, in clue order. An entry that turns up twice in the
+// clue is listed once.
+function renderAnalysis() {
+  const clue = state.clue;
+  const shown = document.getElementById("clueShown");
+  const counted = document.getElementById("clueCount");
+  shown.replaceChildren();
+
+  if (!clue.trim()) {
+    shown.textContent = "Paste a clue above and press Analyze.";
+    shown.classList.add("empty");
+    counted.textContent = "Nothing analyzed yet";
+    fillTable(document.getElementById("parts"), []);
+    return;
+  }
+  shown.classList.remove("empty");
+
+  const { words, found } = analyze(clue);
+  const marked = new Set();
+  for (const hit of found) for (let at = hit.first; at < hit.first + hit.count; at++) marked.add(at);
+
+  // Copied across a piece at a time, so the punctuation and spacing are the
+  // clue's own and only the words the index knows are wrapped.
+  let from = 0;
+  words.forEach((word, at) => {
+    shown.append(clue.slice(from, word.start));
+    const text = clue.slice(word.start, word.end);
+    shown.append(marked.has(at) ? element("mark", "", text) : text);
+    from = word.end;
+  });
+  shown.append(clue.slice(from));
+
+  const entries = [...new Set(found.map((hit) => hit.entry))];
+  const many = (n, one, more) => `${n} ${n === 1 ? one : more}`;
+  counted.textContent = entries.length
+    ? `${many(entries.length, "entry", "entries")} found in ${many(words.length, "word", "words")}`
+    : `Nothing from the index in ${many(words.length, "word", "words")}`;
+  fillTable(document.getElementById("parts"), entries);
+}
+
 function render() {
+  document.getElementById("indexMode").hidden = state.mode !== "index";
+  document.getElementById("analyzeMode").hidden = state.mode !== "analyze";
+  document.getElementById("modeIndex").disabled = state.mode === "index";
+  document.getElementById("modeAnalyze").disabled = state.mode === "analyze";
+  // Kept in the address, so a link or a reload comes back to the same half.
+  // Some browsers refuse this for a page opened from a file, which costs
+  // nothing but the remembering, so it is allowed to fail.
+  try {
+    history.replaceState(null, "", state.mode === "analyze" ? "#analyze" : location.pathname + location.search);
+  } catch {}
+
+  renderAnalysis();
   renderTypes();
 
   // The reminder for the type being shown. Kept to one line's height whether
@@ -330,7 +455,7 @@ function main() {
   });
 
   document.getElementById("clear").addEventListener("click", () => {
-    state = { typed: "", type: null, all: false };
+    state = { ...state, typed: "", type: null, all: false };
     search.value = "";
     search.focus();
     render();
@@ -354,8 +479,34 @@ function main() {
     for (const problem of problems) console.warn("  " + problem);
   }
 
+  // --- the clue analyzer ---
+  const clue = document.getElementById("clue");
+  const showMode = (mode) => {
+    state.mode = mode;
+    render();
+    (mode === "analyze" ? clue : search).focus();
+  };
+  document.getElementById("modeIndex").addEventListener("click", () => showMode("index"));
+  document.getElementById("modeAnalyze").addEventListener("click", () => showMode("analyze"));
+
+  document.getElementById("analyze").addEventListener("click", () => {
+    state.clue = clue.value;
+    render();
+  });
+  clue.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") document.getElementById("analyze").click();
+    if (event.key === "Escape") document.getElementById("clearClue").click();
+  });
+  document.getElementById("clearClue").addEventListener("click", () => {
+    state.clue = "";
+    clue.value = "";
+    clue.focus();
+    render();
+  });
+
+  if (location.hash === "#analyze") state.mode = "analyze";
   render();
-  search.focus();
+  (state.mode === "analyze" ? clue : search).focus();
 }
 
 main();
