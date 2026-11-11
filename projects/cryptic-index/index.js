@@ -23,36 +23,67 @@ if (typeof INDICATORS === "undefined" || typeof TYPES === "undefined") {
   throw new Error("cryptic-index: indicators.js did not load");
 }
 
+const TYPE_IDS = TYPES.map((type) => type.id);
+
+// "O (cricket), NIL" into [{ letters: "O", gloss: "cricket" }, { letters: "NIL", gloss: "" }].
+// Split on commas outside brackets only, so a gloss is free to hold one.
+function readLetters(text) {
+  return (text || "")
+    .split(/,(?![^()]*\))/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => {
+      const bracketed = item.match(/^(.*?)\s*\((.*)\)$/);
+      return bracketed ? { letters: bracketed[1], gloss: bracketed[2] } : { letters: item, gloss: "" };
+    });
+}
+
+// One sentence onto another, unless it is already there.
+function addSentence(held, more) {
+  more = (more || "").trim();
+  if (!more || held.includes(more)) return held;
+  return held ? `${held} ${more}` : more;
+}
+
+// The file's shape — a key per type — into the one the page works with:
+//
+//   { word, types: ["anagram", ...], notes: { container: "..." }, letters: [{ letters, gloss }], note }
+//
+// with `types` in the order TYPES declares, whatever order the keys came in.
+//
 // Two entries for the same word are one entry: the types are pooled and both
 // notes kept. Adding "about" a second time to give it a type it was missing is
 // a reasonable way to edit the file by hand, so it works, and it is reported
 // below rather than silently swallowed.
 function mergeEntries(list) {
   const byWord = new Map();
-  for (const entry of list) {
-    const key = (entry.word || "").trim().toLowerCase();
+  for (const raw of list) {
+    const key = (raw.word || "").trim().toLowerCase();
+    if (!byWord.has(key)) byWord.set(key, { word: raw.word, types: [], notes: {}, letters: [], note: "" });
     const held = byWord.get(key);
-    if (!held) {
-      byWord.set(key, { word: entry.word, types: [...entry.types], notes: entry.notes || "" });
-      continue;
+    for (const id of TYPE_IDS) {
+      if (!(id in raw)) continue;
+      if (!held.types.includes(id)) held.types.push(id);
+      if (id === "abbreviation") {
+        for (const item of readLetters(raw[id])) {
+          const same = held.letters.find((had) => had.letters === item.letters);
+          if (!same) held.letters.push(item);
+          else if (!same.gloss) same.gloss = item.gloss;
+        }
+      } else {
+        held.notes[id] = addSentence(held.notes[id] || "", raw[id]);
+      }
     }
-    for (const type of entry.types) if (!held.types.includes(type)) held.types.push(type);
-    const note = (entry.notes || "").trim();
-    if (note && !held.notes.includes(note)) held.notes = (held.notes + " " + note).trim();
+    held.note = addSentence(held.note, raw.note);
   }
-  // Back into the order TYPES declares, so a merged entry's tags read the same
-  // as everything else. A type TYPES does not define goes last rather than
-  // first, which is where findIndex would otherwise put it.
-  const rank = (id) => {
-    const at = TYPES.findIndex((type) => type.id === id);
-    return at === -1 ? TYPES.length : at;
-  };
-  for (const entry of byWord.values()) entry.types.sort((a, b) => rank(a) - rank(b));
+  for (const entry of byWord.values()) {
+    entry.types.sort((a, b) => TYPE_IDS.indexOf(a) - TYPE_IDS.indexOf(b));
+  }
   return [...byWord.values()].sort((a, b) => (a.word < b.word ? -1 : a.word > b.word ? 1 : 0));
 }
 
 // Everything worth knowing about the file after you have edited it, in two
-// two. A word listed twice is a `merge` — worth mentioning, not wrong, since
+// piles. A word listed twice is a `merge` — worth mentioning, not wrong, since
 // adding a second entry is a fair way to give an existing word another type.
 // Everything else is a `problem`: it will cost you a lookup.
 function checkEntries(list) {
@@ -70,17 +101,24 @@ function checkEntries(list) {
     if (!word) problems.push("an entry has no word");
     if (word !== entry.word) problems.push(`"${entry.word}" has a space at one end`);
     if (word !== word.toLowerCase()) problems.push(`"${word}" has a capital letter, so it will not be found`);
-    if (!Array.isArray(entry.types) || entry.types.length === 0) {
-      problems.push(`"${word}" has no types`);
-    } else {
-      for (const type of entry.types) {
-        if (!TYPES.some((known) => known.id === type)) problems.push(`"${word}" has an unknown type: ${type}`);
+
+    const keys = Object.keys(entry).filter((k) => k !== "word" && k !== "note");
+    if (!keys.some((k) => TYPE_IDS.includes(k))) problems.push(`"${word}" has no types`);
+    for (const k of keys) {
+      if (!TYPE_IDS.includes(k)) problems.push(`"${word}" has an unknown key: ${k}`);
+      else if (typeof entry[k] !== "string") problems.push(`"${word}" has a ${k} that is not text`);
+    }
+    if ("note" in entry && typeof entry.note !== "string") problems.push(`"${word}" has a note that is not text`);
+    for (const item of readLetters(entry.abbreviation)) {
+      if (!/^[A-Z0-9][A-Z0-9 ']*$/.test(item.letters)) {
+        problems.push(`"${word}" has abbreviation "${item.letters}" — letters should be capitals, with any explanation in brackets`);
       }
     }
-    if (typeof entry.notes !== "string") problems.push(`"${word}" has notes that are not text`);
+
     // The things that make a word unsearchable, all of which were cleaned out
     // of the file once and are easy to reintroduce by pasting from a list.
-    if (/\b[xy]('s)?\b/i.test(word)) {
+    // A lone x or y, that is: "x-ray" is a word in its own right.
+    if (/(^|\s)[xy]('s)?(\s|$)/i.test(word)) {
       problems.push(`"${word}" holds an x or y standing in for the fodder — use the indicator on its own`);
     }
     if (word.includes("/")) problems.push(`"${word}" holds a slash — make it two entries`);
@@ -93,6 +131,8 @@ function checkEntries(list) {
 const ENTRIES = mergeEntries(INDICATORS);
 
 let state = {
+  // "index" or "analyze": which half of the page is on show.
+  mode: "index",
   typed: "",
   // A type id, or null for all of them.
   type: null,
@@ -100,6 +140,9 @@ let state = {
   // changes: it answers "let me see the rest of these", not "always show
   // everything".
   all: false,
+  // The clue last analyzed: what was in the box when Analyze was pressed, so
+  // editing the clue does not change the answer until you ask again.
+  clue: "",
 };
 
 // Where what has been typed starts inside an entry: 0 at the very beginning,
@@ -135,6 +178,68 @@ function matches() {
   return found.sort((a, b) => a.at - b.at).map((hit) => hit.entry);
 }
 
+// --- the clue analyzer ---------------------------------------------------
+
+// Every entry by the form it is looked up in, and the longest phrase in words,
+// which is as far ahead as the analyzer ever needs to look.
+const BY_WORD = new Map(ENTRIES.map((entry) => [lookupForm(entry.word), entry]));
+const LONGEST = Math.max(...ENTRIES.map((entry) => entry.word.split(" ").length));
+
+// What a word is filed under: lowercase, accents off, straight apostrophes.
+// "Preëminent" and "editor’s" find "preeminent" and "editor's".
+function lookupForm(text) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[\u2018\u2019]/g, "'");
+}
+
+// The clue's words, each with where it sits in the clue as typed and whether a
+// hyphen joins it to the next. A hyphenated word is split into its parts but
+// remembers the hyphen, so "about-turn" can be looked up whole or as two words.
+//
+// The enumeration at the end, "(6)" or "(3,4)" or "(5-3)", is the answer's
+// length rather than part of the wordplay, so its numbers are not words: left
+// in, "(6)" would be looked up and found as VI.
+function wordsOf(clue) {
+  const words = [];
+  const enumeration = clue.match(/\(\s*\d+(?:\s*[,\-\s]\s*\d+)*\s*\)\s*$/);
+  const stop = enumeration ? enumeration.index : clue.length;
+  for (const found of clue.matchAll(/[\p{L}\p{N}]+(?:['\u2019][\p{L}\p{N}]+)*/gu)) {
+    const start = found.index;
+    if (start >= stop) break;
+    const end = start + found[0].length;
+    words.push({ text: lookupForm(found[0]), start, end, hyphen: clue[end] === "-" });
+  }
+  return words;
+}
+
+// Every run of the clue's words that is an entry in the index, in the order
+// they come in the clue, the longer first where two start together: "in front
+// of" and then "in". Overlaps are all kept, because the clue's setter only
+// meant one of them and the analyzer cannot know which.
+//
+// A run is tried as written, with any hyphens, and then with spaces; then, if
+// it ends in a possessive, without it, so "editor's" finds "editor".
+function analyze(clue) {
+  const words = wordsOf(clue);
+  const found = [];
+  for (let first = 0; first < words.length; first++) {
+    for (let count = Math.min(LONGEST, words.length - first); count >= 1; count--) {
+      const run = words.slice(first, first + count);
+      const spaced = run.map((word) => word.text).join(" ");
+      const written = run.map((word, at) => word.text + (at < count - 1 && word.hyphen ? "-" : " ")).join("").trim();
+      const tries = [written, spaced];
+      for (const form of [written, spaced]) if (form.endsWith("'s")) tries.push(form.slice(0, -2));
+      const entry = tries.map((form) => BY_WORD.get(form)).find(Boolean);
+      if (!entry) continue;
+      found.push({ entry, first, count, start: run[0].start, end: run[count - 1].end });
+    }
+  }
+  return { words, found };
+}
+
 function labelOf(id) {
   const type = TYPES.find((candidate) => candidate.id === id);
   return type ? type.label : id;
@@ -163,51 +268,152 @@ function renderTypes() {
   for (const type of TYPES) button(type.label, type.id);
 }
 
-function renderResults() {
-  const table = document.getElementById("results");
-  table.replaceChildren();
+function element(tag, className, text) {
+  const made = document.createElement(tag);
+  if (className) made.className = className;
+  if (text !== undefined) made.textContent = text;
+  return made;
+}
 
-  // Redrawn with the rows rather than left in the HTML, since replaceChildren
-  // takes the whole table down every time.
-  const head = table.createTHead().insertRow();
-  for (const [name, className] of [["Word", "word"], ["Types", "types"], ["Notes", "notes"]]) {
-    const cell = document.createElement("th");
-    cell.textContent = name;
-    cell.className = className;
-    head.append(cell);
+// A type's tag. It is also the quickest way to see the rest of its type, and
+// the type being shown is picked out, so you can see at a glance which of a
+// word's several readings you are looking at.
+function tagFor(id) {
+  const on = state.mode === "index" && id === state.type;
+  const tag = element("span", on ? "tag on" : "tag", labelOf(id));
+  tag.title = `show every ${labelOf(id).toLowerCase()} entry`;
+  tag.addEventListener("click", () => {
+    state.mode = "index";
+    state.type = id;
+    state.all = false;
+    render();
+    window.scrollTo(0, 0);
+  });
+  return tag;
+}
+
+// One line of an entry: a tag (or a few) on the left, what it means on the
+// right. The tag column is the same width everywhere, so the notes line up
+// down the whole table rather than only within one entry.
+function lineOf(tags, body, className) {
+  const line = element("div", className ? `line ${className}` : "line");
+  const left = element("span", "tags");
+  left.append(...tags);
+  const right = element("span", "body");
+  if (body !== undefined) right.append(body);
+  line.append(left, right);
+  return line;
+}
+
+// Abbreviation letters as tiles, each with its gloss in small type after it.
+function lettersOf(entry) {
+  const list = element("span", "letters");
+  for (const { letters, gloss } of entry.letters) {
+    const item = element("span", "item");
+    item.append(element("span", "tile", letters));
+    if (gloss) item.append(element("span", "gloss", gloss));
+    list.append(item);
   }
+  return list;
+}
 
-  const showing = state.all ? matches() : matches().slice(0, MOST);
-  for (const entry of showing) {
-    const line = table.insertRow();
+// Everything an entry means, one type to a line:
+//
+//   ANAGRAM REVERSAL
+//   CONTAINER      What follows goes inside it.
+//   ABBREVIATION   [A] [C] [CA] [RE] [ON]
+//
+// Types with nothing to say share the first line, since a line each would
+// only be a column of tags. Then a line for each type that does have a note,
+// then the abbreviation letters, then anything said of the word as a whole.
+function meaningOf(entry) {
+  const cell = element("td", "meaning");
+  const plain = entry.types.filter((id) => id !== "abbreviation" && !entry.notes[id]);
+  if (plain.length) cell.append(lineOf(plain.map(tagFor), undefined, "plain"));
+  for (const id of entry.types) {
+    if (id === "abbreviation" || !entry.notes[id]) continue;
+    cell.append(lineOf([tagFor(id)], entry.notes[id]));
+  }
+  if (entry.types.includes("abbreviation")) {
+    cell.append(lineOf([tagFor("abbreviation")], entry.letters.length ? lettersOf(entry) : undefined));
+  }
+  if (entry.note) cell.append(lineOf([], entry.note, "note"));
+  return cell;
+}
 
-    const word = line.insertCell();
-    word.className = "word";
-    word.textContent = entry.word;
-
-    const types = line.insertCell();
-    types.className = "types";
-    for (const id of entry.types) {
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = labelOf(id);
-      // A tag is also the quickest way to see the rest of its type.
-      tag.title = `show every ${labelOf(id).toLowerCase()} indicator`;
-      tag.addEventListener("click", () => {
-        state.type = id;
-        state.all = false;
-        render();
-      });
-      types.append(tag);
-    }
-
-    const notes = line.insertCell();
-    notes.className = "notes";
-    notes.textContent = entry.notes;
+// A table of entries, each as the word on the left and its meanings on the
+// right. The header is redrawn with the rows rather than left in the HTML,
+// since replaceChildren takes the whole table down every time.
+function fillTable(table, entries) {
+  table.replaceChildren();
+  const head = table.createTHead().insertRow();
+  head.append(element("th", "word", "Word"), element("th", "meaning", "Wordplay"));
+  const body = table.createTBody();
+  for (const entry of entries) {
+    const row = body.insertRow();
+    row.append(element("td", "word", entry.word), meaningOf(entry));
   }
 }
 
+function renderResults() {
+  const showing = state.all ? matches() : matches().slice(0, MOST);
+  fillTable(document.getElementById("results"), showing);
+}
+
+// The clue as typed, with every word the index knows marked, and below it a
+// row for each entry found, in clue order. An entry that turns up twice in the
+// clue is listed once.
+function renderAnalysis() {
+  const clue = state.clue;
+  const shown = document.getElementById("clueShown");
+  const counted = document.getElementById("clueCount");
+  shown.replaceChildren();
+
+  if (!clue.trim()) {
+    shown.textContent = "Paste a clue above and press Analyze.";
+    shown.classList.add("empty");
+    counted.textContent = "Nothing analyzed yet";
+    fillTable(document.getElementById("parts"), []);
+    return;
+  }
+  shown.classList.remove("empty");
+
+  const { words, found } = analyze(clue);
+  const marked = new Set();
+  for (const hit of found) for (let at = hit.first; at < hit.first + hit.count; at++) marked.add(at);
+
+  // Copied across a piece at a time, so the punctuation and spacing are the
+  // clue's own and only the words the index knows are wrapped.
+  let from = 0;
+  words.forEach((word, at) => {
+    shown.append(clue.slice(from, word.start));
+    const text = clue.slice(word.start, word.end);
+    shown.append(marked.has(at) ? element("mark", "", text) : text);
+    from = word.end;
+  });
+  shown.append(clue.slice(from));
+
+  const entries = [...new Set(found.map((hit) => hit.entry))];
+  const many = (n, one, more) => `${n} ${n === 1 ? one : more}`;
+  counted.textContent = entries.length
+    ? `${many(entries.length, "entry", "entries")} found in ${many(words.length, "word", "words")}`
+    : `Nothing from the index in ${many(words.length, "word", "words")}`;
+  fillTable(document.getElementById("parts"), entries);
+}
+
 function render() {
+  document.getElementById("indexMode").hidden = state.mode !== "index";
+  document.getElementById("analyzeMode").hidden = state.mode !== "analyze";
+  document.getElementById("modeIndex").disabled = state.mode === "index";
+  document.getElementById("modeAnalyze").disabled = state.mode === "analyze";
+  // Kept in the address, so a link or a reload comes back to the same half.
+  // Some browsers refuse this for a page opened from a file, which costs
+  // nothing but the remembering, so it is allowed to fail.
+  try {
+    history.replaceState(null, "", state.mode === "analyze" ? "#analyze" : location.pathname + location.search);
+  } catch {}
+
+  renderAnalysis();
   renderTypes();
 
   // The reminder for the type being shown. Kept to one line's height whether
@@ -249,7 +455,7 @@ function main() {
   });
 
   document.getElementById("clear").addEventListener("click", () => {
-    state = { typed: "", type: null, all: false };
+    state = { ...state, typed: "", type: null, all: false };
     search.value = "";
     search.focus();
     render();
@@ -273,8 +479,34 @@ function main() {
     for (const problem of problems) console.warn("  " + problem);
   }
 
+  // --- the clue analyzer ---
+  const clue = document.getElementById("clue");
+  const showMode = (mode) => {
+    state.mode = mode;
+    render();
+    (mode === "analyze" ? clue : search).focus();
+  };
+  document.getElementById("modeIndex").addEventListener("click", () => showMode("index"));
+  document.getElementById("modeAnalyze").addEventListener("click", () => showMode("analyze"));
+
+  document.getElementById("analyze").addEventListener("click", () => {
+    state.clue = clue.value;
+    render();
+  });
+  clue.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") document.getElementById("analyze").click();
+    if (event.key === "Escape") document.getElementById("clearClue").click();
+  });
+  document.getElementById("clearClue").addEventListener("click", () => {
+    state.clue = "";
+    clue.value = "";
+    clue.focus();
+    render();
+  });
+
+  if (location.hash === "#analyze") state.mode = "analyze";
   render();
-  search.focus();
+  (state.mode === "analyze" ? clue : search).focus();
 }
 
 main();

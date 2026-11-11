@@ -34,60 +34,157 @@ body {
 
 /* --- the list --- */
 
-#results {
+.entries {
   border-collapse: collapse;
   width: 100%;
 }
 
-#results th,
-#results td {
+.entries th,
+.entries td {
   padding: 4px 8px 4px 0;
   border-top: 1px solid #ddd;
   vertical-align: top;
   text-align: left;
 }
 
-#results th {
+.entries th {
   border-top: none;
   border-bottom: 2px solid #999;
   text-transform: uppercase;
 }
 
 /* Block capitals, in the table only: the entries themselves stay lowercase, so
-   what you type still matches what is stored. */
-#results td.word {
+   what you type still matches what is stored. Capped rather than left to
+   nowrap, so one long phrase cannot squeeze every note to a ribbon. */
+.entries td.word {
   font-weight: bold;
-  white-space: nowrap;
   text-transform: uppercase;
+  width: 30%;
+  max-width: 24ch;
+  overflow-wrap: anywhere;
 }
 
-/* Tags wrap onto a second line rather than holding the column open: one entry
-   carrying three of them would otherwise squeeze the notes to a ribbon. */
-#results td.types {
-  min-width: 12ch;
+/* --- one entry's meanings, a line per type --- */
+
+.entries td.meaning {
+  width: 70%;
 }
 
-#results td.notes {
+.line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.line + .line {
+  margin-top: 3px;
+}
+
+/* The tag column. A fixed width — the longest label, JUXTAPOSITION, plus its
+   padding — so the notes start in the same place on every line of the table.
+   Sized in ch at the tags' own font size, which in a monospace font is exact. */
+.line .tags {
+  flex: none;
+  width: calc(13ch + 16px);
+  font-size: 0.75em;
+}
+
+/* Types with nothing to say share one line and may run past the column. */
+.line.plain .tags {
+  width: auto;
+}
+
+.line .body {
+  flex: 1;
+  min-width: 0;
   color: #444;
-  /* Takes what is left, so the two narrow columns keep their width whatever
-     the notes say. */
-  width: 100%;
+  font-size: 0.9em;
+}
+
+/* Something true of the word as a whole: set under the rest, in italics. */
+.line.note .body {
+  font-style: italic;
+  color: #666;
 }
 
 .tag {
   display: inline-block;
   text-transform: uppercase;
-  margin-right: 4px;
+  margin: 0 4px 2px 0;
   padding: 0 6px;
   border: 1px solid #bbb;
   border-radius: 10px;
   background-color: #f4f4f4;
-  font-size: 0.75em;
+  /* The font size comes from .tags; this keeps it from shrinking twice. */
+  font-size: 1em;
   cursor: pointer;
 }
 
 .tag:hover {
   background-color: #e4e4e4;
+}
+
+/* The tag of the type being shown. Bold changes a monospace width, so only
+   the colours change and nothing moves. */
+.tag.on {
+  background-color: #333;
+  border-color: #333;
+  color: #fff;
+}
+
+/* --- abbreviation letters --- */
+
+.letters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.letters .item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+/* Slim enough that a row of tiles is no taller than a row of text. */
+.letters .tile {
+  padding: 0 4px;
+  line-height: 1.15;
+  border: 1px solid #999;
+  border-radius: 3px;
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.letters .gloss {
+  font-size: 0.8em;
+  font-style: italic;
+  color: #777;
+}
+
+/* A phone: the word above its meanings rather than beside them. */
+@media (max-width: 560px) {
+  .entries thead {
+    display: none;
+  }
+  .entries,
+  .entries tbody,
+  .entries tr,
+  .entries td.word,
+  .entries td.meaning {
+    display: block;
+    width: auto;
+    max-width: none;
+  }
+  .entries td.word {
+    padding-bottom: 2px;
+  }
+  .entries td.meaning {
+    border-top: none;
+    padding: 0 0 8px 1ch;
+  }
 }
 
 button {
@@ -103,4 +200,42 @@ button:disabled {
    focus highlight, so drop the ring for mouse clicks. */
 button:focus:not(:focus-visible) {
   outline: none;
+}
+
+/* --- the clue analyzer --- */
+
+#modes {
+  margin-bottom: 0;
+}
+
+#clueRow {
+  display: flex;
+  gap: 4px;
+}
+
+#clue {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The clue as analyzed. Holds two lines' height before there is anything in
+   it, so pressing Analyze does not shove the table down. */
+#clueShown {
+  min-height: 2.6em;
+  line-height: 1.3;
+}
+
+#clueShown.empty {
+  color: #888;
+}
+
+#clueShown mark {
+  background-color: #fff0a8;
+  border-bottom: 2px solid #c9a400;
+  color: inherit;
+}
+
+#clueCount {
+  margin: 0.2em 0 0.6em;
+  font-weight: bold;
 }

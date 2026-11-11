@@ -10,29 +10,51 @@
     <h1><u>Cryptic Index 🔍</u></h1>
 
     <p>
-      Used for both solving and constructing crypting crosswords. Filter by indicator type, or search for specific words/phrases.
+      Used for both solving and constructing cryptic crosswords. Filter by indicator type, or search for specific words/phrases. Or paste a whole clue into the clue analyzer to see every indicator in it.
     </p>
 
     <p>
       Amalgamated from a bunch of different places, so there is a bit of noise, inconsistencies, and duplication.
     </p>
 
-    <p>
-      <input id="search" placeholder="Type something" size="20" autocorrect="off"
-        autocapitalize="none" autocomplete="off" spellcheck="false">
-      <button id="clear">Clear</button>
+    <p id="modes">
+      <button id="modeIndex">Index</button>
+      <button id="modeAnalyze">Clue analyzer</button>
     </p>
 
-    <p id="types"></p>
+    <section id="indexMode">
+      <p>
+        <input id="search" placeholder="Type something" size="20" autocorrect="off"
+          autocapitalize="none" autocomplete="off" spellcheck="false">
+        <button id="clear">Clear</button>
+      </p>
 
-    <p id="reminder"></p>
+      <p id="types"></p>
 
-    <p id="count">
-      <span id="countText"></span>
-      <button id="showAll">Show all</button>
-    </p>
+      <p id="reminder"></p>
 
-    <table id="results"></table>
+      <p id="count">
+        <span id="countText"></span>
+        <button id="showAll">Show all</button>
+      </p>
+
+      <table id="results" class="entries"></table>
+    </section>
+
+    <section id="analyzeMode" hidden>
+      <p id="clueRow">
+        <input id="clue" placeholder="Paste a clue" autocorrect="off"
+          autocapitalize="none" autocomplete="off" spellcheck="false">
+        <button id="analyze">Analyze</button>
+        <button id="clearClue">Clear</button>
+      </p>
+
+      <p id="clueShown"></p>
+
+      <p id="clueCount"></p>
+
+      <table id="parts" class="entries"></table>
+    </section>
 
     <script src="indicators.js"></script>
     <script src="index.js"></script>
